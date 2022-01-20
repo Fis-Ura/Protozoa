@@ -3,6 +3,7 @@
 #include "asciiEukaryotz.h"
 #include "asciiCollectables.h"
 #include "asciiMonsters.h"
+#include "asciiMaps.h"
 #include <Windows.h>
 
 using namespace BdB;
@@ -32,6 +33,19 @@ string enterName()
     return testName;
 }
 
+bool drawMap()
+{
+    array<int,2> cursorPos = { 0, 0 };
+    cout << ESC + HOME;
+    for (int iRow = 0; iRow < 200; ++iRow)
+    {
+        for (int iCol = 0; iCol < 100; ++iCol)
+        {
+        }
+    }
+    return true;
+}
+
 
 int main()
 {
@@ -44,21 +58,28 @@ int main()
     pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
 
     //intro
-    displayIntro(10);
+    displayIntro(1);
 
     cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.\n";
     char userStart;
     cin >> userStart;
     bool startGame = userStart == 'o' || userStart == 'O' ? true : false;
 
+    //variables utilisées pour la carte
+    int hSize = 200;
+    int vSize = 60;
+
     //variables utilisées pour l'eukaryotz
-    
     string protName;
+    int protSize;
     int protLife;
     int protSpeed;
     int protStrength;
     array<string, 10> protInventory = { "Jambon" };
-    string ahouin = "Ohllla!";
+    /*string ahouin = "Ohllla!"; */
+    array<string, 1> monsterTable = {}; //18x18
+    array<string, 10> blobTable = {}; //2x2 blobs
+    string envColor = ESC + Green;
 
     fun(protInventory);
 
@@ -88,6 +109,7 @@ int main()
         while (!pointsAreGood)
         {
             pointsLeft = 4;
+            protSize = 18;
             protLife = 2;
             protSpeed = 2;
             protStrength = 2;
@@ -160,6 +182,24 @@ int main()
             cout << "Est-ce que les caractéristique de votre Eukaryotz vous conviennent? o pour oui.\n";
             cin >> validCarac;
             pointsAreGood = validCarac == 'o' || validCarac == 'O' ? true : false;
+        }
+
+        system("cls");
+        for (int imap = (maps.size()/2) - (vSize/2); imap < (maps.size() / 2) + (vSize / 2); ++imap)
+        {
+            string line = maps[imap];
+            int lineSize = line.size();
+            string newLine;
+            for (int iLine = 0; iLine < hSize; ++iLine)
+            {
+                newLine += line[(lineSize / 2) - (hSize / 2) + iLine];
+            }
+            cout << newLine << endl;
+        }
+        bool inMap = true;
+        while (inMap)
+        {
+            inMap = drawMap();
         }
 
         cout << eukaryotz[0];
