@@ -8,6 +8,10 @@
 
 using namespace BdB;
 
+//variables utilisées pour la carte
+int hSize = 200;
+int vSize = 60;
+
 //fonction pour afficher l'intro
 void displayIntro(int framesPlayed)
 {
@@ -32,12 +36,12 @@ bool drawMap()
 {
     array<int,2> cursorPos = { 0, 0 };
     cout << ESC + HOME;
-    for (int iRow = 0; iRow < 200; ++iRow)
-    {
-        for (int iCol = 0; iCol < 100; ++iCol)
-        {
-        }
-    }
+
+    //draw an idle Eukaryotz in the center
+    string protIdle = eukaryotz[0]; 
+    cout << protIdle.size() << endl << protIdle << endl;
+    cout << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "      " << "\x1b[48;5;0m" << "      " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "      " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "  " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "            " << "\x1b[m" << endl << "\x1b[48;5;76m" << "      " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "        " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "        " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "        " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "      " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "      " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "    " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "        " << "\x1b[48;5;0m" << "    " << "\x1b[m" << endl << "\x1b[48;5;76m" << "        " << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "          " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "              " << "\x1b[m" << endl << "\x1b[48; 5; 0m" << "                " << "\x1b[m" << endl;
+
     return true;
 }
 
@@ -59,10 +63,6 @@ int main()
     char userStart;
     cin >> userStart;
     bool startGame = userStart == 'o' || userStart == 'O' ? true : false;
-
-    //variables utilisées pour la carte
-    int hSize = 200;
-    int vSize = 60;
 
     //variables utilisées pour l'eukaryotz
     string protName;
