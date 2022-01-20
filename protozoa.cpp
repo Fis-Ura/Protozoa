@@ -19,11 +19,6 @@ void displayIntro(int framesPlayed)
     }
 }
 
-void fun(const array<string, 10> &protInventory, const string ahouin = "ajoun")
-{
-    cout << protInventory[0] << " " << ahouin << endl;
-}
-
 string enterName()
 {
     cout << "En tant qu'Eukaryotz, quel sera votre nom?\n";
@@ -58,7 +53,7 @@ int main()
     pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
 
     //intro
-    displayIntro(1);
+    displayIntro(50);
 
     cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.\n";
     char userStart;
@@ -76,12 +71,9 @@ int main()
     int protSpeed;
     int protStrength;
     array<string, 10> protInventory = { "Jambon" };
-    /*string ahouin = "Ohllla!"; */
-    array<string, 1> monsterTable = {}; //18x18
+    array<string, 1> monsterTable = {}; //18x8
     array<string, 10> blobTable = {}; //2x2 blobs
     string envColor = ESC + Green;
-
-    fun(protInventory);
 
 
     //boucle de jeu principale
