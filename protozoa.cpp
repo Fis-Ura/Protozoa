@@ -41,6 +41,8 @@ int main()
 #endif
     srand(time(0));
 
+    pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
+
     //intro
     displayIntro(10);
 
