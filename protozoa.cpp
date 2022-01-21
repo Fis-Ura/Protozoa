@@ -11,6 +11,16 @@ using namespace BdB;
 //variables utilisées pour la carte
 int hSize = 200;
 int vSize = 60;
+int vOffset = 0;
+int hOffset = 0;
+
+//variables utilisées pour l'eukaryotz
+int protWidth = 16;
+int protHeight = 11;
+int protLife;
+int protSpeed;
+int protStrength;
+char nextMove;
 
 //fonction pour afficher l'intro
 void displayIntro(int framesPlayed)
@@ -32,19 +42,40 @@ string enterName()
     return testName;
 }
 
-bool drawMap()
+bool drawEukaryotz()
 {
-    array<int,2> cursorPos = { 0, 0 };
-    cout << ESC + HOME;
-
     //draw an idle Eukaryotz in the center
-    string protIdle = eukaryotz[0]; 
-    cout << protIdle.size() << endl << protIdle << endl;
-    cout << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "      " << "\x1b[48;5;0m" << "      " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "      " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "  " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "            " << "\x1b[m" << endl << "\x1b[48;5;76m" << "      " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "        " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "        " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "        " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "      " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "      " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;13m" << "    " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;13m" << "  " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "  " << "\x1b[m" << endl << "\x1b[48;5;0m" << "    " << "\x1b[48;5;76m" << "        " << "\x1b[48;5;0m" << "    " << "\x1b[m" << endl << "\x1b[48;5;76m" << "        " << "\x1b[48;5;0m" << "  " << "\x1b[48;5;76m" << "    " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "          " << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "  " << "\x1b[m" << endl << "\x1b[48;5;76m" << "  " << "\x1b[48;5;0m" << "              " << "\x1b[m" << endl << "\x1b[48; 5; 0m" << "                " << "\x1b[m" << endl;
+    int hPos = 1 + (hSize / 2 - protWidth / 2);
+    int vPos = vSize / 2 - protHeight / 2;
+
+    for (int i = 0; i < ProtagAsmall.size(); ++i)
+    {
+        cout << ESC + (to_string(vPos + i) + ";" + to_string(hPos) + "H");
+        cout << ProtagAsmall[i];
+    }
+
 
     return true;
 }
 
+bool drawMap(char &nextMove)
+{
+    vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
+    hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
+    system("cls");
+    for (int imap = ((maps.size() / 2) - (vSize / 2)) + vOffset; imap < ((maps.size() / 2) + (vSize / 2)) + vOffset; ++imap)
+    {
+        string line = maps[imap];
+        int lineSize = line.size();
+        string newLine;
+        for (int iLine = 0; iLine < hSize; ++iLine)
+        {
+            newLine += line[(lineSize / 2) - (hSize / 2) + iLine + hOffset];
+        }
+        cout << newLine << endl;
+    }
+    return true;
+}
 
 int main()
 {
@@ -57,7 +88,7 @@ int main()
     pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
 
     //intro
-    displayIntro(50);
+    //displayIntro(50);
 
     cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.\n";
     char userStart;
@@ -66,10 +97,6 @@ int main()
 
     //variables utilisées pour l'eukaryotz
     string protName;
-    int protSize;
-    int protLife;
-    int protSpeed;
-    int protStrength;
     array<string, 10> protInventory = { "Jambon" };
     array<string, 1> monsterTable = {}; //18x8
     array<string, 10> blobTable = {}; //2x2 blobs
@@ -101,7 +128,6 @@ int main()
         while (!pointsAreGood)
         {
             pointsLeft = 4;
-            protSize = 18;
             protLife = 2;
             protSpeed = 2;
             protStrength = 2;
@@ -176,33 +202,19 @@ int main()
             pointsAreGood = validCarac == 'o' || validCarac == 'O' ? true : false;
         }
 
-        system("cls");
-        for (int imap = (maps.size()/2) - (vSize/2); imap < (maps.size() / 2) + (vSize / 2); ++imap)
-        {
-            string line = maps[imap];
-            int lineSize = line.size();
-            string newLine;
-            for (int iLine = 0; iLine < hSize; ++iLine)
-            {
-                newLine += line[(lineSize / 2) - (hSize / 2) + iLine];
-            }
-            cout << newLine << endl;
-        }
         bool inMap = true;
         while (inMap)
         {
-            inMap = drawMap();
+            drawMap(nextMove);
+            inMap = drawEukaryotz();
+            cout << ESC + (to_string(vSize + 1) + ";1H");
+            cout << "w,a,s,d suivi de la touche Entrer pour faire votre prochain mouvement.";
+            cin >> nextMove;
         }
-
-        cout << eukaryotz[0];
-
-
 
         startGame = false;
     }
     
-
-
     system("pause");
     return 0;
 }

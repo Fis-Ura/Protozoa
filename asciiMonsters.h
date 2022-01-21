@@ -2,10 +2,6 @@
 
 using namespace std;
 
-array<string, 50> monsters = { R"()" };
-
-
-
 //Monster A Form 1, small no spike
 	const string monsterAsmall = 
 		"\x1b[48;5;0m                \x1b[m\n"

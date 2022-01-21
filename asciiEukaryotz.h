@@ -22,18 +22,18 @@ xoooooooooooooooox
 xxxxxxxxxxxxxxxxxx)" };
 
 //Protagoniste Small version A
-	const string ProtagAsmall =
-		"\x1b[48;5;0m      \x1b[48;5;76m    \x1b[48;5;0m      \x1b[m\n"
-		"\x1b[48;5;76m  \x1b[48;5;0m      \x1b[48;5;76m  \x1b[48;5;0m    \x1b[48;5;76m  \x1b[m\n"
-		"\x1b[48;5;76m  \x1b[48;5;0m  \x1b[48;5;76m            \x1b[m\n"
-		"\x1b[48;5;76m      \x1b[48;5;13m  \x1b[48;5;76m  \x1b[48;5;13m  \x1b[48;5;76m  \x1b[48;5;0m  \x1b[m\n"
-		"\x1b[48;5;0m  \x1b[48;5;76m  \x1b[48;5;13m        \x1b[48;5;76m  \x1b[48;5;0m  \x1b[m\n"
-		"\x1b[48;5;0m  \x1b[48;5;76m    \x1b[48;5;13m    \x1b[48;5;76m    \x1b[48;5;0m  \x1b[m\n"
-		"\x1b[48;5;0m  \x1b[48;5;76m  \x1b[48;5;13m      \x1b[48;5;76m  \x1b[48;5;0m    \x1b[m\n"
-		"\x1b[48;5;76m      \x1b[48;5;13m  \x1b[48;5;76m      \x1b[48;5;0m  \x1b[m\n"
-		"\x1b[48;5;76m  \x1b[48;5;0m  \x1b[48;5;76m      \x1b[48;5;0m  \x1b[48;5;76m    \x1b[m\n"
-		"\x1b[48;5;76m  \x1b[48;5;0m    \x1b[48;5;76m  \x1b[48;5;0m      \x1b[48;5;76m  \x1b[m\n"
-		"\x1b[48;5;0m      \x1b[48;5;76m    \x1b[48;5;0m      \x1b[m\n";
+const array<string, 11> ProtagAsmall = {
+    "\x1b[48;5;0m      \x1b[48;5;76m    \x1b[48;5;0m      \x1b[m\n",
+    "\x1b[48;5;76m  \x1b[48;5;0m      \x1b[48;5;76m  \x1b[48;5;0m    \x1b[48;5;76m  \x1b[m\n",
+    "\x1b[48;5;76m  \x1b[48;5;0m  \x1b[48;5;76m            \x1b[m\n",
+    "\x1b[48;5;76m      \x1b[48;5;13m  \x1b[48;5;76m  \x1b[48;5;13m  \x1b[48;5;76m  \x1b[48;5;0m  \x1b[m\n",
+    "\x1b[48;5;0m  \x1b[48;5;76m  \x1b[48;5;13m        \x1b[48;5;76m  \x1b[48;5;0m  \x1b[m\n",
+    "\x1b[48;5;0m  \x1b[48;5;76m    \x1b[48;5;13m    \x1b[48;5;76m    \x1b[48;5;0m  \x1b[m\n",
+    "\x1b[48;5;0m  \x1b[48;5;76m  \x1b[48;5;13m      \x1b[48;5;76m  \x1b[48;5;0m    \x1b[m\n",
+    "\x1b[48;5;76m      \x1b[48;5;13m  \x1b[48;5;76m      \x1b[48;5;0m  \x1b[m\n",
+    "\x1b[48;5;76m  \x1b[48;5;0m  \x1b[48;5;76m      \x1b[48;5;0m  \x1b[48;5;76m    \x1b[m\n",
+    "\x1b[48;5;76m  \x1b[48;5;0m    \x1b[48;5;76m  \x1b[48;5;0m      \x1b[48;5;76m  \x1b[m\n",
+    "\x1b[48;5;0m      \x1b[48;5;76m    \x1b[48;5;0m      \x1b[m\n" };
 		
 //Protagoniste Medium Version A 
 	const string ProtagAmedium =
