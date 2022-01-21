@@ -101,15 +101,21 @@ void drawBlobs()
     {
         int h = blobsPosition[i * 2];
         int v = blobsPosition[(i * 2) + 1];
-        //cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        int blobVOffset = (maps.size() / 2) - (vSize / 2);
+        int blobHOffset = (lineSize / 2) - (hSize / 2);
+        moveCursor(1, 1);
+        cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((maps.size() / 2) - (vSize / 2)) && v < ((maps.size() / 2) + (vSize / 2)))
         {
             cout << "YA";
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
                 cout << "YO";
-                moveCursor(v, h);
-                cout << blob[0] << blob[1];
+                for (int i = 0; i < 2; ++i)
+                {
+                    moveCursor(v + i - blobVOffset - vOffset, h - blobHOffset - hOffset);
+                    cout << blob[i];
+                }
             }
         }
     }

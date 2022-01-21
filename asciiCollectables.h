@@ -2,4 +2,4 @@
 
 using namespace std;
 
-array<string, 2> blob = { "/\\\n", "\\/" };
+array<string, 2> blob = { R"(/\)", R"(\/)"};
