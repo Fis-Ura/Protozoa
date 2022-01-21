@@ -5,9 +5,10 @@ using namespace std;
 array<string, 2> blob = { R"(/\)", R"(\/)"};
 
 
-const string BlobASmall =
-    u8"\x1b[48;5;76m\x1b[38;5;15m/‾\\\x1b[m\n"
-    u8"\x1b[48;5;76m\x1b[38;5;15m\\_/\x1b[m\n";
+const array<string,2> BlobASmall = {
+    u8"\x1b[48;5;76m\x1b[38;5;15m/‾\\\x1b[m\n",
+    u8"\x1b[48;5;76m\x1b[38;5;15m\\_/\x1b[m\n"
+};
 //cout << BlobASmall;
 
 const string BlobBSmall =

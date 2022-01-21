@@ -114,7 +114,7 @@ void drawBlobs()
                 for (int i = 0; i < 2; ++i)
                 {
                     moveCursor(v + i - blobVOffset - vOffset, h - blobHOffset - hOffset);
-                    cout << blob[i];
+                    cout << BlobASmall[i];
                 }
             }
         }
