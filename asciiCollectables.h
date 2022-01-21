@@ -2,4 +2,4 @@
 
 using namespace std;
 
-array<string, 50> collectables = { R"()"};
+array<string, 2> blob = { "/\\\n", "\\/" };

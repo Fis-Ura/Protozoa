@@ -42,6 +42,11 @@ string enterName()
     return testName;
 }
 
+void moveCursor(int v, int h)
+{
+    cout << ESC + (to_string(v) + ";" + to_string(h) + "H");
+}
+
 bool drawEukaryotz()
 {
     //draw an idle Eukaryotz in the center
@@ -50,10 +55,9 @@ bool drawEukaryotz()
 
     for (int i = 0; i < ProtagAsmall.size(); ++i)
     {
-        cout << ESC + (to_string(vPos + i) + ";" + to_string(hPos) + "H");
+        moveCursor(vPos + i,hPos);
         cout << ProtagAsmall[i];
     }
-
 
     return true;
 }
@@ -77,6 +81,30 @@ bool drawMap(char &nextMove)
     return true;
 }
 
+array<int, 40> blobsPosition;
+void positionBlobs()
+{
+    int blobsNumber = 10 + (rand() % 11);
+    for (int i = 0; i < blobsNumber; ++i)
+    {
+        int h = rand() % hSize;
+        int v = rand() % vSize;
+        blobsPosition[i * 2] = h;
+        blobsPosition[(i * 2) + 1] = v;
+    }
+}
+
+void drawBlobs()
+{
+    for (int i = 0; i < 20; ++i)
+    {
+        int v = blobsPosition[i * 2];
+        int h = blobsPosition[(i * 2) + 1];
+        moveCursor(v, h);
+        cout << blob[0] << blob[1];
+    }
+}
+
 int main()
 {
 #if _WIN32 || _WIN64
@@ -84,7 +112,7 @@ int main()
     system("cls");
 #endif
     srand(time(0));
-
+    positionBlobs();
     pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
 
     //intro
@@ -207,6 +235,7 @@ int main()
         {
             drawMap(nextMove);
             inMap = drawEukaryotz();
+            drawBlobs();
             cout << ESC + (to_string(vSize + 1) + ";1H");
             cout << "w,a,s,d suivi de la touche Entrer pour faire votre prochain mouvement.";
             cin >> nextMove;
