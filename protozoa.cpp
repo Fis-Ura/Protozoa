@@ -13,6 +13,7 @@ int hSize = 200;
 int vSize = 60;
 int vOffset = 0;
 int hOffset = 0;
+int lineSize = 2000;
 
 //variables utilisées pour l'eukaryotz
 int protWidth = 16;
@@ -50,7 +51,7 @@ void moveCursor(int v, int h)
 bool drawEukaryotz()
 {
     //draw an idle Eukaryotz in the center
-    int hPos = 1 + (hSize / 2 - protWidth / 2);
+    int hPos = hSize / 2 - protWidth / 2;
     int vPos = vSize / 2 - protHeight / 2;
 
     for (int i = 0; i < ProtagAsmall.size(); ++i)
@@ -70,7 +71,7 @@ bool drawMap(char &nextMove)
     for (int imap = ((maps.size() / 2) - (vSize / 2)) + vOffset; imap < ((maps.size() / 2) + (vSize / 2)) + vOffset; ++imap)
     {
         string line = maps[imap];
-        int lineSize = line.size();
+        lineSize = line.size() + 1;
         string newLine;
         for (int iLine = 0; iLine < hSize; ++iLine)
         {
@@ -81,14 +82,14 @@ bool drawMap(char &nextMove)
     return true;
 }
 
-array<int, 40> blobsPosition;
+array<int, 100> blobsPosition;
 void positionBlobs()
 {
-    int blobsNumber = 10 + (rand() % 11);
+    int blobsNumber = 25 + (rand() % 26);
     for (int i = 0; i < blobsNumber; ++i)
     {
-        int h = rand() % hSize;
-        int v = rand() % vSize;
+        int h = rand() % lineSize;
+        int v = rand() % maps.size();
         blobsPosition[i * 2] = h;
         blobsPosition[(i * 2) + 1] = v;
     }
@@ -96,12 +97,21 @@ void positionBlobs()
 
 void drawBlobs()
 {
-    for (int i = 0; i < 20; ++i)
+    for (int i = 0; i < 50; ++i)
     {
-        int v = blobsPosition[i * 2];
-        int h = blobsPosition[(i * 2) + 1];
-        moveCursor(v, h);
-        cout << blob[0] << blob[1];
+        int h = blobsPosition[i * 2];
+        int v = blobsPosition[(i * 2) + 1];
+        //cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        if (v > ((maps.size() / 2) - (vSize / 2)) && v < ((maps.size() / 2) + (vSize / 2)))
+        {
+            cout << "YA";
+            if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
+            {
+                cout << "YO";
+                moveCursor(v, h);
+                cout << blob[0] << blob[1];
+            }
+        }
     }
 }
 
