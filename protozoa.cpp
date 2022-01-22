@@ -26,14 +26,27 @@ array<string, 10> protInvNames = { "Blobs" };
 array<int, 10> protInvQty = { 0 };
 char nextMove;
 
+void moveCursor(int v, int h)
+{
+    cout << ESC + (to_string(v) + ";" + to_string(h) + "H");
+}
+
 //fonction pour afficher l'intro
 void displayIntro(int framesPlayed)
 {
     for (int i = 0; i < framesPlayed; ++i)
     {
+        moveCursor(1, 1);
         cout << frames[i];
         Sleep(100);
         system("cls");
+    }
+    moveCursor(1, 1);
+    cout << frames[framesPlayed - 1];
+    for (int i = 0; i < logo.size(); ++i)
+    {
+        moveCursor((vSize / 2 - logo.size() / 2) + i, hSize / 2 - logo[0].size() / 2);
+        cout << logo[i];
     }
 }
 
@@ -44,11 +57,6 @@ string enterName()
     cin >> testName;
     //getline(cin, testName);
     return testName;
-}
-
-void moveCursor(int v, int h)
-{
-    cout << ESC + (to_string(v) + ";" + to_string(h) + "H");
 }
 
 bool drawEukaryotz()
@@ -224,7 +232,7 @@ int main()
     pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
 
     //intro
-    displayIntro(50);
+    displayIntro(5);
 
     cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.\n";
     char userStart;
