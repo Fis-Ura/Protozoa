@@ -84,6 +84,45 @@ bool drawMap(char &nextMove)
     return true;
 }
 
+array<int, 2> monstersPosition;
+
+void positionMonsters()
+{
+    int monstersNumber = 1;
+    for (int i = 0; i < monstersNumber; ++i)
+    {
+        //int h = 1 + (rand() % lineSize);
+        int h = 1030;
+        int v = 90;
+        monstersPosition[i * 2] = h;
+        monstersPosition[(i * 2) + 1] = v;
+    }
+}
+
+void drawMonsters()
+{
+    for (int i = 0; i < 1; ++i)
+    {
+        int h = monstersPosition[i * 2];
+        int v = monstersPosition[(i * 2) + 1];
+        int monsterVOffset = (maps.size() / 2) - (vSize / 2);
+        int monsterHOffset = (lineSize / 2) - (hSize / 2);
+        moveCursor(1, 1);
+        cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        if (v > ((maps.size() / 2) - (vSize / 2)) && v < ((maps.size() / 2) + (vSize / 2)))
+        {
+            if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
+            {
+                for (int i = 0; i < monsterAsmall.size(); ++i)
+                {
+                    moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
+                    cout << monsterAsmall[i];
+                }
+            }
+        }
+    }
+}
+
 array<int, 100> blobsPosition;
 void positionBlobs()
 {
@@ -106,14 +145,14 @@ void drawBlobs()
         int blobVOffset = (maps.size() / 2) - (vSize / 2);
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(1, 1);
-        cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        //cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((maps.size() / 2) - (vSize / 2)) && v < ((maps.size() / 2) + (vSize / 2)))
         {
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
                 //determine if blob has been eaten by the eukaryotz
                 moveCursor(3, 1);
-                cout << (v - blobVOffset - vOffset);
+                //cout << (v - blobVOffset - vOffset);
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
                     if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
@@ -146,6 +185,7 @@ int main()
 #endif
     srand(time(0));
     positionBlobs();
+    positionMonsters();
     pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
 
     //intro
@@ -268,6 +308,7 @@ int main()
             drawMap(nextMove);
             inMap = drawEukaryotz();
             drawBlobs();
+            drawMonsters();
             cout << ESC + (to_string(vSize + 1) + ";1H");
             cout << "w,a,s,d suivi de la touche Entrer pour faire votre prochain mouvement.";
             cin >> nextMove;
