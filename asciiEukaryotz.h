@@ -2,25 +2,6 @@
 
 using namespace std;
 
-array<string, 50> eukaryotz = { R"(xxxxxxxxxxxxxxxxxx
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xoooooooooooooooox
-xxxxxxxxxxxxxxxxxx)" };
-
 //Protagoniste Small version A
 const array<string, 11> ProtagAsmall = {
     "\x1b[48;5;0m      \x1b[48;5;76m    \x1b[48;5;0m      \x1b[m\n",

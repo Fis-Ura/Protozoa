@@ -21,6 +21,8 @@ int protHeight = 11;
 int protLife;
 int protSpeed;
 int protStrength;
+array<string, 10> protInvNames = { "Blobs" };
+array<int, 10> protInvQty = { 0 };
 char nextMove;
 
 //fonction pour afficher l'intro
@@ -107,14 +109,29 @@ void drawBlobs()
         cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((maps.size() / 2) - (vSize / 2)) && v < ((maps.size() / 2) + (vSize / 2)))
         {
-            cout << "YA";
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
-                cout << "YO";
-                for (int i = 0; i < 2; ++i)
+                //determine if blob has been eaten by the eukaryotz
+                moveCursor(3, 1);
+                cout << (v - blobVOffset - vOffset);
+                if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
-                    moveCursor(v + i - blobVOffset - vOffset, h - blobHOffset - hOffset);
-                    cout << BlobASmall[i];
+                    if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
+                    {
+                        blobsPosition[i * 2] = 0;
+                        blobsPosition[(i * 2) + 1] = 0;
+                        moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                        protInvQty[0] += 1;
+                        cout << "Slurp!! +1 (" << protInvQty[0] << ")";
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 2; ++i)
+                    {
+                        moveCursor(v + i - blobVOffset - vOffset, h - blobHOffset - hOffset);
+                        cout << BlobASmall[i];
+                    }
                 }
             }
         }
@@ -141,7 +158,6 @@ int main()
 
     //variables utilisées pour l'eukaryotz
     string protName;
-    array<string, 10> protInventory = { "Jambon" };
     array<string, 1> monsterTable = {}; //18x8
     array<string, 10> blobTable = {}; //2x2 blobs
     string envColor = ESC + Green;
