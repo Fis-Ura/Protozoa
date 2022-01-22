@@ -1,5 +1,6 @@
 #include "Code_Utilities.h"
 #include "asciiIntro.h"
+#include "asciiLogo.h"
 #include "asciiEukaryotz.h"
 #include "asciiCollectables.h"
 #include "asciiMonsters.h"
@@ -223,7 +224,7 @@ int main()
     pressToContinue("Assurez-vous que votre écran de terminal soit maximisé.\n");
 
     //intro
-    //displayIntro(50);
+    displayIntro(50);
 
     cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.\n";
     char userStart;
