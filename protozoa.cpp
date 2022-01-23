@@ -42,31 +42,46 @@ string spaceString(int length)
     return spaces;
 }
 
+void clearCin()
+{
+    cin.clear();
+    cin.ignore(120, '\n');
+}
+
 //fonction pour demander a l'usager si il veut commencer une nouvelle partie
-string startString = "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.\n";
+string startString = "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.";
 bool displayStartGame()
 {
     string spaces = spaceString(startString.size());
-    moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startString.size() / 2 + 1);
-    cout << spaces;
+    char userStart = -1;
+    while (userStart != 'o' && userStart != 'O' && userStart != 'n' && userStart != 'N')
+    {
+        moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startString.size() / 2 + 1);
+        cout << spaces;
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 1);
+        cout << spaces;
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 1);
+        cout << spaces;
+        if (userStart != -1)
+        {
+            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startString.size() / 2 + 1);
+            cout << "Je n'ai pas compris, pouvez-vous répéter? ";
+        }
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 2);
+        cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.";
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 2);
+        cin >> userStart;
+        clearCin();
+    }
     moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 1);
-    cout << " ";
-    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 + startString.size() / 2);
-    cout << " ";
-    moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 1);
     cout << spaces;
-    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 2);
-    cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.\n";
-    char userStart;
-    moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 2);
-    cin >> userStart;
     bool startGame = userStart == 'o' || userStart == 'O' ? true : false;
     return startGame;
 }
 
 string enterName()
 {
-    string startName = "En tant qu'Eukaryotz, quel sera votre nom?\n";
+    string startName = "En tant qu'Eukaryotz, quel sera votre nom?";
     string spaces = spaceString(startName.size());
     moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startString.size() / 2 + 1);
     cout << spaces;
@@ -80,6 +95,7 @@ string enterName()
     string testName = "";
     moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startName.size() / 2 + 2);
     cin >> testName;
+    clearCin();
     //getline(cin, testName);
     return testName;
 }
@@ -90,7 +106,7 @@ void startNameValidation() {
     while (!nameIsGood)
     {
         string testName = enterName();
-        string startNameFinalValidate = "Votre Eukaryotz se nomme bien " + testName + "? Tappez o pour oui.\n";
+        string startNameFinalValidate = "Votre Eukaryotz se nomme bien " + testName + "? Tappez o pour oui.";
         string spaces = spaceString(startNameFinalValidate.size());
 
         moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startNameFinalValidate.size() / 2 + 1);
@@ -106,6 +122,7 @@ void startNameValidation() {
         cout << startNameFinalValidate;
         moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startNameFinalValidate.size() / 2 + 2);
         cin >> validateName;
+        clearCin();
         nameIsGood = validateName == 'O' || validateName == 'o' ? true : false;
         if(nameIsGood)
             protName = testName;
@@ -349,10 +366,11 @@ int main()
     positionMonsters();
 
     cout << "Assurez-vous que votre écran de terminal soit maximisé.\n"
-        << "Appuyez sur S pour skipper l'intro et appuyez sur Entrée.\n";
+        << "Appuyez sur S pour skipper l'intro ou une autre touche pour le voir et appuyez sur Entrée.\n";
     bool skipIntro = false;
     char userSkip;
     cin >> userSkip;
+    clearCin();
     if (userSkip == 'S' || userSkip == 's')
         skipIntro = true;
 
@@ -386,7 +404,7 @@ int main()
             protSpeed = 2;
             protStrength = 2;
 
-            string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Eukaryotz: (points restants  )\n";
+            string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Eukaryotz: (points restants  )";
             string spaces = spaceString(longestString.size());
             moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
             cout << spaces;
@@ -409,34 +427,122 @@ int main()
 
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Vie: " << setw(3) << protLife;
+            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 2);
+            cout << ">Vie: " << setw(3) << protLife;
             moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
             cout << "Vitesse: " << setw(3) << protSpeed;
             moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
             cout << "Force: " << setw(3) << protStrength;
 
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Eukaryotz: (points restants " << pointsLeft << ")";
-            int usePoints;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-            cin >> usePoints;
-            cout << usePoints << endl;
-            while (usePoints > pointsLeft || usePoints < 0)
+            char usePoints = '|';
+            while (int(usePoints) < int('0') || int(usePoints) > int('0'+pointsLeft))
             {
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
                 cout << spaces;
-                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
+                cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Eukaryotz: (points restants " << pointsLeft << ")";
+                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+                if (int(usePoints) != char('|'))
+                {
+                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+                    cout << spaces;
+                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+                    cout << "Entrée invalide, utilisez vos points restants.";
+                }
+                cin >> usePoints;
+                clearCin();
+            }
+            int pointsUsed;
+            switch (int(usePoints))
+            {
+                case int('0') :
+                    pointsUsed = 0;
+                    break;
+                case int('1') :
+                    pointsUsed = 1;
+                    break;
+                case int('2') :
+                    pointsUsed = 2;
+                    break;
+                case int('3') :
+                    pointsUsed = 3;
+                    break;
+                case int('4') :
+                    pointsUsed = 4;
+                    break;
+            }
+            pointsLeft -= pointsUsed;
+            protLife += pointsUsed;
+
+            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+
+            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
+            cout << "Points de caractéristique de " << protName;
+            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
+            cout << "Vie: " << setw(3) << protLife;
+            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 2);
+            cout << ">Vitesse: " << setw(3) << protSpeed;
+            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
+            cout << "Force: " << setw(3) << protStrength;
+            
+            usePoints = '|';
+            while (int(usePoints) < int('0') || int(usePoints) > int('0'+pointsLeft))
+            {
+                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
                 cout << spaces;
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrée invalide, utilisez vos points restants.";
+                cout << "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Eukaryotz: (points restants " << pointsLeft << ")";
                 moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Eukaryotz: (points restants " << pointsLeft << ")";
-                moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 2);
+                if (int(usePoints) != char('|'))
+                {
+                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+                    cout << spaces;
+                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+                    cout << "Entrée invalide, utilisez vos points restants.";
+                }
                 cin >> usePoints;
+                clearCin();
             }
-            pointsLeft -= usePoints;
-            protLife += usePoints;
+            pointsUsed = NULL;
+            switch (int(usePoints))
+            {
+                case int('0') :
+                    pointsUsed = 0;
+                    break;
+                case int('1') :
+                    pointsUsed = 1;
+                    break;
+                case int('2') :
+                    pointsUsed = 2;
+                    break;
+                case int('3') :
+                    pointsUsed = 3;
+                    break;
+                case int('4') :
+                    pointsUsed = 4;
+                    break;
+            }
+            pointsLeft -= pointsUsed;
+            protSpeed += pointsUsed;
+
+            //Strength
 
             moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
             cout << spaces;
@@ -463,88 +569,49 @@ int main()
             cout << "Vie: " << setw(3) << protLife;
             moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
             cout << "Vitesse: " << setw(3) << protSpeed;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Force: " << setw(3) << protStrength;
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Eukaryotz: (points restants " << pointsLeft << ")";
-            usePoints = 0;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-            cin >> usePoints;
-            cout << usePoints << endl;
-            while (usePoints > pointsLeft || usePoints < 0)
+            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 2);
+            cout << ">Force: " << setw(3) << protStrength;
+            
+            usePoints = '|';
+            while (int(usePoints) < int('0') || int(usePoints) > int('0'+pointsLeft))
             {
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
                 cout << spaces;
-                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-                cout << spaces;
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrée invalide, utilisez vos points restants.";
+                cout << "Entrez le nombre de points que vous voulez ajouter à la Force de votre Eukaryotz: (points restants " << pointsLeft << ")";
                 moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Eukaryotz: (points restants " << pointsLeft << ")";
-                moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 2);
+                if (int(usePoints) != char('|'))
+                {
+                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+                    cout << spaces;
+                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+                    cout << "Entrée invalide, utilisez vos points restants.";
+                }
                 cin >> usePoints;
+                clearCin();
             }
-            pointsLeft -= usePoints;
-            protSpeed += usePoints;
-
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Points de caractéristique de " << protName;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Vie: " << setw(3) << protLife;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Vitesse: " << setw(3) << protSpeed;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Force: " << setw(3) << protStrength;
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "\bPoints de caractéristique de " << protName << "\n"
-                << "Vie: " << setw(3) << protLife << endl
-                << "Vitesse: " << setw(3) << protSpeed << endl
-                << "Force: " << setw(3) << protStrength << endl;
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Entrez le nombre de points que vous voulez ajouter à la Force de votre Eukaryotz: (points restants " << pointsLeft << ")\n";
-            usePoints = 0;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-            cin >> usePoints;
-            cout << usePoints << endl;
-            while (usePoints > pointsLeft || usePoints < 0)
+            pointsUsed = NULL;
+            switch (int(usePoints))
             {
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-                cout << spaces;
-                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-                cout << spaces;
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrée invalide, utilisez vos points restants.";
-                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Eukaryotz: (points restants " << pointsLeft << ")";
-                moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 2);
-                cin >> usePoints;
+                case int('0') :
+                    pointsUsed = 0;
+                    break;
+                case int('1') :
+                    pointsUsed = 1;
+                    break;
+                case int('2') :
+                    pointsUsed = 2;
+                    break;
+                case int('3') :
+                    pointsUsed = 3;
+                    break;
+                case int('4') :
+                    pointsUsed = 4;
+                    break;
             }
-            pointsLeft -= usePoints;
-            protStrength += usePoints;
-
+            pointsLeft -= pointsUsed;
+            protStrength += pointsUsed;
+            
             moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
             cout << spaces;
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
@@ -575,9 +642,10 @@ int main()
 
             char validCarac;
             moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Est-ce que les caractéristique de votre Eukaryotz vous conviennent? o pour oui.\n";
+            cout << "Est-ce que les caractéristique de votre Eukaryotz vous conviennent? o pour oui.";
             moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
             cin >> validCarac;
+            clearCin();
             pointsAreGood = validCarac == 'o' || validCarac == 'O' ? true : false;
         }
 
@@ -591,11 +659,11 @@ int main()
             cout << ESC + (to_string(vSize + 1) + ";1H");
             cout << "w,a,s,d suivi de la touche Entrer pour faire votre prochain mouvement.";
             cin >> nextMove;
+            clearCin();
         }
 
         startGame = false;
     }
     
-    system("pause");
     return 0;
 }
