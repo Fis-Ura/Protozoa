@@ -7,6 +7,7 @@
 #include "asciiMaps.h"
 #include "asciiMap1.h"
 #include <Windows.h>
+#include <conio.h>
 
 using namespace BdB;
 
@@ -15,7 +16,7 @@ int hSize = 200;
 int vSize = 60;
 int vOffset = 0;
 int hOffset = 0;
-int lineSize = 2000;
+int lineSize = 800;
 array<string, 2> bgColor = { "\x1b[48;5;230m","\x1b[48;5;231m" };
 array<string, 200> currentMap;
 
@@ -57,14 +58,14 @@ array<string, 200> buildRandomMap()
     array<string,200> newMap;
     string newLine = "";
     string lastLine = "";
-    array<int, 2000> cellThreshold = {};
-    array<int, 2000> cellThresholdLastLine = {};
+    array<int, 800> cellThreshold = {};
+    array<int, 800> cellThresholdLastLine = {};
     int distancer = 10;
 
     for (int i = 0; i < 200; ++i)
     {
         newLine = "";
-        for (int i = 0; i < 1999; ++i)
+        for (int i = 0; i < ((lineSize / 2) - 1); ++i)
         {
             if (i != 0)
                 threshold -= cellThreshold[i - 1] * 4;
@@ -263,7 +264,11 @@ bool drawMap(char &nextMove)
     cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte 
     for (int imap = ((currentMap.size() / 2) - (vSize / 2)) + vOffset; imap < ((currentMap.size() / 2) + (vSize / 2)) + vOffset; ++imap)
     {
-        string line = currentMap[imap];
+        string line;
+        if (imap > currentMap.size() - 1 || imap < 60)
+            line = spaceString(lineSize);
+        else
+            line = currentMap[imap];
         lineSize = line.size() + 1;
         string newLine;
         for (int iLine = 0; iLine < hSize; ++iLine)
@@ -673,9 +678,8 @@ int main()
             drawBlobs();
             //drawMonsters();
             cout << ESC + (to_string(vSize + 1) + ";1H");
-            cout << "w,a,s,d suivi de la touche Entrer pour faire votre prochain mouvement.";
-            cin >> nextMove;
-            clearCin();
+            cout << "w,a,s,d pour faire vous déplacer.";
+            nextMove = _getch();
         }
 
         startGame = false;
