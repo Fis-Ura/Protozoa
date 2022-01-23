@@ -94,7 +94,7 @@ array<string, 200> buildRandomMap()
 }
 
 //fonction pour demander a l'usager si il veut commencer une nouvelle partie
-string startString = "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.";
+string startString = "Voulez-vous débuter un nouvel eukaryotz? o pour débuter.";
 bool displayStartGame()
 {
     string spaces = spaceString(startString.size());
@@ -113,7 +113,7 @@ bool displayStartGame()
             cout << "Je n'ai pas compris, pouvez-vous répéter? ";
         }
         moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 2);
-        cout << "Voulez-vous débuter un nouvel eukaryotz? O pour débuter.";
+        cout << "Voulez-vous débuter un nouvel eukaryotz? o pour débuter.";
         moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 2);
         cin >> userStart;
         clearCin();
@@ -407,6 +407,23 @@ void drawBlobs()
     }
 }
 
+/**
+Ajoute du spacing
+@param int lines Nombre de fois que move cursor sera appele
+@param int sizeY position Y
+@param int sizeX position X
+@param xOffset(optional) si n'est pas spécifier il reste a 1
+*/
+void addSpacing(int lines, int sizeY, int sizeX, int xOffset = 1)
+{
+    string spaces = spaceString(sizeX);
+
+    for (int i = 1; i <= lines; i++) {
+        moveCursor(vSize / 2 + sizeY / 2 + i, hSize / 2 - sizeX / 2 + xOffset);
+        cout << spaces;
+    }
+}
+
 int main()
 {
 #if _WIN32 || _WIN64
@@ -460,25 +477,29 @@ int main()
 
             string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Eukaryotz: (points restants  )";
             string spaces = spaceString(longestString.size());
-            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
 
+            addSpacing(9, logo.size(), longestString.size());
+
+            //moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+
+         
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
             moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 2);
@@ -528,24 +549,25 @@ int main()
             pointsLeft -= pointsUsed;
             protLife += pointsUsed;
 
-            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
+            addSpacing(9, logo.size(), longestString.size());
+            //moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
 
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
@@ -597,25 +619,25 @@ int main()
             protSpeed += pointsUsed;
 
             //Strength
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
+            addSpacing(9, logo.size(), longestString.size());
+            //moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
 
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
@@ -666,24 +688,25 @@ int main()
             pointsLeft -= pointsUsed;
             protStrength += pointsUsed;
             
-            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
-            moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
-            cout << spaces;
+            addSpacing(9, logo.size(), longestString.size());
+            //moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 6, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
+            //moveCursor(vSize / 2 + logo.size() / 2 + 9, hSize / 2 - longestString.size() / 2 + 1);
+            //cout << spaces;
 
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
