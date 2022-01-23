@@ -5,6 +5,7 @@
 #include "asciiCollectables.h"
 #include "asciiMonsters.h"
 #include "asciiMaps.h"
+#include "asciiMap1.h"
 #include <Windows.h>
 
 using namespace BdB;
@@ -15,6 +16,8 @@ int vSize = 60;
 int vOffset = 0;
 int hOffset = 0;
 int lineSize = 2000;
+array<string, 2> bgColor = { "\x1b[48;5;230m","\x1b[48;5;231m" };
+array<string, 200> currentMap;
 
 //variables utilisées pour l'eukaryotz
 string protName;
@@ -46,6 +49,48 @@ void clearCin()
 {
     cin.clear();
     cin.ignore(120, '\n');
+}
+
+array<string, 200> buildRandomMap()
+{
+    int threshold = 100;
+    array<string,200> newMap;
+    string newLine = "";
+    string lastLine = "";
+    array<int, 2000> cellThreshold = {};
+    array<int, 2000> cellThresholdLastLine = {};
+    int distancer = 10;
+
+    for (int i = 0; i < 200; ++i)
+    {
+        newLine = "";
+        for (int i = 0; i < 1999; ++i)
+        {
+            if (i != 0)
+                threshold -= cellThreshold[i - 1] * 4;
+            threshold -= cellThresholdLastLine[i] * 30;
+            threshold = threshold <= 0 ? 5 : threshold;
+            if (rand() % threshold == threshold - 1 && distancer > 0)
+            {
+                cellThreshold[i] += 1;
+                newLine += "1";
+                distancer -= 1;
+                threshold = 100;
+            }
+            else
+            {
+                cellThreshold[i] += 0;
+                newLine += ".";
+                threshold -= 1;
+                distancer -= 1;
+            }
+            distancer = distancer < -30 ? 10 : distancer;
+        }
+        newMap[i] = newLine;
+        lastLine = newLine;
+        cellThresholdLastLine = cellThreshold;
+    }
+    return newMap;
 }
 
 //fonction pour demander a l'usager si il veut commencer une nouvelle partie
@@ -213,14 +258,21 @@ bool drawMap(char &nextMove)
     vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
     hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
     system("cls");
-    for (int imap = ((maps.size() / 2) - (vSize / 2)) + vOffset; imap < ((maps.size() / 2) + (vSize / 2)) + vOffset; ++imap)
+    for (int imap = ((currentMap.size() / 2) - (vSize / 2)) + vOffset; imap < ((currentMap.size() / 2) + (vSize / 2)) + vOffset; ++imap)
     {
-        string line = maps[imap];
+        string line = currentMap[imap];
         lineSize = line.size() + 1;
         string newLine;
         for (int iLine = 0; iLine < hSize; ++iLine)
         {
             newLine += line[(lineSize / 2) - (hSize / 2) + iLine + hOffset];
+            /*for (int i = 0; i < newLine.size(); ++i)
+            {
+                if (newLine[i] == '.')
+                    cout << "\x1b[48;5;230m ";
+                if (newLine[i] == '1')
+                    cout << "\x1b[48;5;231m ";
+            }*/
         }
         cout << newLine << endl;
     }
@@ -252,13 +304,13 @@ void drawMonsters()
     {
         int h = monstersPosition[i * 2];
         int v = monstersPosition[(i * 2) + 1];
-        int monsterVOffset = (maps.size() / 2) - (vSize / 2);
+        int monsterVOffset = (currentMap.size() / 2) - (vSize / 2);
         int monsterHOffset = (lineSize / 2) - (hSize / 2);
         int monsterStr = monstersStrength[i * 2];
         int monsterHP = monstersHealth[i * 2];
         moveCursor(1, 1);
-        cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
-        if (v > ((maps.size() / 2) - (vSize / 2)) && v < ((maps.size() / 2) + (vSize / 2)))
+        //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        if (v > ((currentMap.size() / 2) - (vSize / 2)) && v < ((currentMap.size() / 2) + (vSize / 2)))
         {
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
@@ -307,7 +359,7 @@ void positionBlobs()
     for (int i = 0; i < blobsNumber; ++i)
     {
         int h = rand() % lineSize;
-        int v = rand() % maps.size();
+        int v = rand() % currentMap.size();
         blobsPosition[i * 2] = h;
         blobsPosition[(i * 2) + 1] = v;
     }
@@ -319,11 +371,12 @@ void drawBlobs()
     {
         int h = blobsPosition[i * 2];
         int v = blobsPosition[(i * 2) + 1];
-        int blobVOffset = (maps.size() / 2) - (vSize / 2);
+        int blobVOffset = (currentMap.size() / 2) - (vSize / 2);
         int blobHOffset = (lineSize / 2) - (hSize / 2);
-        moveCursor(1, 1);
-        //cout << v << " " << ((maps.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
-        if (v > ((maps.size() / 2) - (vSize / 2)) && v < ((maps.size() / 2) + (vSize / 2)))
+        moveCursor(2 + i, 1);
+        //cout << currentMap.size() << " " << lineSize << endl;
+        //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        if (v > ((currentMap.size() / 2) - (vSize / 2)) && v < ((currentMap.size() / 2) + (vSize / 2)))
         {
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
@@ -364,6 +417,7 @@ int main()
     //positionnement des acteurs
     positionBlobs();
     positionMonsters();
+    currentMap = buildRandomMap();
 
     cout << "Assurez-vous que votre écran de terminal soit maximisé.\n"
         << "Appuyez sur S pour skipper l'intro ou une autre touche pour le voir et appuyez sur Entrée.\n";
