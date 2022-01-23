@@ -377,16 +377,16 @@ void drawBlobs()
         int blobVOffset = (currentMap.size() / 2) - (vSize / 2);
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(2 + i, 1);
-        ##cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((currentMap.size() / 2) - (vSize / 2)) && v < ((currentMap.size() / 2) + (vSize / 2)))
         {
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
                 //determine if blob has been eaten by the eukaryotz
-                moveCursor(3, 1);
-                cout << (v - blobVOffset - vOffset);
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
+                    moveCursor(3, 1);
+                    cout << (v - blobVOffset - vOffset);
                     if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
                     {
                         moveCursor(4, 1);
@@ -396,6 +396,14 @@ void drawBlobs()
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                         protInvQty[0] += 1;
                         cout << "Slurp!! +1 (" << protInvQty[0] << ")";
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 2; ++i)
+                        {
+                            moveCursor(v + i - blobVOffset - vOffset, h - blobHOffset - hOffset);
+                            cout << BlobASmall[i];
+                        }
                     }
                 }
                 else
@@ -663,7 +671,7 @@ int main()
             drawMap(nextMove);
             inMap = drawEukaryotz();
             drawBlobs();
-            drawMonsters();
+            //drawMonsters();
             cout << ESC + (to_string(vSize + 1) + ";1H");
             cout << "w,a,s,d suivi de la touche Entrer pour faire votre prochain mouvement.";
             cin >> nextMove;
