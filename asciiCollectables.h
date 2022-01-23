@@ -3,8 +3,8 @@
 using namespace std;
 
 const array<string,2> BlobASmall = {
-    u8"\x1b[48;5;76m\x1b[38;5;15m/‾\\\x1b[m\n",
-    u8"\x1b[48;5;76m\x1b[38;5;15m\\_/\x1b[m\n"
+    "\x1b[48;5;76m\x1b[38;5;15m/¯\\\x1b[m\n",
+    "\x1b[48;5;76m\x1b[38;5;15m\\_/\x1b[m\n"
 };
 //for (int i = 0; i < BlobASmall.size(); ++i)
     //cout << BlobASmall[i];

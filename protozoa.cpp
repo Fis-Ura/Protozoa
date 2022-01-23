@@ -374,19 +374,20 @@ void drawBlobs()
         int blobVOffset = (currentMap.size() / 2) - (vSize / 2);
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(2 + i, 1);
-        //cout << currentMap.size() << " " << lineSize << endl;
-        //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        ##cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((currentMap.size() / 2) - (vSize / 2)) && v < ((currentMap.size() / 2) + (vSize / 2)))
         {
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
                 //determine if blob has been eaten by the eukaryotz
                 moveCursor(3, 1);
-                //cout << (v - blobVOffset - vOffset);
+                cout << (v - blobVOffset - vOffset);
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
                     if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
                     {
+                        moveCursor(4, 1);
+                        cout << (v - blobVOffset - vOffset);
                         blobsPosition[i * 2] = 0;
                         blobsPosition[(i * 2) + 1] = 0;
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
