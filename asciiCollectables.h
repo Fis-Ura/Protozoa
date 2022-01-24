@@ -2,6 +2,8 @@
 
 using namespace std;
 
+//le charactère '¯' et 'Ō' demande un implémentation utf-8 pour fonctionner dans le terminal windows.
+
 const array<string,2> BlobASmall = {
     "\x1b[48;5;76m\x1b[38;5;15m/¯\\\x1b[m\n",
     "\x1b[48;5;76m\x1b[38;5;15m\\_/\x1b[m\n"
