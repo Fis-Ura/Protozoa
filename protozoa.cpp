@@ -46,6 +46,23 @@ string spaceString(int length)
     return spaces;
 }
 
+/**
+Ajoute du spacing
+@param int lines Nombre de fois que move cursor sera appele
+@param int sizeY position Y
+@param int sizeX position X
+@param xOffset(optional) si n'est pas spécifier il reste a 1
+*/
+void addSpacing(int lines, int sizeY, int sizeX, int xOffset = 1)
+{
+    string spaces = spaceString(sizeX);
+
+    for (int i = 1; i <= lines; i++) {
+        moveCursor(vSize / 2 + sizeY / 2 + i, hSize / 2 - sizeX / 2 + xOffset);
+        cout << spaces;
+    }
+}
+
 void clearCin()
 {
     cin.clear();
@@ -257,23 +274,25 @@ bool drawEukaryotz()
 
 bool drawMap(char &nextMove)
 {
-
+    int firstLine = ((int(currentMap.size()) / 2) - int((vSize) / 2));
     vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
     hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
     system("cls");
     cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte 
-    for (int imap = ((currentMap.size() / 2) - (vSize / 2)) + vOffset; imap < ((currentMap.size() / 2) + (vSize / 2)) + vOffset; ++imap)
+    for (int imap = ((int(currentMap.size()) / 2) - (vSize / 2)) + vOffset; imap < ((int(currentMap.size()) / 2) + (vSize / 2)) + vOffset; ++imap)
     {
         string line;
-        if (imap > currentMap.size() - 1 || imap < 60)
+        if (imap < 0 || imap >= int(currentMap.size()) - 1)
             line = spaceString(lineSize);
         else
             line = currentMap[imap];
-        lineSize = line.size() + 1;
         string newLine;
         for (int iLine = 0; iLine < hSize; ++iLine)
         {
-            newLine += line[(lineSize / 2) - (hSize / 2) + iLine + hOffset];
+            if (((int(line.size()) / 2) - (hSize / 2) + iLine + hOffset) < 0 || ((int(line.size()) / 2) - (hSize / 2) + iLine + hOffset) > int(line.size()) - 1)
+                newLine += ' ';
+            else
+                newLine += line[(int(line.size()) / 2) - (hSize / 2) + iLine + hOffset];
             /*for (int i = 0; i < newLine.size(); ++i)
             {
                 if (newLine[i] == '.')
@@ -284,6 +303,26 @@ bool drawMap(char &nextMove)
         }
         cout << newLine << endl;
     }
+    moveCursor(3, 1);
+    cout << "                  ";
+    moveCursor(3, 1);
+    cout << "test: " << firstLine;
+    moveCursor(4, 1);
+    cout << "                  ";
+    moveCursor(4, 1);
+    cout << "vOffset: " << vOffset;
+    moveCursor(5, 1);
+    cout << "                  ";
+    moveCursor(5, 1);
+    cout << "map # lines" << currentMap.size();
+    moveCursor(6, 1);
+    cout << "                  ";
+    moveCursor(6, 1);
+    cout << "map line length: " << lineSize;
+    moveCursor(7, 1);
+    cout << "                  ";
+    moveCursor(8, 1);
+    cout << "display size h: " << hSize;
     return true;
 }
 
@@ -421,23 +460,6 @@ void drawBlobs()
                 }
             }
         }
-    }
-}
-
-/**
-Ajoute du spacing
-@param int lines Nombre de fois que move cursor sera appele
-@param int sizeY position Y
-@param int sizeX position X
-@param xOffset(optional) si n'est pas spécifier il reste a 1
-*/
-void addSpacing(int lines, int sizeY, int sizeX, int xOffset = 1)
-{
-    string spaces = spaceString(sizeX);
-
-    for (int i = 1; i <= lines; i++) {
-        moveCursor(vSize / 2 + sizeY / 2 + i, hSize / 2 - sizeX / 2 + xOffset);
-        cout << spaces;
     }
 }
 
@@ -676,7 +698,7 @@ int main()
             drawMap(nextMove);
             inMap = drawEukaryotz();
             drawBlobs();
-            //drawMonsters();
+            drawMonsters();
             cout << ESC + (to_string(vSize + 1) + ";1H");
             cout << "w,a,s,d pour faire vous déplacer.";
             nextMove = _getch();
