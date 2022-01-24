@@ -302,7 +302,7 @@ bool drawMap(char &nextMove)
             }*/
         }
         cout << newLine << endl;
-    }
+    }/*
     moveCursor(3, 1);
     cout << "                  ";
     moveCursor(3, 1);
@@ -322,7 +322,7 @@ bool drawMap(char &nextMove)
     moveCursor(7, 1);
     cout << "                  ";
     moveCursor(8, 1);
-    cout << "display size h: " << hSize;
+    cout << "display size h: " << hSize;*/
     return true;
 }
 
@@ -336,7 +336,7 @@ void positionMonsters()
     for (int i = 0; i < monstersNumber; ++i)
     {
         //int h = 1 + (rand() % lineSize);
-        int h = 1030;
+        int h = 460;
         int v = 90;
         monstersPosition[i * 2] = h;
         monstersPosition[(i * 2) + 1] = v;
@@ -351,13 +351,13 @@ void drawMonsters()
     {
         int h = monstersPosition[i * 2];
         int v = monstersPosition[(i * 2) + 1];
-        int monsterVOffset = (currentMap.size() / 2) - (vSize / 2);
+        int monsterVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
         int monsterHOffset = (lineSize / 2) - (hSize / 2);
         int monsterStr = monstersStrength[i * 2];
         int monsterHP = monstersHealth[i * 2];
         moveCursor(1, 1);
         //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
-        if (v > ((currentMap.size() / 2) - (vSize / 2)) && v < ((currentMap.size() / 2) + (vSize / 2)))
+        if (v > ((int(currentMap.size()) / 2) - (vSize / 2)) && v < ((int(currentMap.size()) / 2) + (vSize / 2)))
         {
             if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
             {
