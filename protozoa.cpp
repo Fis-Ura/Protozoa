@@ -404,10 +404,10 @@ void drawMonsters()
     }
 }
 
+int blobsNumber = 25 + (rand() % 26);
 array<int, 100> blobsPosition;
 void positionBlobs()
 {
-    int blobsNumber = 25 + (rand() % 26);
     for (int i = 0; i < blobsNumber; ++i)
     {
         int h = rand() % lineSize;
@@ -417,10 +417,21 @@ void positionBlobs()
     }
 }
 
+array<int, 50> blobsSizes;
+void sizeBlobs()
+{
+    for (int i = 0; i < blobsNumber; ++i)
+    {
+        int randomSize = rand() % 6;
+        blobsSizes[i] = randomSize;
+    }
+}
+
 void drawBlobs()
 {
     for (int i = 0; i < 50; ++i)
     {
+        int randomSize = rand() % 6;
         int h = blobsPosition[i * 2];
         int v = blobsPosition[(i * 2) + 1];
         int blobVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
@@ -442,25 +453,54 @@ void drawBlobs()
                         cout << (v - blobVOffset - vOffset);
                         blobsPosition[i * 2] = 0;
                         blobsPosition[(i * 2) + 1] = 0;
+                        int blobWorth = blobsSizes[i];
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
-                        protInvQty[0] += 1;
-                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Slurp!! +1 (" << protInvQty[0] << ")";
+                        protInvQty[0] += blobWorth;
+                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Slurp!! +" << blobWorth << " (" << protInvQty[0] << ")";
                     }
                     else
                     {
-                        for (int i = 0; i < 2; ++i)
+                        for (int iLine = 0; iLine < 2; ++iLine)
                         {
-                            moveCursor(v + i - blobVOffset - vOffset, h - blobHOffset - hOffset);
-                            cout << BlobASmall[i];
+                            moveCursor(v + iLine - blobVOffset - vOffset, h - blobHOffset - hOffset);
+                            switch (blobsSizes[i])
+                            {
+                            case 0:
+                            case 1:
+                            case 2:
+                                cout << BlobASmall[iLine];
+                                break;
+                            case 3:
+                            case 4:
+                                cout << BlobBSmall[iLine];
+                                break;
+                            case 5:
+                                cout << BlobAmedium[iLine];
+                                break;
+                            }
                         }
                     }
                 }
                 else
                 {
-                    for (int i = 0; i < 2; ++i)
+                    for (int iLine = 0; iLine < 2; ++iLine)
                     {
-                        moveCursor(v + i - blobVOffset - vOffset, h - blobHOffset - hOffset);
-                        cout << BlobASmall[i];
+                        moveCursor(v + iLine - blobVOffset - vOffset, h - blobHOffset - hOffset);
+                        switch (blobsSizes[i])
+                        {
+                        case 0:
+                        case 1:
+                        case 2:
+                            cout << BlobASmall[iLine];
+                            break;
+                        case 3:
+                        case 4:
+                            cout << BlobBSmall[iLine];
+                            break;
+                        case 5:
+                            cout << BlobAmedium[iLine];
+                            break;
+                        }
                     }
                 }
             }
@@ -476,8 +516,9 @@ int main()
     system("cls");
 #endif
     srand(time(0));
-    //positionnement des acteurs
+    //positionnement et initialisation des acteurs
     positionBlobs();
+    sizeBlobs();
     positionMonsters();
     currentMap = buildRandomMap();
 
