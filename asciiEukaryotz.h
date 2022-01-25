@@ -1,4 +1,4 @@
-#include "Code_Utilities.h"
+﻿#include "Code_Utilities.h"
 
 using namespace std;
 
@@ -63,3 +63,27 @@ const array<string, 18> ProtagAlarge = {
     "\x1b[48;5;234m\x1b[38;5;76m..................\x1b[48;5;76m    \x1b[48;5;234m\x1b[38;5;76m..............\x1b[m\n" };
     //for (int i = 0; i < ProtagAlarge.size(); ++i)
         //cout << ProtagAlarge[i];
+
+const array<string, 22> Inventory = {
+        R"(┌─────────────────┬──────────────────────┬────────────────────┐)",
+        R"(│                 │                      │                    │)",
+        R"(│ 1: Evolution Vie│ 2: Evolution Vitesse │ 3: Evolution Force │)",
+        R"(│     2x Calories │       2x Calories    │     2x Calories    │)",
+        R"(│                 │                      │                    │)",
+        R"(├─────────────────┴──────────────────────┴────────────────────┤)",
+        R"(│                                                             │)",
+        R"(│   Point de Vie:                                             │)",
+        R"(│                                                             │)",
+        R"(│   Point de Force:                                           │)",
+        R"(│                                                             │)",
+        R"(│   Point de Vitesse:                                         │)",
+        R"(│                                                             │)",
+        R"(│   Calories accumulees:                                      │)",
+        R"(│                                                             │)",
+        R"(│   Choisissez votre chemin evolutif                          │)",
+        R"(│   Appuyez sur 1, 2 ou 3 pour faire votre choix              │)",
+        R"(│   ou Q pour quitter.                                        │)",
+        R"(│                                                             │)",
+        R"(│                                                             │)",
+        R"(│                                                             │)",
+        R"(└─────────────────────────────────────────────────────────────┘)"};

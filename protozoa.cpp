@@ -25,6 +25,8 @@ string protName;
 int protWidth = 16;
 int protHeight = 11;
 int protLife;
+int protLifeMax;
+bool protRegen;
 int protSpeed;
 int protStrength;
 int protCalories;
@@ -266,68 +268,21 @@ bool drawEukaryotz()
     int hPos = hSize / 2 - protWidth / 2;
     int vPos = vSize / 2 - protHeight / 2;
 
-
     for (int i = 0; i < ProtagAsmall.size(); ++i)
     {
         moveCursor(vPos + i,hPos);
         cout << ProtagAsmall[i];
     }
 
-    return true;
-}
-
-bool drawMap(char &nextMove)
-{
-    int firstLine = ((int(currentMap.size()) / 2) - int((vSize) / 2));
-    vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
-    hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
-    system("cls");
-    cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte et le reste du jeux.
-
-    for (int imap = ((int(currentMap.size()) / 2) - (vSize / 2)) + vOffset; imap < ((int(currentMap.size()) / 2) + (vSize / 2)) + vOffset; ++imap)
+    //if prot doesn't attack he can regenerate
+    if (protLife < protLifeMax && protInvQty[0] > 0 && protRegen)
     {
-        string line;
-        if (imap < 0 || imap >= int(currentMap.size()) - 1)
-            line = spaceString(lineSize);
-        else
-            line = currentMap[imap];
-        string newLine;
-        for (int iLine = 0; iLine < hSize; ++iLine)
-        {
-            if (((int(line.size()) / 2) - (hSize / 2) + iLine + hOffset) < 0 || ((int(line.size()) / 2) - (hSize / 2) + iLine + hOffset) > int(line.size()) - 1)
-                newLine += ' ';
-            else
-                newLine += line[(int(line.size()) / 2) - (hSize / 2) + iLine + hOffset];
-            /*for (int i = 0; i < newLine.size(); ++i)
-            {
-                if (newLine[i] == '.')
-                    cout << "\x1b[48;5;230m ";
-                if (newLine[i] == '1')
-                    cout << "\x1b[48;5;231m ";
-            }*/
-        }
-        cout << newLine << endl;
-    }/*
-    moveCursor(3, 1);
-    cout << "                  ";
-    moveCursor(3, 1);
-    cout << "test: " << firstLine;
-    moveCursor(4, 1);
-    cout << "                  ";
-    moveCursor(4, 1);
-    cout << "vOffset: " << vOffset;
-    moveCursor(5, 1);
-    cout << "                  ";
-    moveCursor(5, 1);
-    cout << "map # lines" << currentMap.size();
-    moveCursor(6, 1);
-    cout << "                  ";
-    moveCursor(6, 1);
-    cout << "map line length: " << lineSize;
-    moveCursor(7, 1);
-    cout << "                  ";
-    moveCursor(8, 1);
-    cout << "display size h: " << hSize;*/
+        protLife += 1;
+        protInvQty[0] -= 1;
+        moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+        cout << "calories(" << protInvQty[0] << ") for life(" << protLife << ")";
+    }
+
     return true;
 }
 
@@ -388,6 +343,7 @@ void drawMonsters()
                             protLife -= 1;
                             cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
                         }
+                        protRegen = false;
                     }
                 }
 
@@ -455,8 +411,8 @@ void drawBlobs()
                         blobsPosition[(i * 2) + 1] = 0;
                         int blobWorth = blobsSizes[i];
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
-                        protInvQty[0] += blobWorth;
-                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Slurp!! +" << blobWorth << " (" << protInvQty[0] << ")";
+                        protInvQty[0] += blobWorth + 1;
+                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Slurp!! +" << (blobWorth + 1) << " (" << protInvQty[0] << ")";
                     }
                     else
                     {
@@ -506,6 +462,83 @@ void drawBlobs()
             }
         }
     }
+}
+
+bool drawMap(char& nextMove)
+{
+    if (nextMove != 'i' && nextMove != 'I')
+    {
+        int firstLine = ((int(currentMap.size()) / 2) - int((vSize) / 2));
+        vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
+        hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
+        system("cls");
+        cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte et le reste du jeux.
+
+        for (int imap = ((int(currentMap.size()) / 2) - (vSize / 2)) + vOffset; imap < ((int(currentMap.size()) / 2) + (vSize / 2)) + vOffset; ++imap)
+        {
+            string line;
+            if (imap < 0 || imap >= int(currentMap.size()) - 1)
+                line = spaceString(lineSize);
+            else
+                line = currentMap[imap];
+            string newLine;
+            for (int iLine = 0; iLine < hSize; ++iLine)
+            {
+                if (((int(line.size()) / 2) - (hSize / 2) + iLine + hOffset) < 0 || ((int(line.size()) / 2) - (hSize / 2) + iLine + hOffset) > int(line.size()) - 1)
+                    newLine += ' ';
+                else
+                    newLine += line[(int(line.size()) / 2) - (hSize / 2) + iLine + hOffset];
+                /*for (int i = 0; i < newLine.size(); ++i)
+                {
+                    if (newLine[i] == '.')
+                        cout << "\x1b[48;5;230m ";
+                    if (newLine[i] == '1')
+                        cout << "\x1b[48;5;231m ";
+                }*/
+            }
+            cout << newLine << endl;
+        }/*
+        moveCursor(3, 1);
+        cout << "                  ";
+        moveCursor(3, 1);
+        cout << "test: " << firstLine;
+        moveCursor(4, 1);
+        cout << "                  ";
+        moveCursor(4, 1);
+        cout << "vOffset: " << vOffset;
+        moveCursor(5, 1);
+        cout << "                  ";
+        moveCursor(5, 1);
+        cout << "map # lines" << currentMap.size();
+        moveCursor(6, 1);
+        cout << "                  ";
+        moveCursor(6, 1);
+        cout << "map line length: " << lineSize;
+        moveCursor(7, 1);
+        cout << "                  ";
+        moveCursor(8, 1);
+        cout << "display size h: " << hSize;*/
+    }
+    drawBlobs();
+    drawMonsters();
+    if (nextMove == 'i' || nextMove == 'I')
+    {
+        cout << Inventory.size() << " " << Inventory[0].size();
+        for (int i = 0; i < Inventory.size(); ++i)
+        {
+            moveCursor(12 + i, 16);
+            cout << Inventory[i];
+        }
+        moveCursor(12 + 7, 16 + 25);
+        cout << protLife << " / " << protLifeMax;
+        moveCursor(12 + 9, 16 + 25);
+        cout << protStrength;
+        moveCursor(12 + 11, 16 + 25);
+        cout << protSpeed;
+        moveCursor(12 + 13, 16 + 25);
+        cout << protInvQty[0];
+    }
+    return true;
 }
 
 int main()
@@ -737,14 +770,14 @@ int main()
             clearCin();
             pointsAreGood = validCarac == 'o' || validCarac == 'O' ? true : false;
         }
+        protLifeMax = protLife;
 
         bool inMap = true;
         while (inMap)
         {
+            protRegen = true;
             drawMap(nextMove);
             inMap = drawEukaryotz();
-            drawBlobs();
-            drawMonsters();
             cout << ESC + (to_string(vSize + 1) + ";1H");
             cout << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire.";
             nextMove = _getch();
