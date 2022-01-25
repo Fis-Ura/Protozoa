@@ -4,8 +4,8 @@
 #include "asciiEukaryotz.h"
 #include "asciiCollectables.h"
 #include "asciiMonsters.h"
-#include "asciiMaps.h"
-#include "asciiMap1.h"
+//#include "asciiMaps.h"
+//#include "asciiMap1.h"
 #include <Windows.h>
 #include <conio.h>
 
@@ -17,7 +17,7 @@ int vSize = 60;
 int vOffset = 0;
 int hOffset = 0;
 int lineSize = 800;
-array<string, 2> bgColor = { "\x1b[48;5;230m","\x1b[48;5;231m" };
+//array<string, 2> bgColor = { "\x1b[48;5;2 30m","\x1b[48;5;231m" };
 array<string, 200> currentMap;
 
 //variables utilisées pour l'eukaryotz
@@ -27,8 +27,9 @@ int protHeight = 11;
 int protLife;
 int protSpeed;
 int protStrength;
-array<string, 10> protInvNames = { "Blobs" };
-array<int, 10> protInvQty = { 0 };
+int protCalories;
+array<string, 10> protInvNames = { "Calories", "Life", "Speed", "Strength" };
+array<int, 10> protInvQty = { 0, 0 , 0 , 0 };
 char nextMove;
 
 void moveCursor(int v, int h)
@@ -113,30 +114,31 @@ array<string, 200> buildRandomMap()
 
 //fonction pour demander a l'usager si il veut commencer une nouvelle partie
 string startString = "Voulez-vous débuter un nouvel eukaryotz? o pour débuter.";
+int longestString = startString.size();
 bool displayStartGame()
 {
     string spaces = spaceString(startString.size());
     char userStart = -1;
     while (userStart != 'o' && userStart != 'O' && userStart != 'n' && userStart != 'N')
     {
-        moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startString.size() / 2 + 1);
+        moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
         cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 1);
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
         cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 1);
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 1);
         cout << spaces;
         if (userStart != -1)
         {
-            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startString.size() / 2 + 1);
+            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
             cout << "Je n'ai pas compris, pouvez-vous répéter? ";
         }
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 2);
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 2);
         cout << "Voulez-vous débuter un nouvel eukaryotz? o pour débuter.";
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 2);
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 2);
         cin >> userStart;
         clearCin();
     }
-    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 1);
+    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
     cout << spaces;
     bool startGame = userStart == 'o' || userStart == 'O' ? true : false;
     return startGame;
@@ -145,12 +147,12 @@ bool displayStartGame()
 string enterName()
 {
     string startName = "En tant qu'Eukaryotz, quel sera votre nom?";
-    string spaces = spaceString(startName.size());
-    moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startString.size() / 2 + 1);
+    string spaces = spaceString(longestString);
+    moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
     cout << spaces;
-    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startString.size() / 2 + 1);
+    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
     cout << spaces;
-    moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startString.size() / 2 + 1);
+    moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 1);
     cout << spaces;
 
     moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startName.size() / 2 + 2);
@@ -170,20 +172,21 @@ void startNameValidation() {
     {
         string testName = enterName();
         string startNameFinalValidate = "Votre Eukaryotz se nomme bien " + testName + "? Tappez o pour oui.";
+        longestString = startNameFinalValidate.size() > longestString ? startNameFinalValidate.size() : longestString;
         string spaces = spaceString(startNameFinalValidate.size());
 
-        moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - startNameFinalValidate.size() / 2 + 1);
+        moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
         cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startNameFinalValidate.size() / 2 + 1);
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
         cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startNameFinalValidate.size() / 2 + 1);
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 1);
         cout << spaces;
 
 
         char validateName;
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startNameFinalValidate.size() / 2 + 2);
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 2);
         cout << startNameFinalValidate;
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startNameFinalValidate.size() / 2 + 2);
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 2);
         cin >> validateName;
         clearCin();
         nameIsGood = validateName == 'O' || validateName == 'o' ? true : false;
@@ -250,7 +253,7 @@ void displayIntro(int framesPlayed, bool skipIntro)
                     cout << logo[i];
                 }
             }
-            Sleep(100);
+            Sleep(75);
             if (i != framesPlayed - 1)
                 system("cls");
         }
@@ -262,6 +265,7 @@ bool drawEukaryotz()
     //draw an idle Eukaryotz in the center
     int hPos = hSize / 2 - protWidth / 2;
     int vPos = vSize / 2 - protHeight / 2;
+
 
     for (int i = 0; i < ProtagAsmall.size(); ++i)
     {
@@ -341,7 +345,7 @@ void positionMonsters()
         int v = 90;
         monstersPosition[i * 2] = h;
         monstersPosition[(i * 2) + 1] = v;
-        monstersHealth[i * 2] = 2;
+        monstersHealth[i * 2] = 4;
         monstersStrength[i * 2] = 3;
     }
 }
@@ -358,9 +362,9 @@ void drawMonsters()
         int monsterHP = monstersHealth[i * 2];
         moveCursor(1, 1);
         //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
-        if (v > ((int(currentMap.size()) / 2) - (vSize / 2)) && v < ((int(currentMap.size()) / 2) + (vSize / 2)))
+        if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
         {
-            if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
+            if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
                 //determine if monster has been attacked by the eukaryotz
                 moveCursor(3, 1);
@@ -369,30 +373,30 @@ void drawMonsters()
                 {
                     if ((h - monsterHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - monsterHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
                     {
-                        monstersPosition[i * 2] = 0;
-                        monstersPosition[(i * 2) + 1] = 0;
+                        /*monstersPosition[i * 2] = 0;
+                        monstersPosition[(i * 2) + 1] = 0;*/
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                         int protAttack = (protStrength + 1) + rand() % 6;
                         int monsterAttack = (monsterStr + 1) + rand() % 6;
                         if (protAttack >= monsterAttack)
                         {
                             monsterHP -= 1;
-                            cout << "Bang!!";
+                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Bang!!";
                         }
                         else
                         {
                             protLife -= 1;
-                            cout << "Ouch!! (" << protLife << ")";
+                            cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
                         }
                     }
                 }
 
                 if(monsterHP > 0)
                 {
-                    for (int i = 0; i < monsterAsmall.size(); ++i)
+                    for (int i = 0; i < monsterAbig.size(); ++i)
                     {
                         moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
-                        cout << monsterAsmall[i];
+                        cout << monsterAbig[i];
                     }
                 }
             }
@@ -419,13 +423,13 @@ void drawBlobs()
     {
         int h = blobsPosition[i * 2];
         int v = blobsPosition[(i * 2) + 1];
-        int blobVOffset = (currentMap.size() / 2) - (vSize / 2);
+        int blobVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(2 + i, 1);
-        //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
-        if (v > ((currentMap.size() / 2) - (vSize / 2)) && v < ((currentMap.size() / 2) + (vSize / 2)))
+        //cout << v << " " << ((int(currentMap.size()) / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
+        if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
         {
-            if (h > ((lineSize / 2) - (hSize / 2)) && h < ((lineSize / 2) + (hSize / 2)))
+            if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
                 //determine if blob has been eaten by the eukaryotz
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
@@ -440,7 +444,7 @@ void drawBlobs()
                         blobsPosition[(i * 2) + 1] = 0;
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                         protInvQty[0] += 1;
-                        cout << "Slurp!! +1 (" << protInvQty[0] << ")";
+                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Slurp!! +1 (" << protInvQty[0] << ")";
                     }
                     else
                     {
@@ -701,7 +705,7 @@ int main()
             drawBlobs();
             drawMonsters();
             cout << ESC + (to_string(vSize + 1) + ";1H");
-            cout << "w,a,s,d pour faire vous déplacer.";
+            cout << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire.";
             nextMove = _getch();
         }
 
