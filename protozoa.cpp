@@ -29,9 +29,8 @@ int protLifeMax;
 bool protRegen;
 int protSpeed;
 int protStrength;
-int protCalories;
-array<string, 10> protInvNames = { "Calories", "Life", "Speed", "Strength" };
-array<int, 10> protInvQty = { 0, 0 , 0 , 0 };
+array<string, 4> protInvNames = { "Calories", "Life", "Speed", "Strength" };
+array<int, 4> protInvQty = { 0, 0, 0, 0 };
 bool protInvOpen = false;
 char nextMove;
 
@@ -522,9 +521,9 @@ bool drawMap(char& nextMove)
     }
     drawBlobs();
     drawMonsters();
-    if (nextMove == 'i' || nextMove == 'I')
+    if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
-        cout << Inventory.size() << " " << Inventory[0].size();
+        //cout << Inventory.size() << " " << Inventory[0].size();
         for (int i = 0; i < Inventory.size(); ++i)
         {
             moveCursor(12 + i, 16);
@@ -532,18 +531,64 @@ bool drawMap(char& nextMove)
         }
         moveCursor(12 + 7, 16 + 25);
         cout << protLife << " / " << protLifeMax;
+        moveCursor(12 + 7, 16 + 25 + 25);
+        cout << protInvQty[1];
         moveCursor(12 + 9, 16 + 25);
         cout << protStrength;
+        moveCursor(12 + 9, 16 + 25 + 25);
+        cout << protInvQty[3];
         moveCursor(12 + 11, 16 + 25);
         cout << protSpeed;
+        moveCursor(12 + 11, 16 + 25 + 25);
+        cout << protInvQty[2];
         moveCursor(12 + 13, 16 + 25);
         cout << protInvQty[0];
         protInvOpen = true;
     }
-    if ((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvOpen)
+    if ((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvOpen && protInvQty[0] < 5)
     {
-        moveCursor(1, 1);
-        cout << nextMove;
+        moveCursor(12 + 18, 16 + 1);
+        cout << "Vous n'avez pas assez de calories pour acheter une évolution.";
+    }
+
+    if ((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvOpen && protInvQty[0] >= 5)
+    {
+        moveCursor(12 + 18, 16 + 4);
+        cout << "Voulez-vous achetez une évolution de ";
+        if (nextMove == '1')
+        {
+            cout << "Vie?";
+            moveCursor(12 + 19, 16 + 4);
+            cout << "Appuyez sur o pour oui suivi de la touche Entrer.";
+        }
+        if (nextMove == '2')
+        {
+            cout << "Force?";
+            moveCursor(12 + 19, 16 + 4);
+            cout << "Appuyez sur o pour oui suivi de la touche Entrer.";
+        }
+        if (nextMove == '3')
+        {
+            cout << "Vitesse?";
+            moveCursor(12 + 19, 16 + 4);
+            cout << "Appuyez sur o pour oui suivi de la touche Entrer.";
+        }
+        char buyValidate;
+        cin >> buyValidate;
+        if (buyValidate == 'o' || buyValidate == 'O')
+        {
+            protInvQty[0] -= 5;
+            if (nextMove == '1')
+                protInvQty[1] += 1;
+            if (nextMove == '2')
+                protInvQty[3] += 1;
+            if (nextMove == '3')
+                protInvQty[2] += 1;
+        }
+    }
+    if((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvOpen)
+    {
+        protInvOpen = false;
     }
 
     return true;

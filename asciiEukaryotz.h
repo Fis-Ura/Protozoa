@@ -66,12 +66,12 @@ const array<string, 18> ProtagAlarge = {
 
 const array<string, 22> Inventory = {
         u8"┌─────────────────┬──────────────────────┬────────────────────┐",
-        u8"│                 │                      │                    │",
         u8"│ 1: Evolution Vie│ 2: Evolution Vitesse │ 3: Evolution Force │",
         u8"│     2x Calories │       2x Calories    │     2x Calories    │",
         u8"│                 │                      │                    │",
         u8"├─────────────────┴──────────────────────┴────────────────────┤",
         u8"│                                                             │",
+        u8"│                                              Évolution      │",
         u8"│   Point de Vie:                                             │",
         u8"│                                                             │",
         u8"│   Point de Force:                                           │",
@@ -80,10 +80,9 @@ const array<string, 22> Inventory = {
         u8"│                                                             │",
         u8"│   Calories accumulees:                                      │",
         u8"│                                                             │",
-        u8"│   Choisissez votre chemin evolutif                          │",
-        u8"│   Appuyez sur 1, 2 ou 3 pour faire votre choix              │",
-        u8"│   ou Q pour quitter.                                        │",
-        u8"│                                                             │",
+        u8"│   Choisissez votre chemin évolutif                          │",
+        u8"│   Appuyez sur 1, 2 ou 3 pour faire votre choix.             │",
+        u8"│   Déplacez votre prot pour sortir de l'inventaire.          │",
         u8"│                                                             │",
         u8"│                                                             │",
         u8"└─────────────────────────────────────────────────────────────┘"};
