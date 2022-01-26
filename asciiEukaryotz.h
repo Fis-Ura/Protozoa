@@ -67,7 +67,7 @@ const array<string, 18> ProtagAlarge = {
 const array<string, 22> Inventory = {
         u8"┌─────────────────┬──────────────────────┬────────────────────┐",
         u8"│ 1: Evolution Vie│ 2: Evolution Vitesse │ 3: Evolution Force │",
-        u8"│     2x Calories │       2x Calories    │     2x Calories    │",
+        u8"│     5x Calories │       5x Calories    │     5x Calories    │",
         u8"│                 │                      │                    │",
         u8"├─────────────────┴──────────────────────┴────────────────────┤",
         u8"│                                                             │",
