@@ -32,6 +32,7 @@ int protStrength;
 int protCalories;
 array<string, 10> protInvNames = { "Calories", "Life", "Speed", "Strength" };
 array<int, 10> protInvQty = { 0, 0 , 0 , 0 };
+bool protInvOpen = false;
 char nextMove;
 
 void moveCursor(int v, int h)
@@ -537,45 +538,12 @@ bool drawMap(char& nextMove)
         cout << protSpeed;
         moveCursor(12 + 13, 16 + 25);
         cout << protInvQty[0];
-
-        char buyEvolution;
-        cin >> buyEvolution;
-        clearCin();
-        string buyString;
-        int evolutionBought;
-        if (buyEvolution == '1')
-        {
-            buyString = "Voulez-vous achetez une évolution de vie? o pour oui";
-            evolutionBought = 1;
-        }
-        if (buyEvolution == '2')
-        {
-            buyString = "Voulez-vous achetez une évolution de force? o pour oui";
-            evolutionBought = 3;
-        }
-        if (buyEvolution == '3')
-        {
-            buyString = "Voulez-vous achetez une évolution de vitesse? o pour oui";
-            evolutionBought = 2;
-        }
-        char buyValidate;
-        cout << buyString;
-        cin >> buyValidate;
-        if (buyValidate == 'o' || buyValidate == 'O')
-        {
-            switch (evolutionBought)
-            {
-            case 1:
-                cout << "Vie";
-                break;
-            case 2:
-                cout << "Vitesse";
-                break;
-            case 3:
-                cout << "Force";
-                break;
-            }
-        }
+        protInvOpen = true;
+    }
+    if ((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvOpen)
+    {
+        moveCursor(1, 1);
+        cout << nextMove;
     }
 
     return true;
