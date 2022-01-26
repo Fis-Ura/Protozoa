@@ -338,7 +338,10 @@ void drawMonsters()
                             {
                                 monsterHP -= 1;
                                 monstersHealth[iMonster * 2] = monsterHP;
-                                cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Bang!! (" << monsterHP << ")";
+                                string hit = string("\x1b[48;5;11m\x1b[38;5;16m") + "Bang!! (" + to_string(monsterHP) + ")";
+                                string win = string("\x1b[48;5;11m\x1b[38;5;16m") + "Miam!! (" + to_string(monsterHP) + ")";
+                                string attackresult = monsterHP <= 0 ? hit : win;
+                                cout << attackresult;
                             }
                             else
                             {
@@ -363,6 +366,9 @@ void drawMonsters()
                     monstersHealth[iMonster * 2] = monsterHP - 1;
                     if (monstersHealth[iMonster * 2] == -1)
                     {
+                        protInvQty[0] += 15;
+                        moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth/2 + 2);
+                        cout << "Mmmmm!! +15!!! (" << protInvQty[0] << ")";
                         for (int i = 0; i < int(monsterAsmall.size()); ++i)
                         {
                             moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
@@ -371,6 +377,8 @@ void drawMonsters()
                     }
                     if (monstersHealth[iMonster * 2] == -2)
                     {
+                        moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
+                        cout << "Mmmmm!! +15!! (" << protInvQty[0] << ")";
                         for (int i = 0; i < int(monsterAdyingA.size()); ++i)
                         {
                             moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
@@ -379,6 +387,8 @@ void drawMonsters()
                     }
                     if (monstersHealth[iMonster * 2] == -3)
                     {
+                        moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 1);
+                        cout << "Mmmmm!! +15! (" << protInvQty[0] << ")";
                         for (int i = 0; i < int(monsterAdyingB.size()); ++i)
                         {
                             moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
