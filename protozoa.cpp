@@ -307,14 +307,14 @@ void positionMonsters()
 
 void drawMonsters()
 {
-    for (int i = 0; i < 1; ++i)
+    for (int iMonster = 0; iMonster < 1; ++iMonster)
     {
-        int h = monstersPosition[i * 2];
-        int v = monstersPosition[(i * 2) + 1];
+        int h = monstersPosition[iMonster * 2];
+        int v = monstersPosition[(iMonster * 2) + 1];
         int monsterVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
         int monsterHOffset = (lineSize / 2) - (hSize / 2);
-        int monsterStr = monstersStrength[i * 2];
-        int monsterHP = monstersHealth[i * 2];
+        int monsterStr = monstersStrength[iMonster * 2];
+        int monsterHP = monstersHealth[iMonster * 2];
         moveCursor(1, 1);
         //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
@@ -324,26 +324,29 @@ void drawMonsters()
                 //determine if monster has been attacked by the eukaryotz
                 moveCursor(3, 1);
                 //cout << (v - blobVOffset - vOffset);
-                if ((v - monsterVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - monsterVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
-                {
-                    if ((h - monsterHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - monsterHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
+                if (monsterHP > 0) {
+                    if ((v - monsterVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - monsterVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                     {
-                        /*monstersPosition[i * 2] = 0;
-                        monstersPosition[(i * 2) + 1] = 0;*/
-                        moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
-                        int protAttack = (protStrength + 1) + rand() % 6;
-                        int monsterAttack = (monsterStr + 1) + rand() % 6;
-                        if (protAttack >= monsterAttack)
+                        if ((h - monsterHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - monsterHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
                         {
-                            monsterHP -= 1;
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Bang!!";
+                            /*monstersPosition[i * 2] = 0;
+                            monstersPosition[(i * 2) + 1] = 0;*/
+                            moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                            int protAttack = (protStrength + 1) + rand() % 6;
+                            int monsterAttack = (monsterStr + 1) + rand() % 6;
+                            if (protAttack >= monsterAttack)
+                            {
+                                monsterHP -= 1;
+                                monstersHealth[iMonster * 2] = monsterHP;
+                                cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Bang!! (" << monsterHP << ")";
+                            }
+                            else
+                            {
+                                protLife -= 1;
+                                cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
+                            }
+                            protRegen = false;
                         }
-                        else
-                        {
-                            protLife -= 1;
-                            cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
-                        }
-                        protRegen = false;
                     }
                 }
 
@@ -353,6 +356,42 @@ void drawMonsters()
                     {
                         moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
                         cout << monsterAbig[i];
+                    }
+                }
+                else
+                {
+                    monstersHealth[iMonster * 2] = monsterHP - 1;
+                    if (monstersHealth[iMonster * 2] == -1)
+                    {
+                        for (int i = 0; i < int(monsterAsmall.size()); ++i)
+                        {
+                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
+                            cout << monsterAsmall[i];
+                        }
+                    }
+                    if (monstersHealth[iMonster * 2] == -2)
+                    {
+                        for (int i = 0; i < int(monsterAdyingA.size()); ++i)
+                        {
+                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
+                            cout << monsterAdyingA[i];
+                        }
+                    }
+                    if (monstersHealth[iMonster * 2] == -3)
+                    {
+                        for (int i = 0; i < int(monsterAdyingB.size()); ++i)
+                        {
+                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
+                            cout << monsterAdyingB[i];
+                        }
+                    }
+                    if (monstersHealth[iMonster * 2] == -4)
+                    {
+                        for (int i = 0; i < int(monsterAdyingC.size()); ++i)
+                        {
+                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
+                            cout << monsterAdyingC[i];
+                        }
                     }
                 }
             }
