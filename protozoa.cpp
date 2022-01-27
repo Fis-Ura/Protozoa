@@ -264,18 +264,19 @@ void displayIntro(int framesPlayed, bool skipIntro)
 
 bool drawEukaryotz()
 {
-    //draw an idle Eukaryotz in the center
-    int hPos = hSize / 2 - protWidth / 2;
-    int vPos = vSize / 2 - protHeight / 2;
-
-    for (int i = 0; i < ProtagAsmall.size(); ++i)
+    if (protLife > 0)
     {
-        moveCursor(vPos + i,hPos);
-        cout << ProtagAsmall[i];
-    }
+        //draw an idle Eukaryotz in the center
+        int hPos = hSize / 2 - protWidth / 2;
+        int vPos = vSize / 2 - protHeight / 2;
 
-    //if prot has 0 hp, play die animation and gameover screen
-    if (protLife <= 0)
+        for (int i = 0; i < ProtagAsmall.size(); ++i)
+        {
+            moveCursor(vPos + i, hPos);
+            cout << ProtagAsmall[i];
+        }
+    }
+    else  //if prot has 0 hp, play die animation and gameover screen
     {
         --protLife;
         //play prot dying animation
@@ -312,7 +313,7 @@ bool drawEukaryotz()
             }
             for (int i = 0; i < int(logo6.size()); ++i)
             {
-                moveCursor(vSize / 2 - logo6.size() - protHeight / 2, 1);
+                moveCursor(vSize / 2 - logo6.size() - protHeight / 2, hSize/2 - logo6[1].size() / 2);
                 cout << logo6[i];
             }
         }
@@ -325,7 +326,7 @@ bool drawEukaryotz()
             }
             for (int i = 0; i < int(logo5.size()); ++i)
             {
-                moveCursor(vSize / 2 - logo5.size() - protHeight / 2 + i, 1);
+                moveCursor(vSize / 2 - logo5.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
                 cout << logo5[i];
             }
         }
@@ -333,7 +334,7 @@ bool drawEukaryotz()
         {
             for (int i = 0; i < int(logo4.size()); ++i)
             {
-                moveCursor(vSize / 2 - logo4.size() - protHeight / 2 + i, 1);
+                moveCursor(vSize / 2 - logo4.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
                 cout << logo4[i];
             }
         }
@@ -341,7 +342,7 @@ bool drawEukaryotz()
         {
             for (int i = 0; i < int(logo3.size()); ++i)
             {
-                moveCursor(vSize / 2 - logo3.size() - protHeight / 2 + i, 1);
+                moveCursor(vSize / 2 - logo3.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
                 cout << logo3[i];
             }
         }
@@ -349,7 +350,7 @@ bool drawEukaryotz()
         {
             for (int i = 0; i < int(logo2.size()); ++i)
             {
-                moveCursor(vSize / 2 - logo2.size() - protHeight / 2 + i, 1);
+                moveCursor(vSize / 2 - logo2.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
                 cout << logo2[i];
             }
         }
@@ -357,14 +358,14 @@ bool drawEukaryotz()
         {
             for (int i = 0; i < int(logo.size()); ++i)
             {
-                moveCursor(vSize / 2 - logo.size() - protHeight / 2 + i, 1);
+                moveCursor(vSize / 2 - logo.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
                 cout << logo[i];
             }
         }
     }
 
     //if prot doesn't attack he can regenerate
-    if (protLife < protLifeMax && protInvQty[0] > 0 && protRegen)
+    if (protLife < protLifeMax && protInvQty[0] > 0 && protRegen && protLife > 0)
     {
         protLife += 1;
         protInvQty[0] -= 1;
@@ -413,7 +414,7 @@ void drawMonsters()
                 //determine if monster has been attacked by the eukaryotz
                 moveCursor(3, 1);
                 //cout << (v - blobVOffset - vOffset);
-                if (monsterHP > 0) {
+                if (monsterHP > 0 && protLife > 0) {
                     if ((v - monsterVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - monsterVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                     {
                         if ((h - monsterHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - monsterHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
@@ -982,9 +983,36 @@ int main()
             protRegen = true;
             drawMap(nextMove);
             inMap = drawEukaryotz();
-            cout << ESC + (to_string(vSize + 1) + ";1H");
-            cout << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire.";
-            nextMove = _getch();
+            if (protLife > 0)
+            {
+                cout << ESC + (to_string(vSize + 1) + ";1H");
+                cout << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire.";
+                nextMove = _getch();
+            }
+            else if(protLife <= 0 && protLife > -9)
+            {
+                nextMove = 'r';
+                Sleep(250);
+            }
+            else
+            {
+                char restart;
+                string gameOverLine1 = "Vous êtes mort.";
+                string gameOverLine2 = "L'histoire de votre espèce se termine ici, meilleure chance à la prochaine incarnation.";
+                string gameOverLine3 = "Appuyez sur q pour quitter Protozoa ou r pour renaître.";
+                moveCursor(vSize / 2 - 2, hSize / 2 - gameOverLine1.size() / 2);
+                cout << gameOverLine1;
+                Sleep(1000);
+                moveCursor(vSize / 2 - 2 + 1, hSize / 2 - gameOverLine2.size() / 2);
+                cout << gameOverLine2;
+                Sleep(1000);
+                moveCursor(vSize / 2 - 2 + 2, hSize / 2 - gameOverLine3.size() / 2);
+                cout << gameOverLine3;
+                Sleep(1000);
+                restart = _getch();
+                if(restart == 'q')
+                    inMap = false;
+            }
         }
 
         startGame = false;
