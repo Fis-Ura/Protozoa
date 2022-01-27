@@ -13,6 +13,7 @@
 using namespace BdB;
 
 //variables utilisées pour la carte
+bool userQuit = false;
 int hSize = 200;
 int vSize = 60;
 int vOffset = 0;
@@ -422,6 +423,49 @@ bool drawEukaryotz()
         }
     }
 
+    //if prot is evolving and has calories, he has to pay everything until evolution done or no calories left
+    int evoluting;
+    int evolutionETA = 0;
+    if (protInvQty[1] > 0)
+    {
+        evoluting = 1;
+        evolutionETA = protInvQty[1];
+    }
+    if (protInvQty[2] > 0)
+    {
+        evoluting = 2;
+        evolutionETA = protInvQty[2];
+    }
+    if (protInvQty[3] > 0)
+    {
+        evoluting = 3;
+        evolutionETA = protInvQty[3];
+    }
+    if (evolutionETA != 0)
+    {
+        int calUsed = protInvQty[0];
+        evolutionETA -= protInvQty[0];
+        if (evolutionETA <= 0)
+        {
+            calUsed += evolutionETA;
+            if (evoluting == 1)
+            {
+                protLife += 1;
+                protLifeMax += 1;
+            }
+            if (evoluting == 2)
+            {
+                protStrength += 1;
+            }
+            if (evoluting == 3)
+            {
+                protSpeed += 1;
+            }
+        }
+        protInvQty[0] -= calUsed;
+        protInvQty[evoluting] -= calUsed;
+    }
+
     //if prot doesn't attack he can regenerate
     if (protLife < protLifeMax && protInvQty[0] > 0 && protRegen && protLife > 0)
     {
@@ -434,35 +478,36 @@ bool drawEukaryotz()
     return true;
 }
 
-array<int, 2> monstersPosition;
-array<int, 1> monstersHealth;
-array<int, 1> monstersStrength;
+array<int, 20> monstersPosition;
+array<int, 10> monstersHealth;
+array<int, 10> monstersStrength;
 
 void positionMonsters()
 {
-    int monstersNumber = 1;
+    int monstersNumber = 10;
     for (int i = 0; i < monstersNumber; ++i)
     {
-        //int h = 1 + (rand() % lineSize);
-        int h = 460;
-        int v = 90;
+        int h = 1 + (rand() % lineSize);
+        int v = 1 + (rand() % int(currentMap.size()));
+        /*int h = 460;
+        int v = 90;*/
         monstersPosition[i * 2] = h;
         monstersPosition[(i * 2) + 1] = v;
-        monstersHealth[i * 2] = 4;
-        monstersStrength[i * 2] = 3;
+        monstersHealth[i] = 4;
+        monstersStrength[i] = 3;
     }
 }
 
 void drawMonsters()
 {
-    for (int iMonster = 0; iMonster < 1; ++iMonster)
+    for (int iMonster = 0; iMonster < 10; ++iMonster)
     {
         int h = monstersPosition[iMonster * 2];
         int v = monstersPosition[(iMonster * 2) + 1];
         int monsterVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
         int monsterHOffset = (lineSize / 2) - (hSize / 2);
-        int monsterStr = monstersStrength[iMonster * 2];
-        int monsterHP = monstersHealth[iMonster * 2];
+        int monsterStr = monstersStrength[iMonster];
+        int monsterHP = monstersHealth[iMonster];
         moveCursor(1, 1);
         //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
@@ -485,10 +530,10 @@ void drawMonsters()
                             if (protAttack >= monsterAttack)
                             {
                                 monsterHP -= 1;
-                                monstersHealth[iMonster * 2] = monsterHP;
+                                monstersHealth[iMonster] = monsterHP;
                                 string hit = string("\x1b[48;5;11m\x1b[38;5;16m") + "Bang!! (" + to_string(monsterHP) + ")";
                                 string win = string("\x1b[48;5;11m\x1b[38;5;16m") + "Miam!! (" + to_string(monsterHP) + ")";
-                                string attackresult = monsterHP <= 0 ? hit : win;
+                                string attackresult = monsterHP <= 0 ? win : hit;
                                 cout << attackresult;
                             }
                             else
@@ -511,8 +556,8 @@ void drawMonsters()
                 }
                 else
                 {
-                    monstersHealth[iMonster * 2] = monsterHP - 1;
-                    if (monstersHealth[iMonster * 2] == -1)
+                    monstersHealth[iMonster] = monsterHP - 1;
+                    if (monstersHealth[iMonster] == -1)
                     {
                         protInvQty[0] += 15;
                         moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth/2 + 2);
@@ -523,7 +568,7 @@ void drawMonsters()
                             cout << monsterAsmall[i];
                         }
                     }
-                    if (monstersHealth[iMonster * 2] == -2)
+                    if (monstersHealth[iMonster] == -2)
                     {
                         moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                         cout << "Mmmmm!! +15!! (" << protInvQty[0] << ")";
@@ -533,7 +578,7 @@ void drawMonsters()
                             cout << monsterAdyingA[i];
                         }
                     }
-                    if (monstersHealth[iMonster * 2] == -3)
+                    if (monstersHealth[iMonster] == -3)
                     {
                         moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 1);
                         cout << "Mmmmm!! +15! (" << protInvQty[0] << ")";
@@ -543,7 +588,7 @@ void drawMonsters()
                             cout << monsterAdyingB[i];
                         }
                     }
-                    if (monstersHealth[iMonster * 2] == -4)
+                    if (monstersHealth[iMonster] == -4)
                     {
                         for (int i = 0; i < int(monsterAdyingC.size()); ++i)
                         {
@@ -663,6 +708,28 @@ void drawBlobs()
 
 bool drawMap(char& nextMove)
 {
+    if (int(nextMove) == 27) {
+        int longest = 0;
+        string quitLine1 = "Quitter maintenant signifie la fin de votre espèce, j'espère que vous en êtes conscient.";
+        longest = quitLine1.size() > longest ? quitLine1.size() : longest;
+        string quitLine2 = "Si oui, merci d'avoir joué! Appuyer sur o suivi de Entrer pour confirmer.";
+        longest = quitLine2.size() > longest ? quitLine2.size() : longest;
+        moveCursor(vSize / 2 - 1, hSize / 2 - longest / 2);
+        cout << spaceString(longest);
+        moveCursor(vSize / 2 - 1, hSize / 2 - quitLine1.size() / 2);
+        cout << quitLine1;
+        moveCursor(vSize / 2, hSize / 2 - longest / 2);
+        cout << spaceString(longest);
+        moveCursor(vSize / 2, hSize / 2 - quitLine2.size() / 2);
+        cout << quitLine2;
+        char confirmQuit;
+        cin >> confirmQuit;
+        if (int(confirmQuit) == 'o')
+        {
+            userQuit = true;
+            return 0;
+        }
+    }
     bool protInvWasOpen = protInvOpen;
     if (nextMove != 'i' && nextMove != 'I')
     {
@@ -670,6 +737,7 @@ bool drawMap(char& nextMove)
         vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
         hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
         system("cls");
+        cout << int(nextMove);
         cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte et le reste du jeux.
 
         for (int imap = ((int(currentMap.size()) / 2) - (vSize / 2)) + vOffset; imap < ((int(currentMap.size()) / 2) + (vSize / 2)) + vOffset; ++imap)
@@ -729,18 +797,37 @@ bool drawMap(char& nextMove)
         }
         moveCursor(12 + 7, 16 + 25);
         cout << protLife << " / " << protLifeMax;
-        moveCursor(12 + 7, 16 + 25 + 25);
-        cout << protInvQty[1];
         moveCursor(12 + 9, 16 + 25);
         cout << protStrength;
-        moveCursor(12 + 9, 16 + 25 + 25);
-        cout << protInvQty[3];
         moveCursor(12 + 11, 16 + 25);
         cout << protSpeed;
-        moveCursor(12 + 11, 16 + 25 + 25);
-        cout << protInvQty[2];
         moveCursor(12 + 13, 16 + 25);
         cout << protInvQty[0];
+        string evoluting;
+        int evolutionETA = 0;
+        if (protInvQty[1] > 0)
+        {
+            evoluting = "Vie";
+            evolutionETA = protInvQty[1];
+        }
+        if (protInvQty[2] > 0)
+        {
+            evoluting = "Force";
+            evolutionETA = protInvQty[2];
+        }
+        if (protInvQty[3] > 0)
+        {
+            evoluting = "Vitesse";
+            evolutionETA = protInvQty[3];
+        }
+        if (evolutionETA != 0)
+        {
+            moveCursor(12 + 7, 16 + 25 + 29 - evoluting.size());
+            cout << evoluting;
+            string evoCalories = to_string(evolutionETA) + " calories à trouver";
+            moveCursor(12 + 8, 16 + 17 + evoCalories.size());
+            cout << evoCalories;
+        }
         protInvOpen = true;
     }
     if ((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvOpen && protInvQty[0] < 5)
@@ -761,13 +848,13 @@ bool drawMap(char& nextMove)
         }
         if (nextMove == '2')
         {
-            cout << "Force?";
+            cout << "Vitesse?";
             moveCursor(12 + 19, 16 + 4);
             cout << "Appuyez sur o pour oui suivi de la touche Entrer.";
         }
         if (nextMove == '3')
         {
-            cout << "Vitesse?";
+            cout << "Force?";
             moveCursor(12 + 19, 16 + 4);
             cout << "Appuyez sur o pour oui suivi de la touche Entrer.";
         }
@@ -777,11 +864,11 @@ bool drawMap(char& nextMove)
         {
             protInvQty[0] -= 5;
             if (nextMove == '1')
-                protInvQty[1] += 1;
+                protInvQty[1] += 10*protLifeMax;
             if (nextMove == '2')
-                protInvQty[3] += 1;
+                protInvQty[3] += 10*protSpeed;
             if (nextMove == '3')
-                protInvQty[2] += 1;
+                protInvQty[2] += 10*protStrength;
             protInvOpen = false;
         }
     }
@@ -800,7 +887,6 @@ bool drawMap(char& nextMove)
         char refreshMap= 'r';
         drawMap(refreshMap);
     }
-
     return true;
 }
 
@@ -1049,11 +1135,12 @@ int main()
         {
             protRegen = true;
             drawMap(nextMove);
+            if (userQuit) break;
             inMap = drawEukaryotz();
             if (protLife > 0)
             {
                 cout << ESC + (to_string(vSize + 1) + ";1H");
-                cout << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire.";
+                cout << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire. Pour quitter, appuyez sur la touche ESCAPE.";
                 nextMove = _getch();
             }
             else if(protLife <= 0 && protLife > -9)
