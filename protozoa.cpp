@@ -1,5 +1,6 @@
 #include "Code_Utilities.h"
 #include "asciiIntro.h"
+#include "asciiIntro2.h"
 #include "asciiLogo.h"
 #include "asciiEukaryotz.h"
 #include "asciiCollectables.h"
@@ -207,6 +208,63 @@ void displayIntro(int framesPlayed, bool skipIntro)
             cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";//couleur fonctionne juste pour l'intro
             moveCursor(1, 1);
             cout << frames[i];
+
+            int longest = 0;
+            string introLine1 = "Au tout début des temps, avant la naissance des continents et des mammifères terrestres, il n'y avait qu'océan.";
+            longest = introLine1.size() > longest ? introLine1.size() : longest;
+            string introLine2 = "Immense, profond et périlleux il était. Un combat de tous les instants s’y passait. La loi du plus fort y régnait.";
+            longest = introLine2.size() > longest ? introLine2.size() : longest;
+            string introLine3 = "Dans ce jeu vous incarnez un Protazoid, un être unicellulaire microscopique tout comme nos ancêtres lointains.";
+            longest = introLine3.size() > longest ? introLine3.size() : longest;
+            string introLine4 = "Et tout comme eux, votre existence sera un combat de tous les instants.";
+            longest = introLine4.size() > longest ? introLine4.size() : longest;
+            string introLine5 = "Comme Darwin décrit si bien \"It is not the strongest of the species that survives, nor the most intelligent; it is the one most adaptable to change.";
+            longest = introLine5.size() > longest ? introLine5.size() : longest;
+            string introLine6 = "Donc, accumulez des calories en dévorant ce qui vous entoure et choisissez bien votre chemin évolutif, car le futur de votre espèce est entre vos mains.";
+            longest = introLine6.size() > longest ? introLine6.size() : longest;
+            if (i >= 1)
+            {
+                moveCursor(vSize / 2 - logo.size() / 2 - 12, hSize / 2 - longest / 2);
+                cout << spaceString(longest);
+                moveCursor(vSize / 2 - logo.size() / 2 - 12, hSize / 2 - introLine1.size() / 2 + 1);
+                cout << introLine1;
+            }
+            if (i >= 8)
+            {
+                moveCursor(vSize / 2 - logo.size() / 2 - 11, hSize / 2 - longest / 2);
+                cout << spaceString(longest);
+                moveCursor(vSize / 2 - logo.size() / 2 - 11, hSize / 2 - introLine2.size() / 2 + 1);
+                cout << introLine2;
+            }
+            if (i >= 15)
+            {
+                moveCursor(vSize / 2 - logo.size() / 2 - 10, hSize / 2 - longest / 2);
+                cout << spaceString(longest);
+                moveCursor(vSize / 2 - logo.size() / 2 - 10, hSize / 2 - introLine3.size() / 2 + 1);
+                cout << introLine3;
+            }
+            if (i >= 22)
+            {
+                moveCursor(vSize / 2 - logo.size() / 2 - 9, hSize / 2 - longest / 2);
+                cout << spaceString(longest);
+                moveCursor(vSize / 2 - logo.size() / 2 - 9, hSize / 2 - introLine4.size() / 2 + 1);
+                cout << introLine4;
+            }
+            if (i >= 29)
+            {
+                moveCursor(vSize / 2 - logo.size() / 2 - 8, hSize / 2 - longest / 2);
+                cout << spaceString(longest);
+                moveCursor(vSize / 2 - logo.size() / 2 - 8, hSize / 2 - introLine5.size() / 2 + 1);
+                cout << introLine5;
+            }
+            if (i >= 36)
+            {
+                moveCursor(vSize / 2 - logo.size() / 2 - 7, hSize / 2 - longest / 2);
+                cout << spaceString(longest);
+                moveCursor(vSize / 2 - logo.size() / 2 - 7, hSize / 2 - introLine6.size() / 2 + 1);
+                cout << introLine6;
+            }
+
             if (i == framesPlayed - 6)
             {
                 for (int i = 0; i < logo6.size(); ++i)
@@ -255,7 +313,7 @@ void displayIntro(int framesPlayed, bool skipIntro)
                     cout << logo[i];
                 }
             }
-            Sleep(75);
+            Sleep(100);
             if (i != framesPlayed - 1)
                 system("cls");
         }
@@ -769,6 +827,15 @@ int main()
     if (userSkip == 'S' || userSkip == 's')
         skipIntro = true;
 
+    //test
+    /*moveCursor(1, 1);
+    for (int i = 0; i < close.size(); ++i)
+    {
+        moveCursor(1 + i, 1);
+        cout << close[i];
+    }*/
+    //system("pause");
+
     //intro
     displayIntro(50, skipIntro);
 
@@ -1010,8 +1077,9 @@ int main()
                 cout << gameOverLine3;
                 Sleep(1000);
                 restart = _getch();
-                if(restart == 'q')
+                if (restart == 'q' || restart == 'Q')
                     inMap = false;
+                //if (restart == 'r' || restart == 'R')
             }
         }
 
