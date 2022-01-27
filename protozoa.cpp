@@ -274,6 +274,95 @@ bool drawEukaryotz()
         cout << ProtagAsmall[i];
     }
 
+    //if prot has 0 hp, play die animation and gameover screen
+    if (protLife <= 0)
+    {
+        --protLife;
+        //play prot dying animation
+        if (protLife == -1)
+        {
+            for (int i = 0; i < int(ProtagAdyingA.size()); ++i)
+            {
+                moveCursor(vSize / 2 - ProtagAdyingA[i].size() / 2 + i, hSize / 2 - ProtagAdyingA.size() / 2);
+                cout << ProtagAdyingA[i];
+            }
+        }
+        if (protLife == -2)
+        {
+            for (int i = 0; i < int(ProtagAdyingB.size()); ++i)
+            {
+                moveCursor(vSize / 2 - ProtagAdyingB[i].size() / 2 + i, hSize / 2 - ProtagAdyingB.size() / 2);
+                cout << ProtagAdyingB[i];
+            }
+        }
+        if (protLife == -3)
+        {
+            for (int i = 0; i < int(ProtagAdyingC.size()); ++i)
+            {
+                moveCursor(vSize / 2 - ProtagAdyingC[i].size() / 2 + i, hSize / 2 - ProtagAdyingC.size() / 2);
+                cout << ProtagAdyingC[i];
+            }
+        }
+        if (protLife == -4)
+        {
+            for (int i = 0; i < int(ProtagAdyingD.size()); ++i)
+            {
+                moveCursor(vSize / 2 - ProtagAdyingD[i].size() / 2 + i, hSize / 2 - ProtagAdyingD.size() / 2);
+                cout << ProtagAdyingD[i];
+            }
+            for (int i = 0; i < int(logo.size()); ++i)
+            {
+                moveCursor(vSize / 2 - logo[i].size() - protHeight / 2, hSize / 2 - logo.size() / 2);
+                cout << logo[i];
+            }
+        }
+        if (protLife == -5)
+        {
+            for (int i = 0; i < int(ProtagAdyingE.size()); ++i)
+            {
+                moveCursor(vSize / 2 - ProtagAdyingE[i].size() / 2 + i, hSize / 2 - ProtagAdyingE.size() / 2);
+                cout << ProtagAdyingE[i];
+            }
+            for (int i = 0; i < int(logo2.size()); ++i)
+            {
+                moveCursor(vSize / 2 - logo2[i].size() - protHeight / 2 + i, hSize / 2 - logo2.size() / 2);
+                cout << logo2[i];
+            }
+        }
+        if (protLife == -6)
+        {
+            for (int i = 0; i < int(logo3.size()); ++i)
+            {
+                moveCursor(vSize / 2 - logo3[i].size() - protHeight / 2 + i, hSize / 2 - logo3.size() / 2);
+                cout << logo3[i];
+            }
+        }
+        if (protLife == -7)
+        {
+            for (int i = 0; i < int(logo4.size()); ++i)
+            {
+                moveCursor(vSize / 2 - logo4[i].size() - protHeight / 2 + i, hSize / 2 - logo4.size() / 2);
+                cout << logo4[i];
+            }
+        }
+        if (protLife == -8)
+        {
+            for (int i = 0; i < int(logo5.size()); ++i)
+            {
+                moveCursor(vSize / 2 - logo5[i].size() - protHeight / 2 + i, hSize / 2 - logo5.size() / 2);
+                cout << logo5[i];
+            }
+        }
+        if (protLife == -9)
+        {
+            for (int i = 0; i < int(logo6.size()); ++i)
+            {
+                moveCursor(vSize / 2 - logo6[i].size() - protHeight / 2 + i, hSize / 2 - logo6.size() / 2);
+                cout << logo6[i];
+            }
+        }
+    }
+
     //if prot doesn't attack he can regenerate
     if (protLife < protLifeMax && protInvQty[0] > 0 && protRegen)
     {
@@ -515,6 +604,7 @@ void drawBlobs()
 
 bool drawMap(char& nextMove)
 {
+    bool protInvWasOpen = protInvOpen;
     if (nextMove != 'i' && nextMove != 'I')
     {
         int firstLine = ((int(currentMap.size()) / 2) - int((vSize) / 2));
@@ -636,14 +726,20 @@ bool drawMap(char& nextMove)
             protInvOpen = false;
         }
     }
-    //if ((((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvQty[0] >= 5) || buyValidate != -1 || (nextMove == 'w' || nextMove == 'a' || nextMove == 's' || nextMove == 'd')) && protInvOpen)
     if((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvQty[0] >= 5)
     {
         protInvOpen = false;
+        //add call drawmap to refresh
     }
     if ((nextMove == 'w' || nextMove == 'a' || nextMove == 's' || nextMove == 'd') && protInvOpen)
     {
         protInvOpen = false;
+        //add call drawmap to refresh
+    }
+    if (!protInvOpen && protInvWasOpen)
+    {
+        char refreshMap= 'r';
+        drawMap(refreshMap);
     }
 
     return true;
