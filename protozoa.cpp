@@ -633,9 +633,15 @@ bool drawMap(char& nextMove)
                 protInvQty[3] += 1;
             if (nextMove == '3')
                 protInvQty[2] += 1;
+            protInvOpen = false;
         }
     }
-    if((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvOpen)
+    //if ((((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvQty[0] >= 5) || buyValidate != -1 || (nextMove == 'w' || nextMove == 'a' || nextMove == 's' || nextMove == 'd')) && protInvOpen)
+    if((nextMove == '1' || nextMove == '2' || nextMove == '3') && protInvQty[0] >= 5)
+    {
+        protInvOpen = false;
+    }
+    if ((nextMove == 'w' || nextMove == 'a' || nextMove == 's' || nextMove == 'd') && protInvOpen)
     {
         protInvOpen = false;
     }
