@@ -78,7 +78,7 @@ const array<string, 11> ProtagAdyingA = {
 "\x1b[48;5;22m  \x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;22m  \x1b[48;5;34m  \x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;22m  \x1b[m",
 "\x1b[48;5;234m\x1b[38;5;76m....\x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;22m  \x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;234m\x1b[38;5;76m....\x1b[m" };
 
-const array<string, 9> ProtagAdyingB = {
+const array<string, 10> ProtagAdyingB = {
 "\x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;34m    \x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;234m\x1b[38;5;76m..\x1b[m",
 "\x1b[48;5;34m  \x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;22m  \x1b[48;5;40m  \x1b[48;5;22m  \x1b[48;5;40m  \x1b[m",
 "\x1b[48;5;76m  \x1b[48;5;34m  \x1b[48;5;8m  \x1b[48;5;77m  \x1b[48;5;71m  \x1b[48;5;2m  \x1b[m",
