@@ -2,7 +2,7 @@
 #include "asciiIntro.h"
 #include "asciiIntro2.h"
 #include "asciiLogo.h"
-#include "asciiEukaryotz.h"
+#include "asciiProtazoid.h"
 #include "asciiCollectables.h"
 #include "asciiMonsters.h"
 #include <Windows.h>
@@ -19,7 +19,7 @@ int hOffset = 0;
 int lineSize = 800;
 array<string, 200> currentMap;
 
-//variables utilisées pour l'eukaryotz
+//variables utilisées pour le protazoid
 string protName;
 int protWidth = 16;
 int protHeight = 11;
@@ -115,7 +115,7 @@ array<string, 200> buildRandomMap()
 }
 
 //fonction pour demander a l'usager si il veut commencer une nouvelle partie
-string startString = "Voulez-vous débuter un nouvel eukaryotz? o pour débuter.";
+string startString = "Voulez-vous débuter un nouveau Protazoid? o pour débuter.";
 int longestString = startString.size();
 bool displayStartGame()
 {
@@ -135,7 +135,7 @@ bool displayStartGame()
             cout << "Je n'ai pas compris, pouvez-vous répéter? ";
         }
         moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 2);
-        cout << "Voulez-vous débuter un nouvel eukaryotz? o pour débuter.";
+        cout << "Voulez-vous débuter un nouveau Protazoid? o pour débuter.";
         moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 2);
         cin >> userStart;
         clearCin();
@@ -148,7 +148,7 @@ bool displayStartGame()
 
 string enterName()
 {
-    string startName = "En tant qu'Eukaryotz, quel sera votre nom?";
+    string startName = "En tant que Protazoid, quel sera votre nom?";
     string spaces = spaceString(longestString);
     moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
     cout << spaces;
@@ -172,7 +172,7 @@ void startNameValidation() {
     while (!nameIsGood)
     {
         string testName = enterName();
-        string startNameFinalValidate = "Votre Eukaryotz se nomme bien " + testName + "? Tappez o pour oui.";
+        string startNameFinalValidate = "Votre Protazoid se nomme bien " + testName + "? Tappez o pour oui.";
         longestString = startNameFinalValidate.size() > longestString ? startNameFinalValidate.size() : longestString;
         string spaces = spaceString(startNameFinalValidate.size());
 
@@ -318,11 +318,11 @@ void displayIntro(int framesPlayed, bool skipIntro)
     }
 }
 
-bool drawEukaryotz()
+bool drawProtazoid()
 {
     if (protLife > 0)
     {
-        //draw an idle Eukaryotz in the center
+        //draw an idle Protazoid in the center
         int hPos = hSize / 2 - protWidth / 2;
         int vPos = vSize / 2 - protHeight / 2;
 
@@ -581,7 +581,7 @@ void drawMonsters()
         {
             if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
-                //determine if monster has been attacked by the eukaryotz
+                //determine if monster has been attacked by the protazoid
                 moveCursor(3, 1);
                 if (monsterHP > 0 && protLife > 0) {
                     if ((v - monsterVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - monsterVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
@@ -726,7 +726,7 @@ void drawBlobs()
         {
             if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
-                //determine if blob has been eaten by the eukaryotz
+                //determine if blob has been eaten by the protazoid
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
                     if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
@@ -974,7 +974,7 @@ int main()
 
     bool startGame = displayStartGame();
 
-    //variables utilisées pour l'eukaryotz
+    //variables utilisées pour le protazoid
     array<string, 1> monsterTable = {}; //18x8
     array<string, 10> blobTable = {}; //2x2 blobs
     string envColor = ESC + Green;
@@ -983,13 +983,13 @@ int main()
     //boucle de jeu principale
     while (startGame)
     {
-        //création du personnage, choix: mouvement, points de vie, force; plus tard: type d'eukaryotz
+        //création du personnage, choix: mouvement, points de vie, force; plus tard: type du protazoid
         //4 points a répartir comme on veut entre les 3 choix
         //minimum de 2 dans chacune des caractéristiques, 1 point équivaut à 1 de plus dans la caractéristique
 
         startNameValidation();
 
-        //boucle pour que l'usager valide les points de caractéristiques de son Eukaryotz
+        //boucle pour que l'usager valide les points de caractéristiques de son protazoid
         bool pointsAreGood = false;
         int pointsLeft;
         while (!pointsAreGood)
@@ -999,7 +999,7 @@ int main()
             protSpeed = 2;
             protStrength = 2;
 
-            string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Eukaryotz: (points restants  )";
+            string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants  )";
             string spaces = spaceString(longestString.size());
 
             addSpacing(9, logo.size(), longestString.size());
@@ -1019,7 +1019,7 @@ int main()
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
                 cout << spaces;
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Eukaryotz: (points restants " << pointsLeft << ")";
+                cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Protazoid: (points restants " << pointsLeft << ")";
                 moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
                 if (int(usePoints) != char('|'))
                 {
@@ -1070,7 +1070,7 @@ int main()
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
                 cout << spaces;
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Eukaryotz: (points restants " << pointsLeft << ")";
+                cout << "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants " << pointsLeft << ")";
                 moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
                 if (int(usePoints) != char('|'))
                 {
@@ -1122,7 +1122,7 @@ int main()
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
                 cout << spaces;
                 moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Force de votre Eukaryotz: (points restants " << pointsLeft << ")";
+                cout << "Entrez le nombre de points que vous voulez ajouter à la Force de votre Protazoid: (points restants " << pointsLeft << ")";
                 moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
                 if (int(usePoints) != char('|'))
                 {
@@ -1169,7 +1169,7 @@ int main()
 
             char validCarac;
             moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Est-ce que les caractéristique de votre Eukaryotz vous conviennent? o pour oui.";
+            cout << "Est-ce que les caractéristique de votre Protazoid vous conviennent? o pour oui.";
             moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
             cin >> validCarac;
             clearCin();
@@ -1183,7 +1183,7 @@ int main()
             protRegen = true;
             drawMap(nextMove);
             if (userQuit) break;
-            inMap = drawEukaryotz();
+            inMap = drawProtazoid();
             if (protLife > 0)
             {
                 cout << ESC + (to_string(vSize + 1) + ";1H");
