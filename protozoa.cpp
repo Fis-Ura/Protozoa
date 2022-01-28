@@ -5,8 +5,6 @@
 #include "asciiEukaryotz.h"
 #include "asciiCollectables.h"
 #include "asciiMonsters.h"
-//#include "asciiMaps.h"
-//#include "asciiMap1.h"
 #include <Windows.h>
 #include <conio.h>
 
@@ -19,7 +17,6 @@ int vSize = 60;
 int vOffset = 0;
 int hOffset = 0;
 int lineSize = 800;
-//array<string, 2> bgColor = { "\x1b[48;5;2 30m","\x1b[48;5;231m" };
 array<string, 200> currentMap;
 
 //variables utilisées pour l'eukaryotz
@@ -166,7 +163,6 @@ string enterName()
     moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startName.size() / 2 + 2);
     cin >> testName;
     clearCin();
-    //getline(cin, testName);
     return testName;
 }
 
@@ -536,8 +532,6 @@ void positionMonsters()
     {
         int h = 1 + (rand() % lineSize);
         int v = 1 + (rand() % int(currentMap.size()));
-        /*int h = 460;
-        int v = 90;*/
         monstersPosition[i * 2] = h;
         monstersPosition[(i * 2) + 1] = v;
         monstersHealth[i] = 4;
@@ -567,21 +561,17 @@ void drawMonsters()
         int monsterStr = monstersStrength[iMonster];
         int monsterHP = monstersHealth[iMonster];
         moveCursor(1, 1);
-        //cout << v << " " << ((currentMap.size() / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
         {
             if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
                 //determine if monster has been attacked by the eukaryotz
                 moveCursor(3, 1);
-                //cout << (v - blobVOffset - vOffset);
                 if (monsterHP > 0 && protLife > 0) {
                     if ((v - monsterVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - monsterVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                     {
                         if ((h - monsterHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - monsterHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
                         {
-                            /*monstersPosition[i * 2] = 0;
-                            monstersPosition[(i * 2) + 1] = 0;*/
                             moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                             int protAttack = (protStrength + 1) + rand() % 6;
                             int monsterAttack = (monsterStr + 1) + rand() % 6;
@@ -693,7 +683,6 @@ void drawBlobs()
         int blobVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(2 + i, 1);
-        //cout << v << " " << ((int(currentMap.size()) / 2) - (vSize / 2)) << " " << h << " " << ((lineSize / 2) - (hSize / 2)) << endl;
         if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
         {
             if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
@@ -812,43 +801,15 @@ bool drawMap(char& nextMove)
                     newLine += ' ';
                 else
                     newLine += line[(int(line.size()) / 2) - (hSize / 2) + iLine + hOffset];
-                /*for (int i = 0; i < newLine.size(); ++i)
-                {
-                    if (newLine[i] == '.')
-                        cout << "\x1b[48;5;230m ";
-                    if (newLine[i] == '1')
-                        cout << "\x1b[48;5;231m ";
-                }*/
             }
             cout << newLine << endl;
-        }/*
-        moveCursor(3, 1);
-        cout << "                  ";
-        moveCursor(3, 1);
-        cout << "test: " << firstLine;
-        moveCursor(4, 1);
-        cout << "                  ";
-        moveCursor(4, 1);
-        cout << "vOffset: " << vOffset;
-        moveCursor(5, 1);
-        cout << "                  ";
-        moveCursor(5, 1);
-        cout << "map # lines" << currentMap.size();
-        moveCursor(6, 1);
-        cout << "                  ";
-        moveCursor(6, 1);
-        cout << "map line length: " << lineSize;
-        moveCursor(7, 1);
-        cout << "                  ";
-        moveCursor(8, 1);
-        cout << "display size h: " << hSize;*/
+        }
     }
     drawBlobs();
     moveMonsters();
     drawMonsters();
     if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
-        //cout << Inventory.size() << " " << Inventory[0].size();
         for (int i = 0; i < Inventory.size(); ++i)
         {
             moveCursor(12 + i, 16);
@@ -971,15 +932,6 @@ int main()
     clearCin();
     if (userSkip == 'S' || userSkip == 's')
         skipIntro = true;
-
-    //test
-    /*moveCursor(1, 1);
-    for (int i = 0; i < close.size(); ++i)
-    {
-        moveCursor(1 + i, 1);
-        cout << close[i];
-    }*/
-    //system("pause");
 
     //intro
     displayIntro(50, skipIntro);
@@ -1225,7 +1177,6 @@ int main()
                 restart = _getch();
                 if (restart == 'q' || restart == 'Q')
                     inMap = false;
-                //if (restart == 'r' || restart == 'R')
             }
         }
 
