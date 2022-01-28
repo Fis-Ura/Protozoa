@@ -689,6 +689,27 @@ void sizeBlobs()
     }
 }
 
+void addBlobs()
+{
+    int numberAdded = 5 + rand() % 6;
+    for (int i = 0; i < 50; ++i)
+    {
+        int h = blobsPosition[i * 2];
+        int v = blobsPosition[(i * 2) + 1];
+        if (h == 0 && v == 0)
+        {
+            int h = rand() % lineSize;
+            int v = rand() % currentMap.size();
+            blobsPosition[i * 2] = h;
+            blobsPosition[(i * 2) + 1] = v;
+            int randomSize = rand() % 6;
+            blobsSizes[i] = randomSize;
+            numberAdded -= 1;
+        }
+        if (numberAdded <= 0) continue;
+    }
+}
+
 void drawBlobs()
 {
     for (int i = 0; i < 50; ++i)
@@ -696,6 +717,8 @@ void drawBlobs()
         int randomSize = rand() % 6;
         int h = blobsPosition[i * 2];
         int v = blobsPosition[(i * 2) + 1];
+        if (h == 0 && v == 0) continue;
+
         int blobVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(2 + i, 1);
@@ -706,12 +729,8 @@ void drawBlobs()
                 //determine if blob has been eaten by the eukaryotz
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
-                    /*moveCursor(3, 1);
-                    cout << (v - blobVOffset - vOffset);*/
                     if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
                     {
-                        /*moveCursor(4, 1);
-                        cout << (v - blobVOffset - vOffset);*/
                         blobsPosition[i * 2] = 0;
                         blobsPosition[(i * 2) + 1] = 0;
                         int blobWorth = blobsSizes[i];
@@ -821,6 +840,7 @@ bool drawMap(char& nextMove)
             cout << newLine << endl;
         }
     }
+    if(rand() % 5 == 4) addBlobs();
     drawBlobs();
     moveMonsters();
     drawMonsters();
