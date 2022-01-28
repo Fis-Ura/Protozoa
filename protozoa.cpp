@@ -72,6 +72,45 @@ void clearCin()
     cin.ignore(120, '\n');
 }
 
+void calibrateScreen()
+{
+    cout << "Assurez-vous que votre écran de terminal soit maximisé.\n";
+    Sleep(2000);
+
+    string hundred = "____________________________________________________________________________________________________";
+    cout << hundred << hundred << endl;
+    cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
+    char hValidate;
+    cin >> hValidate;
+    if (hValidate == 'o' || hValidate == 'O')
+        hSize = 200;
+    else
+    {
+        system("cls");
+        cout << hundred << endl;
+        cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
+        cin >> hValidate;
+        if (hValidate == 'o' || hValidate == 'O')
+            hSize = 100;
+    }
+    system("cls");
+    for (int i = 0; i < 60; ++i) cout << '|' << endl;
+    cout << "Est-ce que la ligne s'affiche au complet dans l'écran? o pour oui\n";
+    char vValidate;
+    cin >> vValidate;
+    if (vValidate == 'o' || vValidate == 'O')
+        vSize = 60;
+    else
+    {
+        system("cls");
+        for (int i = 0; i < 30; ++i) cout << '|' << endl;
+        cout << "Est-ce que la ligne s'affiche au complet dans l'écran? o pour oui\n";
+        cin >> vValidate;
+        if (vValidate == 'o' || vValidate == 'O')
+            vSize = 30;
+    }
+}
+
 array<string, 200> buildRandomMap()
 {
     int threshold = 100;
@@ -954,14 +993,16 @@ int main()
     system("cls");
 #endif
     srand(time(0));
+    //calibration de l'écran d'affichage
+    calibrateScreen();
+
     //positionnement et initialisation des acteurs
     positionBlobs();
     sizeBlobs();
     positionMonsters();
     currentMap = buildRandomMap();
 
-    cout << "Assurez-vous que votre écran de terminal soit maximisé.\n"
-        << "Appuyez sur S pour skipper l'intro ou une autre touche pour le voir et appuyez sur Entrée.\n";
+    cout << "Appuyez sur S pour skipper l'intro ou une autre touche pour le voir et appuyez sur Entrée.\n";
     bool skipIntro = false;
     char userSkip;
     cin >> userSkip;
