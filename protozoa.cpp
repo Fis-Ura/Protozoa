@@ -18,6 +18,7 @@ int vOffset = 0;
 int hOffset = 0;
 int lineSize = 800;
 array<string, 200> currentMap;
+bool bossIsIn = false;
 
 //variables utilisées pour le protazoid
 string protName;
@@ -827,6 +828,30 @@ void drawBlobs()
     }
 }
 
+void drawBoss()
+{
+    int vBoss = 20;
+    int hBoss = 360;
+    int bossVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
+    int bossHOffset = (lineSize / 2) - (hSize / 2);
+    if (vBoss > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && vBoss < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
+    {
+        if (hBoss > ((lineSize / 2) - (hSize / 2) + hOffset) && hBoss < ((lineSize / 2) + (hSize / 2) + hOffset))
+        {
+            for (int i = 0; i < boss.size(); ++i)
+            {
+                moveCursor(vBoss + i - bossVOffset - vOffset, hBoss - bossHOffset - hOffset);
+                cout << boss[i];
+            }
+        }
+    }
+}
+
+void bossBattle()
+{
+
+}
+
 bool drawMap(char& nextMove)
 {
     if (int(nextMove) == 27) {
@@ -858,7 +883,7 @@ bool drawMap(char& nextMove)
         vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
         hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
         system("cls");
-        cout << int(nextMove);
+        //cout << int(nextMove);
         cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte et le reste du jeux.
 
         for (int imap = ((int(currentMap.size()) / 2) - (vSize / 2)) + vOffset; imap < ((int(currentMap.size()) / 2) + (vSize / 2)) + vOffset; ++imap)
@@ -883,6 +908,7 @@ bool drawMap(char& nextMove)
     drawBlobs();
     moveMonsters();
     drawMonsters();
+    drawBoss();
     if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
         for (int i = 0; i < Inventory.size(); ++i)
