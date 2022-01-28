@@ -545,6 +545,17 @@ void positionMonsters()
     }
 }
 
+void moveMonsters()
+{
+    int monstersNumber = 10;
+    for (int i = 0; i < monstersNumber; ++i)
+    {
+
+        monstersPosition[i * 2] = monstersPosition[i * 2] + (rand() % 3) - 1;
+        monstersPosition[(i * 2) + 1] = monstersPosition[(i * 2) + 1] + (rand() % 3) - 1;
+    }
+}
+
 void drawMonsters()
 {
     for (int iMonster = 0; iMonster < 10; ++iMonster)
@@ -833,6 +844,7 @@ bool drawMap(char& nextMove)
         cout << "display size h: " << hSize;*/
     }
     drawBlobs();
+    moveMonsters();
     drawMonsters();
     if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
