@@ -31,6 +31,7 @@ int protLifeMax;
 bool protRegen;
 int protSpeed;
 int protStrength;
+int protSatiety = 100;
 array<string, 4> protInvNames = { "Calories", "Life", "Speed", "Strength" };
 array<int, 4> protInvQty = { 0, 0, 0, 0 };
 bool protInvOpen = false;
@@ -329,10 +330,29 @@ bool drawEukaryotz()
         int hPos = hSize / 2 - protWidth / 2;
         int vPos = vSize / 2 - protHeight / 2;
 
-        for (int i = 0; i < ProtagAsmall.size(); ++i)
+        if (protLifeMax >= 10)
         {
-            moveCursor(vPos + i, hPos);
-            cout << ProtagAsmall[i];
+            for (int i = 0; i < ProtagAlarge.size(); ++i)
+            {
+                moveCursor(vPos + i, hPos);
+                cout << ProtagAlarge[i];
+            }
+        }
+        else if (protLifeMax > 6)
+        {
+            for (int i = 0; i < ProtagAmedium.size(); ++i)
+            {
+                moveCursor(vPos + i, hPos);
+                cout << ProtagAmedium[i];
+            }
+        }
+        else
+        {
+            for (int i = 0; i < ProtagAsmall.size(); ++i)
+            {
+                moveCursor(vPos + i, hPos);
+                cout << ProtagAsmall[i];
+            }
         }
     }
     else  //if prot has 0 hp, play die animation and gameover screen
@@ -421,6 +441,33 @@ bool drawEukaryotz()
                 cout << logo[i];
             }
         }
+    }
+    //satiety goes down, if it's below 50, uses up calories to eat upto 100 satiety (10 satiety points each calorie)
+    protSatiety -= 1;
+    if (protSatiety < 50 && protInvQty[0] > 0)
+    {
+        int usedCal = protInvQty[0] < (100 - protSatiety) / 10 ? protInvQty[0] : (100 - protSatiety) / 10;
+        protInvQty[0] -= usedCal;
+        protSatiety += usedCal * 10;
+        moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 2);
+        cout << spaceString(25);
+        moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 2);
+        cout << usedCal << " dépensés";
+    }
+    else if (protSatiety < 50 && protSatiety > 0 &&  protInvQty[0] == 0)
+    {
+        if (protSatiety > 40 || protSatiety < 5)
+        {
+            moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 20);
+            cout << " Vous n'avez plus d'énergie, trouvez quelque chose à manger vite!!";
+        }
+    }
+    else if (protSatiety <= -10)
+    {
+        protLife -= 1;
+        moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 20);
+        cout << "Chaque pas est de plus en plus lourd, il faut de l'énergie!! -1 Vie (" << protLife << ")";
+        protSatiety = 0;
     }
 
     //if prot is evolving and has calories, he has to pay everything until evolution done or no calories left
