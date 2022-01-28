@@ -544,9 +544,25 @@ void moveMonsters()
     int monstersNumber = 10;
     for (int i = 0; i < monstersNumber; ++i)
     {
-
-        monstersPosition[i * 2] = monstersPosition[i * 2] + (rand() % 3) - 1;
-        monstersPosition[(i * 2) + 1] = monstersPosition[(i * 2) + 1] + (rand() % 3) - 1;
+        if (monstersHealth[i] <= 0) continue;
+        int spdBoost = 1;
+        if (rand() % 3 == 2) spdBoost = 5;
+        if (rand() % 5 == 4)
+        {
+            int h = monstersPosition[i * 2];
+            int v = monstersPosition[(i * 2) + 1];
+            int monsterVOffset = v - int(currentMap.size())/2;
+            int monsterHOffset = h - lineSize / 2;
+            int moveV = monsterVOffset < vOffset ? 1 : -1;
+            int moveH = monsterHOffset < hOffset ? 1 : -1;
+            monstersPosition[i * 2] = h + moveH * spdBoost;
+            monstersPosition[(i * 2) + 1] = v + moveV * spdBoost;
+        }
+        else
+        {
+            monstersPosition[i * 2] = monstersPosition[i * 2] + ((rand() % 3) - 1) * spdBoost;
+            monstersPosition[(i * 2) + 1] = monstersPosition[(i * 2) + 1] + ((rand() % 3) - 1) * spdBoost;
+        }
     }
 }
 
@@ -690,12 +706,12 @@ void drawBlobs()
                 //determine if blob has been eaten by the eukaryotz
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
-                    moveCursor(3, 1);
-                    cout << (v - blobVOffset - vOffset);
+                    /*moveCursor(3, 1);
+                    cout << (v - blobVOffset - vOffset);*/
                     if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
                     {
-                        moveCursor(4, 1);
-                        cout << (v - blobVOffset - vOffset);
+                        /*moveCursor(4, 1);
+                        cout << (v - blobVOffset - vOffset);*/
                         blobsPosition[i * 2] = 0;
                         blobsPosition[(i * 2) + 1] = 0;
                         int blobWorth = blobsSizes[i];
