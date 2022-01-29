@@ -114,13 +114,13 @@ void calibrateScreen()
 
 array<string, 200> buildRandomMap()
 {
-    int threshold = 100;
+    int threshold = 100; //modifiable
     array<string,200> newMap;
     string newLine = "";
     string lastLine = "";
     array<int, 800> cellThreshold = {};
     array<int, 800> cellThresholdLastLine = {};
-    int distancer = 10;
+    int distancer = 10; //modifiable
 
     for (int i = 0; i < 200; ++i)
     {
@@ -128,24 +128,24 @@ array<string, 200> buildRandomMap()
         for (int i = 0; i < ((lineSize / 2) - 1); ++i)
         {
             if (i != 0)
-                threshold -= cellThreshold[i - 1] * 4;
-            threshold -= cellThresholdLastLine[i] * 30;
-            threshold = threshold <= 0 ? 5 : threshold;
-            if (rand() % threshold == threshold - 1 && distancer > 0)
+                threshold -= cellThreshold[i - 1] * 4; //modifiable
+            threshold -= cellThresholdLastLine[i] * 30; //modifiable
+            threshold = threshold <= 0 ? 5 : threshold; //modifiable
+            if (rand() % threshold == threshold - 1 && distancer > 0) //formula modifiable
             {
-                cellThreshold[i] += 1;
+                cellThreshold[i] += 1; //modifiable
                 newLine += "1";
-                distancer -= 1;
-                threshold = 100;
+                distancer -= 1; //modifiable
+                threshold = 100; //modifiable
             }
             else
             {
-                cellThreshold[i] += 0;
+                cellThreshold[i] += 0; //modifiable
                 newLine += ".";
-                threshold -= 1;
-                distancer -= 1;
+                threshold -= 1; //modifiable
+                distancer -= 1; //modifiable
             }
-            distancer = distancer < -30 ? 10 : distancer;
+            distancer = distancer < -30 ? 10 : distancer; //modifiable
         }
         newMap[i] = newLine;
         lastLine = newLine;
