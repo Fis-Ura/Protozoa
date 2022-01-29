@@ -828,29 +828,86 @@ void drawBlobs()
     }
 }
 
+//variables utilisées par le boss
+int bossSteps = 0;
+array<int, 2> bossPosition = { 20 , 360 };
+int bossHealth = 100;
+int bossSpeed = 1;
+
+//moves toward the prot with base speed and increment speed by 1 every 100 steps
+void moveBoss()
+{
+    int spdBoost = 1 + (bossSteps / 100);
+    moveCursor(2, 2);
+    //cout << spdBoost;
+    int v = bossPosition[0];
+    int h = bossPosition[1];
+    int bossVOffset = v - int(currentMap.size()) / 2;
+    int bossHOffset = h - lineSize / 2;
+    int moveV = bossVOffset < vOffset ? 1 : -1;
+    int moveH = bossHOffset < hOffset ? 1 : -1;
+    bossPosition[0] = v + moveV * spdBoost;
+    bossPosition[1] = h + moveH * spdBoost;
+    ++bossSteps;
+}
+
 void drawBoss()
 {
-    int vBoss = 20;
-    int hBoss = 360;
+    int vBoss = bossPosition[0];
+    int hBoss = bossPosition[1];
     int bossVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
     int bossHOffset = (lineSize / 2) - (hSize / 2);
-    if (vBoss > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && vBoss < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
+    int vStartAt = bossA.size() - ((vBoss + bossA.size()) - ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset));
+    int vEndAt = bossA.size() - (vBoss - ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset) + bossA.size() - 1);
+    int hStartLimit = ((lineSize / 2) - (hSize / 2) + hOffset);
+    int hStartAt = 64 - ((hBoss + 64) - ((lineSize / 2) - (hSize / 2) + hOffset));
+    if(vStartAt < int(bossA.size()) && vEndAt > 0)
     {
-        if (hBoss > ((lineSize / 2) - (hSize / 2) + hOffset) && hBoss < ((lineSize / 2) + (hSize / 2) + hOffset))
+        vStartAt = vStartAt > bossA.size() || vStartAt < 0 ? 0 : vStartAt;
+        vEndAt = bossA.size() > vEndAt ? vEndAt : bossA.size();
+        if (hStartAt < 64 && hBoss < ((lineSize / 2) + (hSize / 2) + hOffset))
         {
-            for (int i = 0; i < boss.size(); ++i)
+            hStartAt = hStartAt > 64 || hStartAt < 0 ? 0 : hStartAt;
+            for (int iLine = vStartAt; iLine < vEndAt; ++iLine)
             {
-                moveCursor(vBoss + i - bossVOffset - vOffset, hBoss - bossHOffset - hOffset);
-                cout << boss[i];
+                //int hEndAt = bossA.size() - (vBoss - ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset) + bossA.size() - 1);
+                string newLine;
+                int hEndAt = 32;
+                int hStartAt = 5;
+                int notAnsiCounter = 0;
+                moveCursor(2, 1);
+                cout << spaceString(20);
+                moveCursor(2, 1);
+                cout << hStartAt;
+                moveCursor(3, 1);
+                cout << spaceString(20);
+                moveCursor(3, 1);
+                cout << hEndAt;
+                moveCursor(4, 1);
+                cout << spaceString(20);
+                moveCursor(4, 1);
+                cout << bossA.size();
+                moveCursor(5, 1);
+                cout << spaceString(20);
+                moveCursor(5, 1);
+                cout << hStartLimit;
+                string line = bossA[iLine];
+                for (int iCol = 0; iCol < bossA[iLine].size(); ++iCol)
+                {
+                    if (line[iCol] == ' ' || line[iCol] == '.') ++notAnsiCounter;
+                    if (notAnsiCounter < hEndAt)
+                    {
+                        if (notAnsiCounter >= hStartAt)
+                            newLine += line[iCol];
+                    }
+                }
+                moveCursor(vBoss + iLine - bossVOffset - vOffset, hBoss - bossHOffset - hOffset);
+                cout << newLine;
             }
         }
     }
 }
 
-void bossBattle()
-{
-
-}
 
 bool drawMap(char& nextMove)
 {
@@ -883,7 +940,6 @@ bool drawMap(char& nextMove)
         vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
         hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
         system("cls");
-        //cout << int(nextMove);
         cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte et le reste du jeux.
 
         for (int imap = ((int(currentMap.size()) / 2) - (vSize / 2)) + vOffset; imap < ((int(currentMap.size()) / 2) + (vSize / 2)) + vOffset; ++imap)
@@ -908,7 +964,11 @@ bool drawMap(char& nextMove)
     drawBlobs();
     moveMonsters();
     drawMonsters();
-    drawBoss();
+    //(enlever les comments quand le code du boss est fini)// if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
+    {
+        moveBoss();
+        drawBoss();
+    }
     if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
         for (int i = 0; i < Inventory.size(); ++i)
