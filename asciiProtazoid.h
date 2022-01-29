@@ -133,7 +133,7 @@ const array<string, 2> ProtagAdyingE = {
 
 
 const array<string, 22> Inventory = {
-        u8"┌─────────────────┬──────────────────────┬────────────────────┐",
+        u8"\x1b[48;5;234m\x1b[38;5;76m┌─────────────────┬──────────────────────┬────────────────────┐",
         u8"│ 1: Evolution Vie│ 2: Evolution Vitesse │ 3: Evolution Force │",
         u8"│     5x Calories │       5x Calories    │     5x Calories    │",
         u8"│                 │                      │                    │",
@@ -153,4 +153,4 @@ const array<string, 22> Inventory = {
         u8"│   Déplacez votre prot pour sortir de l'inventaire.          │",
         u8"│                                                             │",
         u8"│                                                             │",
-        u8"└─────────────────────────────────────────────────────────────┘"};
+        u8"└─────────────────────────────────────────────────────────────┘" };
