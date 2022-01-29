@@ -488,21 +488,21 @@ bool drawProtazoid()
         moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 2);
         cout << spaceString(25);
         moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 2);
-        cout << usedCal << " dépensés";
+        cout << "\x1b[48;5;11m\x1b[38;5;16m" << usedCal << " dépensés";
     }
     else if (protSatiety < 50 && protSatiety > 0 &&  protInvQty[0] == 0)
     {
         if (protSatiety > 40 || protSatiety < 5)
         {
             moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 20);
-            cout << " Vous n'avez plus d'énergie, trouvez quelque chose à manger vite!!";
+            cout << "\x1b[48;5;11m\x1b[38;5;16m" << " Vous n'avez plus d'énergie, trouvez quelque chose à manger vite!!";
         }
     }
     else if (protSatiety <= -10)
     {
         protLife -= 1;
         moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 20);
-        cout << "Chaque pas est de plus en plus lourd, il faut de l'énergie!! -1 Vie (" << protLife << ")";
+        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Chaque pas est de plus en plus lourd, il faut de l'énergie!! -1 Vie (" << protLife << ")";
         protSatiety = 0;
     }
 
@@ -555,7 +555,7 @@ bool drawProtazoid()
         protLife += 1;
         protInvQty[0] -= 1;
         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
-        cout << "calories(" << protInvQty[0] << ") for life(" << protLife << ")";
+        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "calories(" << protInvQty[0] << ") for life(" << protLife << ")";
     }
 
     return true;
@@ -665,7 +665,7 @@ void drawMonsters()
                     {
                         protInvQty[0] += 15;
                         moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth/2 + 2);
-                        cout << "Mmmmm!! +15!!! (" << protInvQty[0] << ")";
+                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!!! (" << protInvQty[0] << ")";
                         for (int i = 0; i < int(monsterAsmall.size()); ++i)
                         {
                             moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
@@ -675,7 +675,7 @@ void drawMonsters()
                     if (monstersHealth[iMonster] == -2)
                     {
                         moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                        cout << "Mmmmm!! +15!! (" << protInvQty[0] << ")";
+                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!! (" << protInvQty[0] << ")";
                         for (int i = 0; i < int(monsterAdyingA.size()); ++i)
                         {
                             moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
@@ -685,7 +685,7 @@ void drawMonsters()
                     if (monstersHealth[iMonster] == -3)
                     {
                         moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 1);
-                        cout << "Mmmmm!! +15! (" << protInvQty[0] << ")";
+                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15! (" << protInvQty[0] << ")";
                         for (int i = 0; i < int(monsterAdyingB.size()); ++i)
                         {
                             moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
@@ -920,11 +920,11 @@ bool drawMap(char& nextMove)
         moveCursor(vSize / 2 - 1, hSize / 2 - longest / 2);
         cout << spaceString(longest);
         moveCursor(vSize / 2 - 1, hSize / 2 - quitLine1.size() / 2);
-        cout << quitLine1;
+        cout << "\x1b[48;5;234m\x1b[38;5;11m" << quitLine1;
         moveCursor(vSize / 2, hSize / 2 - longest / 2);
         cout << spaceString(longest);
         moveCursor(vSize / 2, hSize / 2 - quitLine2.size() / 2);
-        cout << quitLine2;
+        cout << "\x1b[48;5;234m\x1b[38;5;11m" << quitLine2;
         char confirmQuit;
         cin >> confirmQuit;
         if (int(confirmQuit) == 'o')
@@ -1314,7 +1314,7 @@ int main()
             if (protLife > 0)
             {
                 cout << ESC + (to_string(vSize + 1) + ";1H");
-                cout << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire. Pour quitter, appuyez sur la touche ESCAPE.";
+                cout << "\x1b[48;5;234m\x1b[38;5;11m" << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire. Pour quitter, appuyez sur la touche ESCAPE." << "\x1b[0m\x1b[48;5;234m";
                 nextMove = _getch();
             }
             else if(protLife <= 0 && protLife > -9)
@@ -1329,13 +1329,13 @@ int main()
                 string gameOverLine2 = "L'histoire de votre espèce se termine ici, meilleure chance à la prochaine incarnation.";
                 string gameOverLine3 = "Appuyez sur q pour quitter Protozoa ou r pour renaître.";
                 moveCursor(vSize / 2 - 2, hSize / 2 - gameOverLine1.size() / 2);
-                cout << gameOverLine1;
+                cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine1;
                 Sleep(1000);
                 moveCursor(vSize / 2 - 2 + 1, hSize / 2 - gameOverLine2.size() / 2);
-                cout << gameOverLine2;
+                cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine2;
                 Sleep(1000);
                 moveCursor(vSize / 2 - 2 + 2, hSize / 2 - gameOverLine3.size() / 2);
-                cout << gameOverLine3;
+                cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine3;
                 Sleep(1000);
                 restart = _getch();
                 if (restart == 'q' || restart == 'Q')
