@@ -857,7 +857,7 @@ void drawBoss()
     int hBoss = bossPosition[1];
     int bossVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
     int bossHOffset = (lineSize / 2) - (hSize / 2);
-    int vStartAt = bossA.size() - ((vBoss + bossA.size()) - ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset));
+    int vStartAt = int(bossA.size()) - ((vBoss + bossA.size()) - ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset));
     int vEndAt = bossA.size() - (vBoss - ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset) + bossA.size() - 1);
     int hStartLimit = ((lineSize / 2) - (hSize / 2) + hOffset);
     int hStartAt = 64 - ((hBoss + 64) - ((lineSize / 2) - (hSize / 2) + hOffset));
@@ -872,8 +872,8 @@ void drawBoss()
             {
                 //int hEndAt = bossA.size() - (vBoss - ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset) + bossA.size() - 1);
                 string newLine;
-                int hEndAt = 32;
-                int hStartAt = 5;
+                int hEndAt = 64;
+                hStartAt += 1;
                 int notAnsiCounter = 0;
                 moveCursor(2, 1);
                 cout << spaceString(20);
@@ -892,7 +892,7 @@ void drawBoss()
                 moveCursor(5, 1);
                 cout << hStartLimit;
                 string line = bossA[iLine];
-                for (int iCol = 0; iCol < bossA[iLine].size(); ++iCol)
+                for (int iCol = 0; iCol < int(bossA[iLine].size()); ++iCol)
                 {
                     if (line[iCol] == ' ' || line[iCol] == '.') ++notAnsiCounter;
                     if (notAnsiCounter < hEndAt)
@@ -901,7 +901,8 @@ void drawBoss()
                             newLine += line[iCol];
                     }
                 }
-                moveCursor(vBoss + iLine - bossVOffset - vOffset, hBoss - bossHOffset - hOffset);
+                int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
+                moveCursor(vBoss + iLine - bossVOffset - vOffset, hMove);
                 cout << newLine;
             }
         }
