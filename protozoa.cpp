@@ -945,9 +945,8 @@ void drawBoss()
                             cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
                         }
                         protRegen = false;
-
-                        bossHealth = 0; //enlever cette ligne apres test
                     }
+
                     //si les pv du boss sont a 0 ou dessous, lancer l'animation de mort et le win screen
                     if(bossHealth < 0)
                     {
@@ -965,38 +964,6 @@ void drawBoss()
                             int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingA.size())) / 2;
                             vDeathEnd = vDeathEnd > int(bossAdyingA.size()) ? int(bossAdyingA.size()) : vDeathEnd;
                             int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            moveCursor(2, 1);
-                            cout << spaceString(20);
-                            moveCursor(2, 1);
-                            cout << "hStartAt: " << hStartAt;
-                            moveCursor(3, 1);
-                            cout << spaceString(20);
-                            moveCursor(3, 1);
-                            cout << "vStartAt: " << vStartAt;
-                            moveCursor(4, 1);
-                            cout << spaceString(20);
-                            moveCursor(4, 1);
-                            cout << "vDeathStart: " << vDeathStart;
-                            moveCursor(5, 1);
-                            cout << spaceString(20);
-                            moveCursor(5, 1);
-                            cout << "vEndAt: " << vEndAt;
-                            moveCursor(6, 1);
-                            cout << spaceString(20);
-                            moveCursor(6, 1);
-                            cout << "bossAdyingA.size(): " << bossAdyingA.size();
-                            moveCursor(7, 1);
-                            cout << spaceString(20);
-                            moveCursor(7, 1);
-                            cout << "vDeathEnd: " << vDeathEnd;
-                            moveCursor(8, 1);
-                            cout << spaceString(20);
-                            moveCursor(8, 1);
-                            cout << "hDeathStart: " << hDeathStart;
-                            moveCursor(9, 1);
-                            cout << spaceString(20);
-                            moveCursor(9, 1);
-                            cout << "hMove: " << hMove;
                             for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
                             {
                                 string newLine;
@@ -1344,7 +1311,7 @@ bool drawMap(char& nextMove)
     drawBlobs();
     moveMonsters();
     drawMonsters();
-    //if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
+    if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
     {
         if(bossHealth > 0) moveBoss();
         drawBoss();
