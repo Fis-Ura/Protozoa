@@ -156,10 +156,10 @@ array<string, 200> buildRandomMap()
 
 //fonction pour demander a l'usager si il veut commencer une nouvelle partie
 string startString = "Voulez-vous débuter un nouveau Protazoid? o pour débuter.";
-int longestString = startString.size();
+int longestString = int(startString.size());
 bool displayStartGame()
 {
-    string spaces = spaceString(startString.size());
+    string spaces = spaceString(int(startString.size()));
     char userStart = -1;
     while (userStart != 'o' && userStart != 'O' && userStart != 'n' && userStart != 'N')
     {
@@ -249,22 +249,22 @@ void displayIntro(int framesPlayed, bool skipIntro)
 
             int longest = 0;
             string introLine1 = "Au tout début des temps, avant la naissance des continents et des mammifères terrestres, il n'y avait qu'océan.";
-            longest = introLine1.size() > longest ? introLine1.size() : longest;
+            longest = int(introLine1.size()) > longest ? int(introLine1.size()) : longest;
             string introLine2 = "Immense, profond et périlleux il était. Un combat de tous les instants s’y passait. La loi du plus fort y régnait.";
-            longest = introLine2.size() > longest ? introLine2.size() : longest;
+            longest = int(introLine2.size()) > longest ? int(introLine2.size()) : longest;
             string introLine3 = "Dans ce jeu vous incarnez un Protazoid, un être unicellulaire microscopique tout comme nos ancêtres lointains.";
-            longest = introLine3.size() > longest ? introLine3.size() : longest;
+            longest = int(introLine3.size()) > longest ? int(introLine3.size()) : longest;
             string introLine4 = "Et tout comme eux, votre existence sera un combat de tous les instants.";
-            longest = introLine4.size() > longest ? introLine4.size() : longest;
+            longest = int(introLine4.size()) > longest ? int(introLine4.size()) : longest;
             string introLine5 = "Comme Darwin décrit si bien \"It is not the strongest of the species that survives, nor the most intelligent; it is the one most adaptable to change.";
-            longest = introLine5.size() > longest ? introLine5.size() : longest;
+            longest = int(introLine5.size()) > longest ? int(introLine5.size()) : longest;
             string introLine6 = "Donc, accumulez des calories en dévorant ce qui vous entoure et choisissez bien votre chemin évolutif, car le futur de votre espèce est entre vos mains.";
-            longest = introLine6.size() > longest ? introLine6.size() : longest;
+            longest = int(introLine6.size()) > longest ? int(introLine6.size()) : longest;
             if (i >= 1)
             {
                 moveCursor(vSize / 2 - logo.size() / 2 - 12, hSize / 2 - longest / 2);
                 cout << spaceString(longest);
-                moveCursor(vSize / 2 - logo.size() / 2 - 12, hSize / 2 - introLine1.size() / 2 + 1);
+                moveCursor(vSize / 2 - logo.size() / 2 - 12, hSize / 2 - int(introLine1.size()) / 2 + 1);
                 cout << introLine1;
             }
             if (i >= 8)
@@ -1120,12 +1120,6 @@ int main()
     //calibration de l'écran d'affichage
     calibrateScreen();
 
-    //positionnement et initialisation des acteurs
-    positionBlobs();
-    sizeBlobs();
-    positionMonsters();
-    currentMap = buildRandomMap();
-
     cout << "Appuyez sur S pour skipper l'intro ou une autre touche pour le voir et appuyez sur Entrée.\n";
     bool skipIntro = false;
     char userSkip;
@@ -1148,6 +1142,40 @@ int main()
     //boucle de jeu principale
     while (startGame)
     {
+        //réinitialisation des variables
+        //variables utilisées pour la carte
+        userQuit = false;
+        vOffset = 0;
+        hOffset = 0;
+        bossIsIn = false;
+        //variables utilisées pour le protazoid
+        protWidth = 16;
+        protHeight = 11;
+        protSatiety = 100;
+        //array<string, 4> protInvNames = { "Calories", "Life", "Speed", "Strength" };
+        protInvQty = { 0, 0, 0, 0 };
+        protInvOpen = false;
+        //variable utilisés par les monstres
+        monstersPosition = {};
+        monstersHealth = {};
+        monstersStrength = {};
+        //variables utilisées par les blobs
+        blobsNumber = 25 + (rand() % 26);
+        blobsPosition = {};
+        blobsSizes = {};
+        //variables utilisées par le boss
+        bossSteps = 0;
+        bossPosition = { 20 , 360 };
+        bossHealth = 15;
+        bossSpeed = 1;
+        bossStrength = 10;
+
+        //positionnement et initialisation des acteurs
+        positionBlobs();
+        sizeBlobs();
+        positionMonsters();
+        currentMap = buildRandomMap();
+
         //création du personnage, choix: mouvement, points de vie, force; plus tard: type du protazoid
         //4 points a répartir comme on veut entre les 3 choix
         //minimum de 2 dans chacune des caractéristiques, 1 point équivaut à 1 de plus dans la caractéristique
@@ -1161,6 +1189,7 @@ int main()
         {
             pointsLeft = 4;
             protLife = 2;
+            protLifeMax = 2;
             protSpeed = 2;
             protStrength = 2;
 
@@ -1321,15 +1350,15 @@ int main()
             pointsLeft -= pointsUsed;
             protStrength += pointsUsed;
             
-            addSpacing(9, logo.size(), longestString.size());
+            addSpacing(9, int(logo.size()), int(longestString.size()));
 
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
+            moveCursor(vSize / 2 + int(logo.size()) / 2 + 2, hSize / 2 - int(longestString.size()) / 2 + 2);
             cout << "Points de caractéristique de " << protName;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
+            moveCursor(vSize / 2 + int(logo.size()) / 2 + 3, hSize / 2 - int(longestString.size()) / 2 + 3);
             cout << "Vie: " << setw(3) << protLife;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
+            moveCursor(vSize / 2 + int(logo.size()) / 2 + 4, hSize / 2 - int(longestString.size()) / 2 + 3);
             cout << "Vitesse: " << setw(3) << protSpeed;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
+            moveCursor(vSize / 2 + int(logo.size()) / 2 + 5, hSize / 2 - int(longestString.size()) / 2 + 3);
             cout << "Force: " << setw(3) << protStrength;
 
             char validCarac;
@@ -1365,23 +1394,29 @@ int main()
                 char restart;
                 string gameOverLine1 = "Vous êtes mort.";
                 string gameOverLine2 = "L'histoire de votre espèce se termine ici, meilleure chance à la prochaine incarnation.";
-                string gameOverLine3 = "Appuyez sur q pour quitter Protozoa ou r pour renaître.";
-                moveCursor(vSize / 2 - 2, hSize / 2 - gameOverLine1.size() / 2);
+                string gameOverLine3 = "Appuyez sur q pour quitter Protozoa ou r pour renaître suivi de Entrer.";
+                moveCursor(vSize / 2 - 2, hSize / 2 - int(gameOverLine1.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine1;
                 Sleep(1000);
-                moveCursor(vSize / 2 - 2 + 1, hSize / 2 - gameOverLine2.size() / 2);
+                moveCursor(vSize / 2 - 2 + 1, hSize / 2 - int(gameOverLine2.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine2;
                 Sleep(1000);
-                moveCursor(vSize / 2 - 2 + 2, hSize / 2 - gameOverLine3.size() / 2);
+                moveCursor(vSize / 2 - 2 + 2, hSize / 2 - int(gameOverLine3.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine3;
                 Sleep(1000);
-                restart = _getch();
+                cin >> restart;
                 if (restart == 'q' || restart == 'Q')
+                {
                     inMap = false;
+                    startGame = false;
+                }
+                if (restart == 'r' || restart == 'R')
+                {
+                    inMap = false;
+                }
+
             }
         }
-
-        startGame = false;
     }
     
     return 0;
