@@ -675,9 +675,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
     }
 }
 
-int blobsNumber = 25 + (rand() % 26);
-array<int, 100> blobsPosition;
-void positionBlobs(int lineSize, array<string, 200> currentMap)
+void positionBlobs(int lineSize, array<string, 200> currentMap, int blobsNumber, array<int, 100>& blobsPosition)
 {
     for (int i = 0; i < blobsNumber; ++i)
     {
@@ -688,8 +686,7 @@ void positionBlobs(int lineSize, array<string, 200> currentMap)
     }
 }
 
-array<int, 50> blobsSizes;
-void sizeBlobs()
+void sizeBlobs(int blobsNumber, array<int, 50>& blobsSizes)
 {
     for (int i = 0; i < blobsNumber; ++i)
     {
@@ -698,7 +695,7 @@ void sizeBlobs()
     }
 }
 
-void addBlobs(int lineSize, array<string, 200> currentMap)
+void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes)
 {
     int numberAdded = 5 + rand() % 6;
     for (int i = 0; i < 50; ++i)
@@ -719,7 +716,7 @@ void addBlobs(int lineSize, array<string, 200> currentMap)
     }
 }
 
-void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty)
+void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty, array<int, 100>& blobsPosition, array<int, 50> blobsSizes)
 {
     for (int i = 0; i < 50; ++i)
     {
@@ -797,15 +794,8 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
     }
 }
 
-//variables utilisées par le boss
-int bossSteps = 0;
-array<int, 2> bossPosition = { 20 , 360 };
-int bossHealth = 15;
-int bossSpeed = 1;
-int bossStrength = 10;
-
 //moves toward the prot with base speed and increment speed by 1 every 100 steps
-void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
+void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int& bossSteps, array<int, 2>& bossPosition)
 {
     int spdBoost = 1 + (bossSteps / 100);
     moveCursor(2, 2);
@@ -821,7 +811,7 @@ void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> current
     ++bossSteps;
 }
 
-void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength)
+void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 2> bossPosition, int& bossHealth, int bossStrength)
 {
     int vBoss = bossPosition[0];
     int hBoss = bossPosition[1];
@@ -1225,7 +1215,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
 }
 
 
-bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int,20>& monstersPosition, array<int, 10> monstersHealth, array<int, 10> monstersStrength)
+bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes, int& bossHealth, int& bossSteps, array<int, 2>& bossPosition, int bossStrength)
 {
     if (int(nextMove) == 27) {
         int longest = 0;
@@ -1276,14 +1266,14 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
             cout << newLine << endl;
         }
     }
-    if(rand() % 5 == 4) addBlobs(lineSize, currentMap);
-    drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty);
+    if(rand() % 5 == 4) addBlobs(lineSize, currentMap, blobsPosition, blobsSizes);
+    drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty, blobsPosition, blobsSizes);
     moveMonsters(vOffset, hOffset, lineSize, currentMap, monstersPosition, monstersHealth);
     drawMonsters(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, protInvQty, monstersPosition, monstersHealth, monstersStrength);
     if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
     {
-        if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap);
-        drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength);
+        if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap, bossSteps, bossPosition);
+        drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, bossPosition, bossHealth, bossStrength);
     }
     if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
@@ -1382,7 +1372,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
     if (!protInvOpen && protInvWasOpen)
     {
         char refreshMap= 'r';
-        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength);
+        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength);
     }
     return true;
 }
@@ -1427,6 +1417,17 @@ int main()
     array<int, 10> monstersHealth;
     array<int, 10> monstersStrength;
 
+    //variables utilisées par les blobs
+    int blobsNumber = 25 + (rand() % 26);
+    array<int, 100> blobsPosition;
+    array<int, 50> blobsSizes;
+
+    //variables utilisées par le boss
+    int bossSteps = 0;
+    array<int, 2> bossPosition = { 20 , 360 };
+    int bossHealth = 15;
+    int bossSpeed = 1;
+    int bossStrength = 10;
 
     string startString = "Voulez-vous débuter un nouveau Protazoid? o pour débuter.";
     int longestString = int(startString.size());
@@ -1482,8 +1483,8 @@ int main()
 
         //positionnement et initialisation des acteurs
         currentMap = buildRandomMap(lineSize);
-        positionBlobs(lineSize, currentMap);
-        sizeBlobs();
+        positionBlobs(lineSize, currentMap, blobsNumber, blobsPosition);
+        sizeBlobs(blobsNumber, blobsSizes);
         positionMonsters(lineSize, currentMap, monstersPosition, monstersHealth, monstersStrength);
 
         //création du personnage, choix: mouvement, points de vie, force; plus tard: type du protazoid
@@ -1685,7 +1686,7 @@ int main()
         while (inMap)
         {
             protRegen = true;
-            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength);
+            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength);
             if (userQuit) break;
             inMap = drawProtazoid(vSize, hSize, protWidth, protHeight, protLife, protLifeMax, protRegen, protSpeed, protStrength, protSatiety, protInvQty);
             if (protLife > 0 && bossHealth > 0)
