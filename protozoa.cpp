@@ -831,8 +831,9 @@ void drawBlobs()
 //variables utilisées par le boss
 int bossSteps = 0;
 array<int, 2> bossPosition = { 20 , 360 };
-int bossHealth = 100;
+int bossHealth = 15;
 int bossSpeed = 1;
+int bossStrength = 10;
 
 //moves toward the prot with base speed and increment speed by 1 every 100 steps
 void moveBoss()
@@ -868,31 +869,12 @@ void drawBoss()
         vEndAt = int(bossA.size()) > vEndAt ? vEndAt : int(bossA.size());
         if (hStartAt < 64 && hBoss < ((lineSize / 2) + (hSize / 2) + hOffset))
         {
+            //draw boss on map if not dead
             hStartAt = hStartAt > 64 || hStartAt < 0 ? 0 : hStartAt;
             for (int iLine = vStartAt; iLine < vEndAt; ++iLine)
             {
                 string newLine;
                 int notAnsiCounter = 0;
-               /* moveCursor(2, 1);
-                cout << spaceString(20);
-                moveCursor(2, 1);
-                cout << "hstartat: " << hStartAt;
-                moveCursor(3, 1);
-                cout << spaceString(20);
-                moveCursor(3, 1);
-                cout << "hendat: " << hEndAt;
-                moveCursor(4, 1);
-                cout << spaceString(20);
-                moveCursor(4, 1);
-                cout << "hboss: " << hBoss;
-                moveCursor(5, 1);
-                cout << spaceString(20);
-                moveCursor(5, 1);
-                cout << "hstartlimit: " << hStartLimit;
-                moveCursor(6, 1);
-                cout << spaceString(20);
-                moveCursor(6, 1);
-                cout << "hoffset: " << hOffset;*/
                 string line = bossA[iLine];
                 for (int iCol = 0; iCol < int(bossA[iLine].size()); ++iCol)
                 {
@@ -910,6 +892,55 @@ void drawBoss()
                 int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
                 moveCursor(vBoss + iLine - bossVOffset - vOffset, hMove);
                 cout << newLine;
+            }
+            /*
+            moveCursor(2, 1);
+            cout << spaceString(20);
+            moveCursor(2, 1);
+            cout << "this: " << (vBoss + (vSize / 2));
+            moveCursor(3, 1);
+            cout << spaceString(20);
+            moveCursor(3, 1);
+            cout << "vendat: " << vEndAt;
+            moveCursor(4, 1);
+            cout << spaceString(20);
+            moveCursor(4, 1);
+            cout << "vboos: " << vBoss;
+            moveCursor(5, 1);
+            cout << spaceString(20);
+            moveCursor(5, 1);
+            cout << "vStartAt: " << vStartAt;
+            moveCursor(6, 1);
+            cout << spaceString(20);
+            moveCursor(6, 1);
+            cout << "voffset: " << vOffset;*/
+            //determine if boss and prot has collisioned
+            if (vEndAt - vStartAt >= vSize / 2 - protHeight / 2 + 1)
+            {
+                if ((hBoss - hStartLimit) - hSize / 2 < protWidth / 2 && ((hBoss - hStartLimit) - (hSize / 2 - 64)) > -(protWidth / 2 - 1))
+                {
+                    moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                    int protAttack = (protStrength + 1) + rand() % 6;
+                    int bossAttack = (bossStrength + 1) + rand() % 6;
+                    if (protAttack >= bossAttack)
+                    {
+                        bossHealth -= 1;
+                        string hit = string("\x1b[48;5;11m\x1b[38;5;16m") + "Bang!! (" + to_string(bossHealth) + ")";
+                        string win = string("\x1b[48;5;11m\x1b[38;5;16m") + "Miam!! (" + to_string(bossHealth) + ")";
+                        string attackresult = bossHealth <= 0 ? win : hit;
+                        cout << spaceString(attackresult.size());
+                        moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                        cout << attackresult;
+                    }
+                    else
+                    {
+                        protLife -= 1;
+                        cout << spaceString(11);
+                        moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                        cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
+                    }
+                    protRegen = false;
+                }
             }
         }
     }
