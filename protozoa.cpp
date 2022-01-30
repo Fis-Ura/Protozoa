@@ -1002,7 +1002,7 @@ bool drawMap(char& nextMove)
     drawBlobs();
     moveMonsters();
     drawMonsters();
-    //(enlever les comments quand le code du boss est fini)// if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
+    if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
     {
         moveBoss();
         drawBoss();
