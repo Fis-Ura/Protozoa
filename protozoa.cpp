@@ -10,21 +10,6 @@
 
 using namespace BdB;
 
-//variables utilisées pour le protazoid
-string protName;
-int protWidth = 16;
-int protHeight = 11;
-int protLife;
-int protLifeMax;
-bool protRegen;
-int protSpeed;
-int protStrength;
-int protSatiety = 100;
-array<string, 4> protInvNames = { "Calories", "Life", "Speed", "Strength" };
-array<int, 4> protInvQty = { 0, 0, 0, 0 };
-bool protInvOpen = false;
-char nextMove;
-
 void moveCursor(int v, int h)
 {
     cout << ESC + (to_string(v) + ";" + to_string(h) + "H");
@@ -197,7 +182,7 @@ string enterName(int vSize, int hSize)
 }
 
 //fonction pour que l'usager entre et valide le nom
-void startNameValidation(int vSize, int hSize) {
+void startNameValidation(int vSize, int hSize, string& protName) {
     bool nameIsGood = false;
     while (!nameIsGood)
     {
@@ -348,7 +333,7 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
     }
 }
 
-bool drawProtazoid(int vSize, int hSize)
+bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty)
 {
     if (protLife > 0)
     {
@@ -596,7 +581,7 @@ void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> cur
     }
 }
 
-void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
+void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 4>& protInvQty)
 {
     for (int iMonster = 0; iMonster < 10; ++iMonster)
     {
@@ -740,7 +725,7 @@ void addBlobs(int lineSize, array<string, 200> currentMap)
     }
 }
 
-void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
+void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty)
 {
     for (int i = 0; i < 50; ++i)
     {
@@ -842,7 +827,7 @@ void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> current
     ++bossSteps;
 }
 
-void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
+void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength)
 {
     int vBoss = bossPosition[0];
     int hBoss = bossPosition[1];
@@ -1246,7 +1231,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
 }
 
 
-bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap)
+bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen)
 {
     if (int(nextMove) == 27) {
         int longest = 0;
@@ -1298,13 +1283,13 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
         }
     }
     if(rand() % 5 == 4) addBlobs(lineSize, currentMap);
-    drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap);
+    drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty);
     moveMonsters(vOffset, hOffset, lineSize, currentMap);
-    drawMonsters(vSize, hSize, vOffset, hOffset, lineSize, currentMap);
+    drawMonsters(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, protInvQty);
     if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
     {
         if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap);
-        drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap);
+        drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength);
     }
     if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
@@ -1403,7 +1388,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
     if (!protInvOpen && protInvWasOpen)
     {
         char refreshMap= 'r';
-        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap);
+        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen);
     }
     return true;
 }
@@ -1428,6 +1413,20 @@ int main()
 
     //calibration de l'écran d'affichage
     calibrateScreen(vSize, hSize);
+
+    //variables utilisées pour le Protazoid
+    string protName;
+    int protWidth = 16;
+    int protHeight = 11;
+    int protLife;
+    int protLifeMax;
+    bool protRegen;
+    int protSpeed;
+    int protStrength;
+    int protSatiety = 100;
+    array<int, 4> protInvQty = { 0, 0, 0, 0 };
+    bool protInvOpen = false;
+    char nextMove;
 
     cout << "Appuyez sur S pour skipper l'intro ou une autre touche pour le voir et appuyez sur Entrée.\n";
     bool skipIntro = false;
@@ -1488,7 +1487,7 @@ int main()
         //4 points a répartir comme on veut entre les 3 choix
         //minimum de 2 dans chacune des caractéristiques, 1 point équivaut à 1 de plus dans la caractéristique
 
-        startNameValidation(vSize, hSize);
+        startNameValidation(vSize, hSize, protName);
 
         //boucle pour que l'usager valide les points de caractéristiques de son protazoid
         bool pointsAreGood = false;
@@ -1683,9 +1682,9 @@ int main()
         while (inMap)
         {
             protRegen = true;
-            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap);
+            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen);
             if (userQuit) break;
-            inMap = drawProtazoid(vSize, hSize);
+            inMap = drawProtazoid(vSize, hSize, protWidth, protHeight, protLife, protLifeMax, protRegen, protSpeed, protStrength, protSatiety, protInvQty);
             if (protLife > 0 && bossHealth > 0)
             {
                 cout << ESC + (to_string(vSize + 1) + ";1H");
@@ -1727,7 +1726,7 @@ int main()
             if (bossHealth <= -12)
             {
                 char restart;
-                string gameOverLine1 = "Vous avez gagné!!";
+                string gameOverLine1 = "Vous avez gagné, " + protName + "!!";
                 string gameOverLine2 = "Vos descendant ne se rappelleront pas de vous mais sachez que vous avez été primordial dans leur évolution.";
                 string gameOverLine3 = "Appuyez sur q pour quitter Protozoa ou r pour renaître suivi de Entrer.";
                 moveCursor(vSize / 2 - 2, hSize / 2 - int(gameOverLine1.size()) / 2);
