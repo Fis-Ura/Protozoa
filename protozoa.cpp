@@ -10,16 +10,6 @@
 
 using namespace BdB;
 
-//variables utilisées pour la carte
-bool userQuit = false;
-int hSize = 200;
-int vSize = 60;
-int vOffset = 0;
-int hOffset = 0;
-int lineSize = 800;
-array<string, 200> currentMap;
-bool bossIsIn = false;
-
 //variables utilisées pour le protazoid
 string protName;
 int protWidth = 16;
@@ -57,7 +47,7 @@ Ajoute du spacing
 @param int sizeX position X
 @param xOffset(optional) si n'est pas spécifier il reste a 1
 */
-void addSpacing(int lines, int sizeY, int sizeX, int xOffset = 1)
+void addSpacing(int lines, int sizeY, int sizeX, int vSize, int hSize, int xOffset = 1)
 {
     string spaces = spaceString(sizeX);
 
@@ -73,7 +63,7 @@ void clearCin()
     cin.ignore(120, '\n');
 }
 
-void calibrateScreen()
+void calibrateScreen(int& vSize, int& hSize)
 {
     cout << "Assurez-vous que votre écran de terminal soit maximisé.\n";
     Sleep(2000);
@@ -112,7 +102,7 @@ void calibrateScreen()
     }
 }
 
-array<string, 200> buildRandomMap()
+array<string, 200> buildRandomMap(int lineSize)
 {
     int threshold = 100; //modifiable
     array<string,200> newMap;
@@ -157,7 +147,7 @@ array<string, 200> buildRandomMap()
 //fonction pour demander a l'usager si il veut commencer une nouvelle partie
 string startString = "Voulez-vous débuter un nouveau Protazoid? o pour débuter.";
 int longestString = int(startString.size());
-bool displayStartGame()
+bool displayStartGame(int vSize, int hSize)
 {
     string spaces = spaceString(int(startString.size()));
     char userStart = -1;
@@ -186,7 +176,7 @@ bool displayStartGame()
     return startGame;
 }
 
-string enterName()
+string enterName(int vSize, int hSize)
 {
     string startName = "En tant que Protazoid, quel sera votre nom?";
     string spaces = spaceString(longestString);
@@ -207,11 +197,11 @@ string enterName()
 }
 
 //fonction pour que l'usager entre et valide le nom
-void startNameValidation() {
+void startNameValidation(int vSize, int hSize) {
     bool nameIsGood = false;
     while (!nameIsGood)
     {
-        string testName = enterName();
+        string testName = enterName(vSize, hSize);
         string startNameFinalValidate = "Votre Protazoid se nomme bien " + testName + "? Tappez o pour oui.";
         longestString = startNameFinalValidate.size() > longestString ? startNameFinalValidate.size() : longestString;
         string spaces = spaceString(startNameFinalValidate.size());
@@ -237,7 +227,7 @@ void startNameValidation() {
 }
 
 //fonction pour afficher l'intro
-void displayIntro(int framesPlayed, bool skipIntro)
+void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
 {
     for (int i = 0; i < framesPlayed; ++i)
     {
@@ -358,7 +348,7 @@ void displayIntro(int framesPlayed, bool skipIntro)
     }
 }
 
-bool drawProtazoid()
+bool drawProtazoid(int vSize, int hSize)
 {
     if (protLife > 0)
     {
@@ -565,7 +555,7 @@ array<int, 20> monstersPosition;
 array<int, 10> monstersHealth;
 array<int, 10> monstersStrength;
 
-void positionMonsters()
+void positionMonsters(int lineSize, array<string, 200> currentMap)
 {
     int monstersNumber = 10;
     for (int i = 0; i < monstersNumber; ++i)
@@ -579,7 +569,7 @@ void positionMonsters()
     }
 }
 
-void moveMonsters()
+void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
 {
     int monstersNumber = 10;
     for (int i = 0; i < monstersNumber; ++i)
@@ -606,7 +596,7 @@ void moveMonsters()
     }
 }
 
-void drawMonsters()
+void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
 {
     for (int iMonster = 0; iMonster < 10; ++iMonster)
     {
@@ -708,7 +698,7 @@ void drawMonsters()
 
 int blobsNumber = 25 + (rand() % 26);
 array<int, 100> blobsPosition;
-void positionBlobs()
+void positionBlobs(int lineSize, array<string, 200> currentMap)
 {
     for (int i = 0; i < blobsNumber; ++i)
     {
@@ -729,7 +719,7 @@ void sizeBlobs()
     }
 }
 
-void addBlobs()
+void addBlobs(int lineSize, array<string, 200> currentMap)
 {
     int numberAdded = 5 + rand() % 6;
     for (int i = 0; i < 50; ++i)
@@ -750,7 +740,7 @@ void addBlobs()
     }
 }
 
-void drawBlobs()
+void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
 {
     for (int i = 0; i < 50; ++i)
     {
@@ -836,7 +826,7 @@ int bossSpeed = 1;
 int bossStrength = 10;
 
 //moves toward the prot with base speed and increment speed by 1 every 100 steps
-void moveBoss()
+void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
 {
     int spdBoost = 1 + (bossSteps / 100);
     moveCursor(2, 2);
@@ -852,7 +842,7 @@ void moveBoss()
     ++bossSteps;
 }
 
-void drawBoss()
+void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap)
 {
     int vBoss = bossPosition[0];
     int hBoss = bossPosition[1];
@@ -1256,7 +1246,7 @@ void drawBoss()
 }
 
 
-bool drawMap(char& nextMove)
+bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap)
 {
     if (int(nextMove) == 27) {
         int longest = 0;
@@ -1307,14 +1297,14 @@ bool drawMap(char& nextMove)
             cout << newLine << endl;
         }
     }
-    if(rand() % 5 == 4) addBlobs();
-    drawBlobs();
-    moveMonsters();
-    drawMonsters();
+    if(rand() % 5 == 4) addBlobs(lineSize, currentMap);
+    drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap);
+    moveMonsters(vOffset, hOffset, lineSize, currentMap);
+    drawMonsters(vSize, hSize, vOffset, hOffset, lineSize, currentMap);
     if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
     {
-        if(bossHealth > 0) moveBoss();
-        drawBoss();
+        if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap);
+        drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap);
     }
     if (nextMove == 'i' || nextMove == 'I' || protInvOpen)
     {
@@ -1413,7 +1403,7 @@ bool drawMap(char& nextMove)
     if (!protInvOpen && protInvWasOpen)
     {
         char refreshMap= 'r';
-        drawMap(refreshMap);
+        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap);
     }
     return true;
 }
@@ -1426,8 +1416,18 @@ int main()
     system("cls");
 #endif
     srand(time(0));
+    
+    //variables utilisées pour la carte
+    bool userQuit = false;
+    int hSize = 200;
+    int vSize = 60;
+    int vOffset = 0;
+    int hOffset = 0;
+    int lineSize = 800;
+    array<string, 200> currentMap;
+
     //calibration de l'écran d'affichage
-    calibrateScreen();
+    calibrateScreen(vSize, hSize);
 
     cout << "Appuyez sur S pour skipper l'intro ou une autre touche pour le voir et appuyez sur Entrée.\n";
     bool skipIntro = false;
@@ -1438,9 +1438,9 @@ int main()
         skipIntro = true;
 
     //intro
-    displayIntro(50, skipIntro);
+    displayIntro(50, skipIntro, vSize, hSize);
 
-    bool startGame = displayStartGame();
+    bool startGame = displayStartGame(vSize, hSize);
 
     //variables utilisées pour le protazoid
     array<string, 1> monsterTable = {}; //18x8
@@ -1456,7 +1456,6 @@ int main()
         userQuit = false;
         vOffset = 0;
         hOffset = 0;
-        bossIsIn = false;
         //variables utilisées pour le protazoid
         protWidth = 16;
         protHeight = 11;
@@ -1480,16 +1479,16 @@ int main()
         bossStrength = 10;
 
         //positionnement et initialisation des acteurs
-        positionBlobs();
+        currentMap = buildRandomMap(lineSize);
+        positionBlobs(lineSize, currentMap);
         sizeBlobs();
-        positionMonsters();
-        currentMap = buildRandomMap();
+        positionMonsters(lineSize, currentMap);
 
         //création du personnage, choix: mouvement, points de vie, force; plus tard: type du protazoid
         //4 points a répartir comme on veut entre les 3 choix
         //minimum de 2 dans chacune des caractéristiques, 1 point équivaut à 1 de plus dans la caractéristique
 
-        startNameValidation();
+        startNameValidation(vSize, hSize);
 
         //boucle pour que l'usager valide les points de caractéristiques de son protazoid
         bool pointsAreGood = false;
@@ -1505,7 +1504,7 @@ int main()
             string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants  )";
             string spaces = spaceString(longestString.size());
 
-            addSpacing(9, logo.size(), longestString.size());
+            addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
 
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
@@ -1556,7 +1555,7 @@ int main()
             pointsLeft -= pointsUsed;
             protLife += pointsUsed;
 
-            addSpacing(9, logo.size(), longestString.size());
+            addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
 
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
@@ -1608,7 +1607,7 @@ int main()
             protSpeed += pointsUsed;
 
             //Strength
-            addSpacing(9, logo.size(), longestString.size());
+            addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
 
             moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
             cout << "Points de caractéristique de " << protName;
@@ -1659,7 +1658,7 @@ int main()
             pointsLeft -= pointsUsed;
             protStrength += pointsUsed;
             
-            addSpacing(9, int(logo.size()), int(longestString.size()));
+            addSpacing(9, int(logo.size()), int(longestString.size()), vSize, hSize);
 
             moveCursor(vSize / 2 + int(logo.size()) / 2 + 2, hSize / 2 - int(longestString.size()) / 2 + 2);
             cout << "Points de caractéristique de " << protName;
@@ -1684,9 +1683,9 @@ int main()
         while (inMap)
         {
             protRegen = true;
-            drawMap(nextMove);
+            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap);
             if (userQuit) break;
-            inMap = drawProtazoid();
+            inMap = drawProtazoid(vSize, hSize);
             if (protLife > 0 && bossHealth > 0)
             {
                 cout << ESC + (to_string(vSize + 1) + ";1H");
@@ -1750,10 +1749,9 @@ int main()
                 {
                     inMap = false;
                 }
-
             }
         }
-    }
-    
+        if (userQuit) break;
+    }    
     return 0;
 }
