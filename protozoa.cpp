@@ -264,7 +264,7 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
             if (i == framesPlayed - 2) displayLogo(vSize, hSize, 4);
             if (i == framesPlayed - 1) displayLogo(vSize, hSize, 5);
 
-            Sleep(100);
+            Sleep(200);
             /*if (i != framesPlayed - 1)
                 system("cls");*/
         }
@@ -375,6 +375,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         protSatiety += usedCal * 10;
         moveCursor(vPos - 1, hPos - 2);
         string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + to_string(usedCal) + " dépensés";
+        cout << uiString;
         for (int i = 0; i < 10; ++i)
         {
             if (UItexts[i] == "")
@@ -446,13 +447,14 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         protInvQty[0] -= 1;
         moveCursor(vPos - 2, hPos);
         string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + "calories(" + to_string(protInvQty[0]) + ") for life(" + to_string(protLife) + ")";
+        cout << uiString;
         for (int i = 0; i < 10; ++i)
         {
             if (UItexts[i] == "")
             {
                 UItexts[i] = uiString;
                 UIsteps[i] = 3;
-                UIpositions[i * 2] = vPos - 2;
+                UIpositions[i * 2] = vPos - 3;
                 UIpositions[(i * 2) + 1] = hPos;
                 continue;
             }
@@ -603,7 +605,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     {
                         if ((h - monsterHOffset - hOffset) > protLeft && (h - monsterHOffset - hOffset) < protRight)
                         {
-                            moveCursor(protTop - 2, protLeft);
+                            moveCursor(protTop - 4, protLeft);
                             int protAttack = (protStrength + 1) + rand() % 6;
                             int monsterAttack = (monsterStr + 1) + rand() % 6;
                             if (protAttack >= monsterAttack)
@@ -741,6 +743,7 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                         protInvQty[0] += blobWorth + 1;
                         string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + "Slurp!! +" + to_string(blobWorth + 1) + " (" + to_string(protInvQty[0]) + ")";
+                        cout << uiString;
                         for (int i = 0; i < 10; ++i)
                         {
                             if (UItexts[i] == "")
@@ -881,14 +884,14 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             string win = string("\x1b[48;5;11m\x1b[38;5;16m") + "Miam!! (" + to_string(bossHealth) + ")";
                             string attackresult = bossHealth <= 0 ? win : hit;
                             cout << spaceString(attackresult.size());
-                            moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                            moveCursor(vSize / 2 - protHeight / 2 - 4, hSize / 2 - protWidth / 2);
                             cout << attackresult;
                         }
                         else
                         {
                             protLife -= 1;
                             cout << spaceString(11);
-                            moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                            moveCursor(vSize / 2 - protHeight / 2 - 4, hSize / 2 - protWidth / 2);
                             cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
                         }
                         protRegen = false;
@@ -1265,8 +1268,25 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
 
     //changer la condition pour changer le spawn du boss
     //  if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
-        if (protSteps > 1000) //le boss apparait après 1000 pas du Protazoid
+    if (protSteps >= 500) //le boss apparait après 500 pas du Protazoid
     {
+        if (protSteps == 500)
+        {
+            string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + "Un grondement effroyable se fait sentir dans toute la soupe!!";
+            moveCursor(vSize / 2 - protHeight / 2 - 10, hSize / 2 - int(uiString.size()) / 2);
+            cout << uiString;
+            for (int i = 0; i < 10; ++i)
+            {
+                if (UItexts[i] == "")
+                {
+                    UItexts[i] = uiString;
+                    UIsteps[i] = 3;
+                    UIpositions[i * 2] = vSize / 2 - protHeight / 2 - 10;
+                    UIpositions[(i * 2) + 1] = hSize / 2 - int(uiString.size()) / 2;
+                    continue;
+                }
+            }
+        }
         if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap, bossSteps, bossPosition);
         drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, bossPosition, bossHealth, bossStrength);
     }
