@@ -87,6 +87,7 @@ void calibrateScreen(int& vSize, int& hSize)
     }
 }
 
+//tentative de générateur de carte aléatoire qui ne fait pas tout à fait l'effet souhaité, mais utilisable
 array<string, 200> buildRandomMap(int lineSize)
 {
     int threshold = 100; //modifiable
@@ -129,57 +130,51 @@ array<string, 200> buildRandomMap(int lineSize)
     return newMap;
 }
 
-//fonction pour demander a l'usager si il veut commencer une nouvelle partie
-bool displayStartGame(int vSize, int hSize, string startString, int longestString)
+//fonction pour demander à l'usager si il veut commencer une nouvelle partie
+bool displayStartGame(int vSize, int hSize, int longestString)
 {
-    string spaces = spaceString(int(startString.size()));
     char userStart = -1;
+    int vPos = vSize / 2 + logo.size() / 2;
+    int hPos = hSize / 2 - longestString / 2 + 1;
     while (userStart != 'o' && userStart != 'O' && userStart != 'n' && userStart != 'N')
     {
-        moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
-        cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
-        cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 1);
-        cout << spaces;
+        addSpacing(3, logo.size(), longestString, vSize, hSize);
         if (userStart != -1)
         {
-            moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
+            moveCursor(vPos + 1, hPos);
             cout << "Je n'ai pas compris, pouvez-vous répéter? ";
         }
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 2);
+        moveCursor(vPos + 2, hPos + 1);
         cout << "Voulez-vous débuter un nouveau Protazoid? o pour débuter.";
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 2);
+        moveCursor(vPos + 3, hPos + 1);
         cin >> userStart;
         clearCin();
     }
-    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
-    cout << spaces;
+    addSpacing(1, logo.size(), longestString, vSize, hSize);
     bool startGame = userStart == 'o' || userStart == 'O' ? true : false;
     return startGame;
 }
 
+//fonction pour demander à l'usager d'entrer le nom de son Protazoid
 string enterName(int vSize, int hSize, int longestString)
 {
     string startName = "En tant que Protazoid, quel sera votre nom?";
-    string spaces = spaceString(longestString);
-    moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
-    cout << spaces;
-    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
-    cout << spaces;
-    moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 1);
-    cout << spaces;
 
-    moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - startName.size() / 2 + 2);
+    int vPos = vSize / 2 + logo.size() / 2;
+    int hPos = hSize / 2 - startName.size() / 2 + 2;
+
+    addSpacing(3, logo.size(), longestString, vSize, hSize);
+
+    moveCursor(vPos + 2, hPos);
     cout << startName;
     string testName = "";
-    moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - startName.size() / 2 + 2);
+    moveCursor(vPos + 3, hPos);
     cin >> testName;
     clearCin();
     return testName;
 }
 
-//fonction pour que l'usager entre et valide le nom
+//fonction pour que l'usager valide le nom de son Protazoid
 void startNameValidation(int vSize, int hSize, string& protName, int& longestString) {
     bool nameIsGood = false;
     while (!nameIsGood)
@@ -187,25 +182,59 @@ void startNameValidation(int vSize, int hSize, string& protName, int& longestStr
         string testName = enterName(vSize, hSize, longestString);
         string startNameFinalValidate = "Votre Protazoid se nomme bien " + testName + "? Tappez o pour oui.";
         longestString = startNameFinalValidate.size() > longestString ? startNameFinalValidate.size() : longestString;
-        string spaces = spaceString(startNameFinalValidate.size());
-
-        moveCursor(vSize / 2 + logo.size() / 2 + 1, hSize / 2 - longestString / 2 + 1);
-        cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 1);
-        cout << spaces;
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 1);
-        cout << spaces;
-
-
+        int vPos = vSize / 2 + logo.size() / 2;
+        int hPos = hSize / 2 - longestString / 2;
         char validateName;
-        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString / 2 + 2);
+                
+        addSpacing(3, logo.size(), longestString + 2, vSize, hSize, 2);
+        moveCursor(vPos + 2, hPos + 2);
         cout << startNameFinalValidate;
-        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString / 2 + 2);
+        moveCursor(vPos + 3, hPos + 2);
         cin >> validateName;
         clearCin();
         nameIsGood = validateName == 'O' || validateName == 'o' ? true : false;
         if(nameIsGood)
             protName = testName;
+    }
+}
+
+
+//fonction pour afficher le texte dans l'intro
+void displayIntroText(int vSize, int hSize, int textIndex)
+{
+    array<string, 6> introTexts = {
+        "Au tout début des temps, avant la naissance des continents et des mammifères terrestres, il n'y avait qu'océan.",
+        "Immense, profond et périlleux il était. Un combat de tous les instants s’y passait. La loi du plus fort y régnait.",
+        "Dans ce jeu vous incarnez un Protazoid, un être unicellulaire microscopique tout comme nos ancêtres lointains.",
+        "Et tout comme eux, votre existence sera un combat de tous les instants.",
+        "Comme Darwin décrit si bien \"It is not the strongest of the species that survives, nor the most intelligent; it is the one most adaptable to change.",
+        "Donc, accumulez des calories en dévorant ce qui vous entoure et choisissez bien votre chemin évolutif, car le futur de votre espèce est entre vos mains." };
+    int longest = int(introTexts[0].size());
+    for (int i = 1; i<int(introTexts.size()); ++i)
+    {
+        longest = int(introTexts[i].size()) > longest ? int(introTexts[i].size()) : longest;
+    }
+    int vPos = vSize / 2 - logo.size() / 2;
+    int hPos = hSize / 2 - longest / 2;
+
+    moveCursor(vPos - (12 - textIndex), hPos);
+    cout << spaceString(longest);
+    moveCursor(vPos - (12 - textIndex), hSize / 2 - int(introTexts[textIndex].size()) / 2 + 1);
+    cout << introTexts[textIndex];
+}
+
+//fonction pour afficher le Logo dans l'écran d'affichage
+void displayLogo(int vSize, int hSize, int logoIndex)
+{
+    array<array<string, 16>, 6> logos = { logo6, logo5, logo4, logo3, logo2, logo };
+    int longest = int(logo[0].size());
+    int vPos = vSize / 2 - int(logo.size()) / 2;
+    int hPos = hSize / 2 - longest / 2;
+
+    for (int i = 0; i < logos[logoIndex].size(); ++i)
+    {
+        moveCursor(vPos + i, hPos);
+        cout << logos[logoIndex][i];
     }
 }
 
@@ -220,110 +249,22 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
             moveCursor(1, 1);
             cout << frames[i];
 
-            int longest = 0;
-            string introLine1 = "Au tout début des temps, avant la naissance des continents et des mammifères terrestres, il n'y avait qu'océan.";
-            longest = int(introLine1.size()) > longest ? int(introLine1.size()) : longest;
-            string introLine2 = "Immense, profond et périlleux il était. Un combat de tous les instants s’y passait. La loi du plus fort y régnait.";
-            longest = int(introLine2.size()) > longest ? int(introLine2.size()) : longest;
-            string introLine3 = "Dans ce jeu vous incarnez un Protazoid, un être unicellulaire microscopique tout comme nos ancêtres lointains.";
-            longest = int(introLine3.size()) > longest ? int(introLine3.size()) : longest;
-            string introLine4 = "Et tout comme eux, votre existence sera un combat de tous les instants.";
-            longest = int(introLine4.size()) > longest ? int(introLine4.size()) : longest;
-            string introLine5 = "Comme Darwin décrit si bien \"It is not the strongest of the species that survives, nor the most intelligent; it is the one most adaptable to change.";
-            longest = int(introLine5.size()) > longest ? int(introLine5.size()) : longest;
-            string introLine6 = "Donc, accumulez des calories en dévorant ce qui vous entoure et choisissez bien votre chemin évolutif, car le futur de votre espèce est entre vos mains.";
-            longest = int(introLine6.size()) > longest ? int(introLine6.size()) : longest;
-            if (i >= 1)
-            {
-                moveCursor(vSize / 2 - logo.size() / 2 - 12, hSize / 2 - longest / 2);
-                cout << spaceString(longest);
-                moveCursor(vSize / 2 - logo.size() / 2 - 12, hSize / 2 - int(introLine1.size()) / 2 + 1);
-                cout << introLine1;
-            }
-            if (i >= 8)
-            {
-                moveCursor(vSize / 2 - logo.size() / 2 - 11, hSize / 2 - longest / 2);
-                cout << spaceString(longest);
-                moveCursor(vSize / 2 - logo.size() / 2 - 11, hSize / 2 - introLine2.size() / 2 + 1);
-                cout << introLine2;
-            }
-            if (i >= 15)
-            {
-                moveCursor(vSize / 2 - logo.size() / 2 - 10, hSize / 2 - longest / 2);
-                cout << spaceString(longest);
-                moveCursor(vSize / 2 - logo.size() / 2 - 10, hSize / 2 - introLine3.size() / 2 + 1);
-                cout << introLine3;
-            }
-            if (i >= 22)
-            {
-                moveCursor(vSize / 2 - logo.size() / 2 - 9, hSize / 2 - longest / 2);
-                cout << spaceString(longest);
-                moveCursor(vSize / 2 - logo.size() / 2 - 9, hSize / 2 - introLine4.size() / 2 + 1);
-                cout << introLine4;
-            }
-            if (i >= 29)
-            {
-                moveCursor(vSize / 2 - logo.size() / 2 - 8, hSize / 2 - longest / 2);
-                cout << spaceString(longest);
-                moveCursor(vSize / 2 - logo.size() / 2 - 8, hSize / 2 - introLine5.size() / 2 + 1);
-                cout << introLine5;
-            }
-            if (i >= 36)
-            {
-                moveCursor(vSize / 2 - logo.size() / 2 - 7, hSize / 2 - longest / 2);
-                cout << spaceString(longest);
-                moveCursor(vSize / 2 - logo.size() / 2 - 7, hSize / 2 - introLine6.size() / 2 + 1);
-                cout << introLine6;
-            }
+            //affichage du texte d'introduction
+            if (i >= 1) displayIntroText(vSize, hSize, 0);
+            if (i >= 8) displayIntroText(vSize, hSize, 1);
+            if (i >= 15) displayIntroText(vSize, hSize, 2);
+            if (i >= 22) displayIntroText(vSize, hSize, 3);
+            if (i >= 29) displayIntroText(vSize, hSize, 4);
+            if (i >= 36) displayIntroText(vSize, hSize, 5);
 
-            if (i == framesPlayed - 6)
-            {
-                for (int i = 0; i < logo6.size(); ++i)
-                {
-                    moveCursor((vSize / 2 - logo6.size() / 2) + i, hSize / 2 - logo6[0].size() / 2);
-                    cout << logo6[i];
-                }
-            }
-            if (i == framesPlayed - 5)
-            {
-                for (int i = 0; i < logo5.size(); ++i)
-                {
-                    moveCursor((vSize / 2 - logo5.size() / 2) + i, hSize / 2 - logo5[0].size() / 2);
-                    cout << logo5[i];
-                }
-            }
-            if (i == framesPlayed - 4)
-            {
-                for (int i = 0; i < logo4.size(); ++i)
-                {
-                    moveCursor((vSize / 2 - logo4.size() / 2) + i, hSize / 2 - logo4[0].size() / 2);
-                    cout << logo4[i];
-                }
-            }
-            if (i == framesPlayed - 3)
-            {
-                for (int i = 0; i < logo3.size(); ++i)
-                {
-                    moveCursor((vSize / 2 - logo3.size() / 2) + i, hSize / 2 - logo3[0].size() / 2);
-                    cout << logo3[i];
-                }
-            }
-            if (i == framesPlayed - 2)
-            {
-                for (int i = 0; i < logo2.size(); ++i)
-                {
-                    moveCursor((vSize / 2 - logo2.size() / 2) + i, hSize / 2 - logo2[0].size() / 2);
-                    cout << logo2[i];
-                }
-            }
-            if (i == framesPlayed - 1)
-            {
-                for (int i = 0; i < logo.size(); ++i)
-                {
-                    moveCursor((vSize / 2 - logo.size() / 2) + i, hSize / 2 - logo[0].size() / 2);
-                    cout << logo[i];
-                }
-            }
+            //affichage du logo
+            if (i == framesPlayed - 6) displayLogo(vSize, hSize, 0);
+            if (i == framesPlayed - 5) displayLogo(vSize, hSize, 1);
+            if (i == framesPlayed - 4) displayLogo(vSize, hSize, 2);
+            if (i == framesPlayed - 3) displayLogo(vSize, hSize, 3);
+            if (i == framesPlayed - 2) displayLogo(vSize, hSize, 4);
+            if (i == framesPlayed - 1) displayLogo(vSize, hSize, 5);
+
             Sleep(100);
             if (i != framesPlayed - 1)
                 system("cls");
@@ -1443,7 +1384,7 @@ int main()
     //intro
     displayIntro(50, skipIntro, vSize, hSize);
 
-    bool startGame = displayStartGame(vSize, hSize, startString, longestString);
+    bool startGame = displayStartGame(vSize, hSize, longestString);
 
     //variables utilisées pour le protazoid
     array<string, 1> monsterTable = {}; //18x8
