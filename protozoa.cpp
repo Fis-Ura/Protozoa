@@ -1300,9 +1300,9 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
         moveCursor(12 + 7, 16 + 25);
         cout << protLife << " / " << protLifeMax;
         moveCursor(12 + 9, 16 + 25);
-        cout << protStrength;
-        moveCursor(12 + 11, 16 + 25);
         cout << protSpeed;
+        moveCursor(12 + 11, 16 + 25);
+        cout << protStrength;
         moveCursor(12 + 13, 16 + 25);
         cout << protInvQty[0];
         string evoluting;
