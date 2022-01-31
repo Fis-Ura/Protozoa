@@ -38,8 +38,6 @@ const array<string, 18> ProtagAmedium = {
     "\x1b[48;5;76m  \x1b[48;5;234m\x1b[38;5;76m..........\x1b[48;5;76m  \x1b[48;5;234m\x1b[38;5;76m..\x1b[m",
     "\x1b[48;5;76m  \x1b[48;5;234m\x1b[38;5;76m..............\x1b[m",
     "\x1b[48;5;234m\x1b[38;5;76m................\x1b[m" };
-    //for (int i = 0; i < ProtagAmedium.size(); ++i)
-        //cout << ProtagAmedium[i];
 
 //Protagoniste Large Version A		
 const array<string, 18> ProtagAlarge = {
@@ -61,8 +59,6 @@ const array<string, 18> ProtagAlarge = {
     "\x1b[48;5;234m\x1b[38;5;76m..\x1b[48;5;76m  \x1b[48;5;234m\x1b[38;5;76m............\x1b[48;5;76m  \x1b[48;5;234m\x1b[38;5;76m...................\x1b[m",
     "\x1b[48;5;234m\x1b[38;5;76m................\x1b[48;5;76m    \x1b[48;5;234m\x1b[38;5;76m................\x1b[m",
     "\x1b[48;5;234m\x1b[38;5;76m..................\x1b[48;5;76m    \x1b[48;5;234m\x1b[38;5;76m..............\x1b[m" };
-    //for (int i = 0; i < ProtagAlarge.size(); ++i)
-        //cout << ProtagAlarge[i];
 
 
 const array<string, 11> ProtagAdyingA = {
@@ -108,29 +104,6 @@ const array<string, 4> ProtagAdyingD = {
 const array<string, 2> ProtagAdyingE = {
 "\x1b[48;5;34m  \x1b[m",
 "\x1b[48;5;170m  \x1b[m" };
-
-//\x1b[48; 5; 234m\x1b[38; 5; 76m
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const array<string, 22> Inventory = {
         u8"\x1b[48;5;234m\x1b[38;5;76m┌─────────────────┬──────────────────────┬────────────────────┐",

@@ -1,6 +1,5 @@
 #include "Code_Utilities.h"
 #include "asciiIntro.h"
-#include "asciiIntro2.h"
 #include "asciiLogo.h"
 #include "asciiProtazoid.h"
 #include "asciiCollectables.h"
@@ -484,6 +483,53 @@ void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> cur
     }
 }
 
+//fonction pour afficher l'animation de mort des monstres
+void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int monsterVOffset, int monsterHOffset, int vOffset, int hOffset)
+{
+    int spriteSize = 0;
+    switch (monsterHP)
+    {
+    case -1:
+        spriteSize = int(monsterAsmall.size());
+        break;
+    case -2:
+        spriteSize = int(monsterAdyingA.size());
+        break;
+    case -3:
+        spriteSize = int(monsterAdyingB.size());
+        break;
+    case -4:
+        spriteSize = int(monsterAdyingC.size());
+        break;
+    default:
+        break;
+    }
+    int vPos = vSize / 2 - spriteSize / 2;
+    int hPos = hSize / 2 - spriteSize / 2;
+    for (int i = 0; i < spriteSize; ++i)
+    {
+        moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
+        switch (monsterHP)
+        {
+        case -1:
+            cout << monsterAsmall[i];
+            break;
+        case -2:
+            cout << monsterAdyingA[i];
+            break;
+        case -3:
+            cout << monsterAdyingB[i];
+            break;
+        case -4:
+            cout << monsterAdyingC[i];
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+
 void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 4>& protInvQty, array<int, 20> monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength)
 {
     for (int iMonster = 0; iMonster < 10; ++iMonster)
@@ -491,22 +537,28 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
         int h = monstersPosition[iMonster * 2];
         int v = monstersPosition[(iMonster * 2) + 1];
         int monsterVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
+        int monsterVMaxOffset = (int(currentMap.size()) / 2) + (vSize / 2);
         int monsterHOffset = (lineSize / 2) - (hSize / 2);
+        int monsterHMaxOffset = (lineSize / 2) + (hSize / 2);
         int monsterStr = monstersStrength[iMonster];
         int monsterHP = monstersHealth[iMonster];
-        moveCursor(1, 1);
-        if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
+        int protTop = (vSize / 2) - (protHeight / 2);
+        int protBottom = (vSize / 2) + (protHeight / 2);
+        int protLeft = (hSize / 2) - (protWidth / 2);
+        int protRight = (hSize / 2) + (protWidth / 2);
+
+        //determine if monster is in the display screen
+        if (v > (monsterVOffset + vOffset) && v < (monsterVMaxOffset + vOffset))
         {
-            if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
+            if (h > (monsterHOffset + hOffset) && h < (monsterHMaxOffset + hOffset))
             {
                 //determine if monster has been attacked by the protazoid
-                moveCursor(3, 1);
                 if (monsterHP > 0 && protLife > 0) {
-                    if ((v - monsterVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - monsterVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
+                    if ((v - monsterVOffset - vOffset) > protTop && (v - monsterVOffset - vOffset) < protBottom)
                     {
-                        if ((h - monsterHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - monsterHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
+                        if ((h - monsterHOffset - hOffset) > protLeft && (h - monsterHOffset - hOffset) < protRight)
                         {
-                            moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+                            moveCursor(protTop - 2, protLeft);
                             int protAttack = (protStrength + 1) + rand() % 6;
                             int monsterAttack = (monsterStr + 1) + rand() % 6;
                             if (protAttack >= monsterAttack)
@@ -528,6 +580,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     }
                 }
 
+                //if monster is alive draw it on the screen
                 if(monsterHP > 0)
                 {
                     for (int i = 0; i < monsterAbig.size(); ++i)
@@ -542,41 +595,25 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     if (monstersHealth[iMonster] == -1)
                     {
                         protInvQty[0] += 15;
-                        moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth/2 + 2);
+                        moveCursor(protTop - 3, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!!! (" << protInvQty[0] << ")";
-                        for (int i = 0; i < int(monsterAsmall.size()); ++i)
-                        {
-                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
-                            cout << monsterAsmall[i];
-                        }
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
                     }
                     if (monstersHealth[iMonster] == -2)
                     {
-                        moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
+                        moveCursor(protTop - 3, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!! (" << protInvQty[0] << ")";
-                        for (int i = 0; i < int(monsterAdyingA.size()); ++i)
-                        {
-                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
-                            cout << monsterAdyingA[i];
-                        }
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
                     }
                     if (monstersHealth[iMonster] == -3)
                     {
-                        moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 1);
+                        moveCursor(protTop - 3, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15! (" << protInvQty[0] << ")";
-                        for (int i = 0; i < int(monsterAdyingB.size()); ++i)
-                        {
-                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
-                            cout << monsterAdyingB[i];
-                        }
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
                     }
                     if (monstersHealth[iMonster] == -4)
                     {
-                        for (int i = 0; i < int(monsterAdyingC.size()); ++i)
-                        {
-                            moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
-                            cout << monsterAdyingC[i];
-                        }
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
                     }
                 }
             }
@@ -708,7 +745,6 @@ void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> current
 {
     int spdBoost = 1 + (bossSteps / 100);
     moveCursor(2, 2);
-    //cout << spdBoost;
     int v = bossPosition[0];
     int h = bossPosition[1];
     int bossVOffset = v - int(currentMap.size()) / 2;
@@ -764,27 +800,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                     cout << newLine;
                 }
             }
-            /*
-            moveCursor(2, 1);
-            cout << spaceString(20);
-            moveCursor(2, 1);
-            cout << "this: " << (vBoss + (vSize / 2));
-            moveCursor(3, 1);
-            cout << spaceString(20);
-            moveCursor(3, 1);
-            cout << "vendat: " << vEndAt;
-            moveCursor(4, 1);
-            cout << spaceString(20);
-            moveCursor(4, 1);
-            cout << "vboos: " << vBoss;
-            moveCursor(5, 1);
-            cout << spaceString(20);
-            moveCursor(5, 1);
-            cout << "vStartAt: " << vStartAt;
-            moveCursor(6, 1);
-            cout << spaceString(20);
-            moveCursor(6, 1);
-            cout << "voffset: " << vOffset;*/
+
             //determine if boss and prot has collisioned
             if (vEndAt - vStartAt >= vSize / 2 - protHeight / 2 + 1)
             {
