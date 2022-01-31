@@ -265,8 +265,8 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
             if (i == framesPlayed - 1) displayLogo(vSize, hSize, 5);
 
             Sleep(100);
-            if (i != framesPlayed - 1)
-                system("cls");
+            /*if (i != framesPlayed - 1)
+                system("cls");*/
         }
     }
 }
@@ -322,7 +322,7 @@ void playProtazoidDeath(int vSize, int hSize, int protLife)
     }
 }
 
-bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty)
+bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
 {
     int hPos = hSize / 2 - protWidth / 2;
     int vPos = vSize / 2 - protHeight / 2;
@@ -374,9 +374,18 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         protInvQty[0] -= usedCal;
         protSatiety += usedCal * 10;
         moveCursor(vPos - 1, hPos - 2);
-        cout << spaceString(25);
-        moveCursor(vPos - 1, hPos - 2);
-        cout << "\x1b[48;5;11m\x1b[38;5;16m" << usedCal << " dépensés";
+        string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + to_string(usedCal) + " dépensés";
+        for (int i = 0; i < 10; ++i)
+        {
+            if (UItexts[i] == "")
+            {
+                UItexts[i] = uiString;
+                UIsteps[i] = 3;
+                UIpositions[i * 2] = vPos - 1;
+                UIpositions[(i * 2) + 1] = hPos - 2;
+                continue;
+            }
+        }
     }
     else if (protSatiety < 50 && protSatiety > 0 &&  protInvQty[0] == 0)
     {
@@ -436,10 +445,46 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         protLife += 1;
         protInvQty[0] -= 1;
         moveCursor(vPos - 2, hPos);
-        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "calories(" << protInvQty[0] << ") for life(" << protLife << ")";
+        string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + "calories(" + to_string(protInvQty[0]) + ") for life(" + to_string(protLife) + ")";
+        for (int i = 0; i < 10; ++i)
+        {
+            if (UItexts[i] == "")
+            {
+                UItexts[i] = uiString;
+                UIsteps[i] = 3;
+                UIpositions[i * 2] = vPos - 2;
+                UIpositions[(i * 2) + 1] = hPos;
+                continue;
+            }
+        }
     }
 
     return true;
+}
+
+//fonction pour afficher le texte du protazoid sur plus d'une trame
+void displayUI(array<string,10>& UItexts, array<int,10>& UIsteps, array<int,20>& UIpositions) {
+    for (int i = 0; i < 10; ++i)
+    {
+        string textDisplayed = UItexts[i];
+        if (textDisplayed != "")
+        {
+            int stepsleft = UIsteps[i];
+            int vUI = UIpositions[i * 2];
+            int hUI = UIpositions[(i * 2) + 1];
+            moveCursor(vUI, hUI);
+            cout << textDisplayed;
+            --stepsleft;
+            if (stepsleft <= 0)
+            {
+                UItexts[i] = "";
+            }
+            else
+            {
+                UIsteps[i] = stepsleft;
+            }
+        }
+    }
 }
 
 void positionMonsters(int lineSize, array<string, 200> currentMap, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10>& monstersStrength)
@@ -530,7 +575,7 @@ void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int mon
 }
 
 
-void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 4>& protInvQty, array<int, 20> monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength)
+void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 4>& protInvQty, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength)
 {
     for (int iMonster = 0; iMonster < 10; ++iMonster)
     {
@@ -614,6 +659,13 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     if (monstersHealth[iMonster] == -4)
                     {
                         playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
+                        //create new monster when one has finished dying
+                        int newMonsterH = 1 + (rand() % lineSize);
+                        int newMonsterV = 1 + (rand() % int(currentMap.size()));
+                        monstersPosition[iMonster * 2] = newMonsterH;
+                        monstersPosition[(iMonster * 2) + 1] = newMonsterV;
+                        monstersHealth[iMonster] = 4;
+                        monstersStrength[iMonster] = 3;
                     }
                 }
             }
@@ -662,7 +714,7 @@ void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blob
     }
 }
 
-void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty, array<int, 100>& blobsPosition, array<int, 50> blobsSizes)
+void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty, array<int, 100>& blobsPosition, array<int, 50> blobsSizes, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
 {
     for (int i = 0; i < 50; ++i)
     {
@@ -688,7 +740,18 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
                         int blobWorth = blobsSizes[i];
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                         protInvQty[0] += blobWorth + 1;
-                        cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Slurp!! +" << (blobWorth + 1) << " (" << protInvQty[0] << ")";
+                        string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + "Slurp!! +" + to_string(blobWorth + 1) + " (" + to_string(protInvQty[0]) + ")";
+                        for (int i = 0; i < 10; ++i)
+                        {
+                            if (UItexts[i] == "")
+                            {
+                                UItexts[i] = uiString;
+                                UIsteps[i] = 3;
+                                UIpositions[i * 2] = vSize / 2 - protHeight / 2 - 2;
+                                UIpositions[(i * 2) + 1] = hSize / 2 - protWidth / 2;
+                                continue;
+                            }
+                        }
                     }
                     else
                     {
@@ -1140,8 +1203,9 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
 }
 
 
-bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes, int& bossHealth, int& bossSteps, array<int, 2>& bossPosition, int bossStrength)
+bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes, int& bossHealth, int& bossSteps, array<int, 2>& bossPosition, int bossStrength, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
 {
+    //si l'usager appuis sur ESCAPE, confirmer qu'il veut quitter et exécuter le choix
     if (int(nextMove) == 27) {
         int longest = 0;
         string quitLine1 = "Quitter maintenant signifie la fin de votre espèce, j'espère que vous en êtes conscient.";
@@ -1165,12 +1229,14 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
         }
     }
     bool protInvWasOpen = protInvOpen;
+
+    //si l'usager appuis sur une touche sauf i/I, placer la carte au bon affichage et afficher les acteurs
     if (nextMove != 'i' && nextMove != 'I')
     {
         int firstLine = ((int(currentMap.size()) / 2) - int((vSize) / 2));
         vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
         hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
-        system("cls");
+        moveCursor(1, 1);
         cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte et le reste du jeux.
 
         for (int imap = ((int(currentMap.size()) / 2) - (vSize / 2)) + vOffset; imap < ((int(currentMap.size()) / 2) + (vSize / 2)) + vOffset; ++imap)
@@ -1192,10 +1258,14 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
         }
     }
     if(rand() % 5 == 4) addBlobs(lineSize, currentMap, blobsPosition, blobsSizes);
-    drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty, blobsPosition, blobsSizes);
+    drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty, blobsPosition, blobsSizes, protSteps, UItexts, UIsteps, UIpositions);
     moveMonsters(vOffset, hOffset, lineSize, currentMap, monstersPosition, monstersHealth);
     drawMonsters(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, protInvQty, monstersPosition, monstersHealth, monstersStrength);
-    if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
+    displayUI(UItexts, UIsteps, UIpositions);
+
+    //changer la condition pour changer le spawn du boss
+    //  if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
+        if (protSteps > 1000) //le boss apparait après 1000 pas du Protazoid
     {
         if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap, bossSteps, bossPosition);
         drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, bossPosition, bossHealth, bossStrength);
@@ -1297,7 +1367,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
     if (!protInvOpen && protInvWasOpen)
     {
         char refreshMap= 'r';
-        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength);
+        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions);
     }
     return true;
 }
@@ -1320,10 +1390,14 @@ int main()
     int lineSize = 800;
     array<string, 200> currentMap;
 
-    //calibration de l'écran d'affichage
+    //calibration de l'écran d'affichage et variables d'affiache
     calibrateScreen(vSize, hSize);
+    array<string, 10> UItexts = {};
+    array<int, 10> UIsteps = {};
+    array<int, 20> UIpositions = {};
 
     //variables utilisées pour le Protazoid
+    int protSteps = 0;
     string protName;
     int protWidth = 16;
     int protHeight = 11;
@@ -1370,13 +1444,7 @@ int main()
 
     bool startGame = displayStartGame(vSize, hSize, longestString);
 
-    //variables utilisées pour le protazoid
-    array<string, 1> monsterTable = {}; //18x8
-    array<string, 10> blobTable = {}; //2x2 blobs
-    string envColor = ESC + Green;
-
-
-    //boucle de jeu principale
+    //BOUCLE DE JEU PRINCIPALE
     while (startGame)
     {
         //réinitialisation des variables
@@ -1385,6 +1453,7 @@ int main()
         vOffset = 0;
         hOffset = 0;
         //variables utilisées pour le protazoid
+        protSteps = 0;
         protWidth = 16;
         protHeight = 11;
         protSatiety = 100;
@@ -1611,14 +1680,15 @@ int main()
         while (inMap)
         {
             protRegen = true;
-            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength);
+            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions);
             if (userQuit) break;
-            inMap = drawProtazoid(vSize, hSize, protWidth, protHeight, protLife, protLifeMax, protRegen, protSpeed, protStrength, protSatiety, protInvQty);
+            inMap = drawProtazoid(vSize, hSize, protWidth, protHeight, protLife, protLifeMax, protRegen, protSpeed, protStrength, protSatiety, protInvQty, UItexts, UIsteps, UIpositions);
             if (protLife > 0 && bossHealth > 0)
             {
                 cout << ESC + (to_string(vSize + 1) + ";1H");
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire. Pour quitter, appuyez sur la touche ESCAPE." << "\x1b[0m\x1b[48;5;234m";
                 nextMove = _getch();
+                ++protSteps;
             }
             else if(protLife <= 0 && protLife > -9 || bossHealth <= 0 && bossHealth > -9)
             {
