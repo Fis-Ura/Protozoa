@@ -224,11 +224,11 @@ void displayIntroText(int vSize, int hSize, int textIndex)
 }
 
 //fonction pour afficher le Logo dans l'écran d'affichage
-void displayLogo(int vSize, int hSize, int logoIndex)
+void displayLogo(int vSize, int hSize, int logoIndex, int logoVOffset = 0)
 {
     array<array<string, 16>, 6> logos = { logo6, logo5, logo4, logo3, logo2, logo };
     int longest = int(logo[0].size());
-    int vPos = vSize / 2 - int(logo.size()) / 2;
+    int vPos = vSize / 2 - int(logo.size()) / 2 + logoVOffset;
     int hPos = hSize / 2 - longest / 2;
 
     for (int i = 0; i < logos[logoIndex].size(); ++i)
@@ -272,15 +272,65 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
     }
 }
 
+void playProtazoidDeath(int vSize, int hSize, int protLife)
+{
+    int spriteSize = 0;
+    switch (protLife)
+    {
+    case -1:
+        spriteSize = int(ProtagAdyingA.size());
+        break;
+    case -2:
+        spriteSize = int(ProtagAdyingB.size());
+        break;
+    case -3:
+        spriteSize = int(ProtagAdyingC.size());
+        break;
+    case -4:
+        spriteSize = int(ProtagAdyingD.size());
+        break;
+    case -5:
+        spriteSize = int(ProtagAdyingE.size());
+        break;
+    default:
+        break;
+    }
+    int vPos = vSize / 2 - spriteSize / 2;
+    int hPos = hSize / 2 - spriteSize / 2;
+    for (int i = 0; i < spriteSize; ++i)
+    {
+        moveCursor(vPos + i, hPos);
+        switch (protLife)
+        {
+        case -1:
+            cout << ProtagAdyingA[i];
+            break;
+        case -2:
+            cout << ProtagAdyingB[i];
+            break;
+        case -3:
+            cout << ProtagAdyingC[i];
+            break;
+        case -4:
+            cout << ProtagAdyingD[i];
+            break;
+        case -5:
+            cout << ProtagAdyingE[i];
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty)
 {
+    int hPos = hSize / 2 - protWidth / 2;
+    int vPos = vSize / 2 - protHeight / 2;
     if (protLife > 0)
     {
         //draw an idle Protazoid in the center
-        int hPos = hSize / 2 - protWidth / 2;
-        int vPos = vSize / 2 - protHeight / 2;
-
-        if (protLifeMax >= 10)
+        if (protLifeMax >= 10) //large protazoid if maximum life is bigger or equal to 10
         {
             for (int i = 0; i < ProtagAlarge.size(); ++i)
             {
@@ -288,7 +338,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
                 cout << ProtagAlarge[i];
             }
         }
-        else if (protLifeMax > 6)
+        else if (protLifeMax > 6) //medium protazoid if maximum life is bigger than 6
         {
             for (int i = 0; i < ProtagAmedium.size(); ++i)
             {
@@ -296,7 +346,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
                 cout << ProtagAmedium[i];
             }
         }
-        else
+        else //small protazoid if maximum life is smaller or equal to 6
         {
             for (int i = 0; i < ProtagAsmall.size(); ++i)
             {
@@ -308,90 +358,15 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
     else  //if prot has 0 hp, play die animation and gameover screen
     {
         --protLife;
+
         //play prot dying animation
-        if (protLife == -1)
-        {
-            for (int i = 0; i < ProtagAdyingA.size(); ++i)
-            {
-                moveCursor(vSize / 2 - ProtagAdyingA.size() / 2 + i, hSize / 2 - ProtagAdyingA.size() / 2);
-                cout << ProtagAdyingA[i];
-            }
-        }
-        if (protLife == -2)
-        {
-            for (int i = 0; i < int(ProtagAdyingB.size()); ++i)
-            {
-                moveCursor(vSize / 2 - ProtagAdyingB.size() / 2 + i, hSize / 2 - ProtagAdyingB.size() / 2);
-                cout << ProtagAdyingB[i];
-            }
-        }
-        if (protLife == -3)
-        {
-            for (int i = 0; i < int(ProtagAdyingC.size()); ++i)
-            {
-                moveCursor(vSize / 2 - ProtagAdyingC.size() / 2 + i, hSize / 2 - ProtagAdyingC.size() / 2);
-                cout << ProtagAdyingC[i];
-            }
-        }
-        if (protLife == -4)
-        {
-            for (int i = 0; i < int(ProtagAdyingD.size()); ++i)
-            {
-                moveCursor(vSize / 2 - ProtagAdyingD.size() / 2 + i, hSize / 2 - ProtagAdyingD.size() / 2);
-                cout << ProtagAdyingD[i];
-            }
-            for (int i = 0; i < int(logo6.size()); ++i)
-            {
-                moveCursor(vSize / 2 - logo6.size() - protHeight / 2, hSize/2 - logo6[1].size() / 2);
-                cout << logo6[i];
-            }
-        }
-        if (protLife == -5)
-        {
-            for (int i = 0; i < int(ProtagAdyingE.size()); ++i)
-            {
-                moveCursor(vSize / 2 - ProtagAdyingE.size() / 2 + i, hSize / 2 - ProtagAdyingE.size() / 2);
-                cout << ProtagAdyingE[i];
-            }
-            for (int i = 0; i < int(logo5.size()); ++i)
-            {
-                moveCursor(vSize / 2 - logo5.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
-                cout << logo5[i];
-            }
-        }
-        if (protLife == -6)
-        {
-            for (int i = 0; i < int(logo4.size()); ++i)
-            {
-                moveCursor(vSize / 2 - logo4.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
-                cout << logo4[i];
-            }
-        }
-        if (protLife == -7)
-        {
-            for (int i = 0; i < int(logo3.size()); ++i)
-            {
-                moveCursor(vSize / 2 - logo3.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
-                cout << logo3[i];
-            }
-        }
-        if (protLife == -8)
-        {
-            for (int i = 0; i < int(logo2.size()); ++i)
-            {
-                moveCursor(vSize / 2 - logo2.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
-                cout << logo2[i];
-            }
-        }
-        if (protLife == -9)
-        {
-            for (int i = 0; i < int(logo.size()); ++i)
-            {
-                moveCursor(vSize / 2 - logo.size() - protHeight / 2 + i, hSize/2 - logo6[1].size() / 2);
-                cout << logo[i];
-            }
-        }
+        if (protLife <= -1 && protLife >= -5) playProtazoidDeath(vSize, hSize, protLife);
+
+        //play logo anim if prot is dying
+        int logoIndex = -protLife - 4;
+        if (protLife <= -4 && protLife >= -9) displayLogo(vSize, hSize, logoIndex, -int(logo.size()));
     }
+
     //satiety goes down, if it's below 50, uses up calories to eat upto 100 satiety (10 satiety points each calorie)
     protSatiety -= 1;
     if (protSatiety < 50 && protInvQty[0] > 0)
@@ -399,44 +374,37 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         int usedCal = protInvQty[0] < (100 - protSatiety) / 10 ? protInvQty[0] : (100 - protSatiety) / 10;
         protInvQty[0] -= usedCal;
         protSatiety += usedCal * 10;
-        moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 2);
+        moveCursor(vPos - 1, hPos - 2);
         cout << spaceString(25);
-        moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 2);
+        moveCursor(vPos - 1, hPos - 2);
         cout << "\x1b[48;5;11m\x1b[38;5;16m" << usedCal << " dépensés";
     }
     else if (protSatiety < 50 && protSatiety > 0 &&  protInvQty[0] == 0)
     {
         if (protSatiety > 40 || protSatiety < 5)
         {
-            moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 20);
+            moveCursor(vPos - 1, hPos - 20);
             cout << "\x1b[48;5;11m\x1b[38;5;16m" << " Vous n'avez plus d'énergie, trouvez quelque chose à manger vite!!";
         }
     }
     else if (protSatiety <= -10)
     {
         protLife -= 1;
-        moveCursor(vSize / 2 - protHeight / 2 - 1, hSize / 2 - protWidth / 2 - 20);
+        moveCursor(vPos - 1, hPos - 20);
         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Chaque pas est de plus en plus lourd, il faut de l'énergie!! -1 Vie (" << protLife << ")";
         protSatiety = 0;
     }
 
     //if prot is evolving and has calories, he has to pay everything until evolution done or no calories left
-    int evoluting;
+    int evoluting = -1;
     int evolutionETA = 0;
-    if (protInvQty[1] > 0)
+    for (int i = 1; i <= 3; ++i)
     {
-        evoluting = 1;
-        evolutionETA = protInvQty[1];
-    }
-    if (protInvQty[2] > 0)
-    {
-        evoluting = 2;
-        evolutionETA = protInvQty[2];
-    }
-    if (protInvQty[3] > 0)
-    {
-        evoluting = 3;
-        evolutionETA = protInvQty[3];
+        if (protInvQty[i] > 0)
+        {
+            evoluting = i;
+            evolutionETA = protInvQty[i];
+        }
     }
     if (evolutionETA != 0)
     {
@@ -468,7 +436,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
     {
         protLife += 1;
         protInvQty[0] -= 1;
-        moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
+        moveCursor(vPos - 2, hPos);
         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "calories(" << protInvQty[0] << ") for life(" << protLife << ")";
     }
 
