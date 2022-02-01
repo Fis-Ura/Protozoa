@@ -1,20 +1,20 @@
 #include "Code_Utilities.h"
-#include "asciiIntro.h"
-#include "asciiLogo.h"
-#include "asciiProtazoid.h"
-#include "asciiCollectables.h"
-#include "asciiMonsters.h"
+#include "asciiIntro.h" //travail de nicholas et alexis
+#include "asciiLogo.h" //travail de nicholas
+#include "asciiProtazoid.h" //travail de nicholas
+#include "asciiCollectables.h" //travail de nicholas
+#include "asciiMonsters.h" //travail de nicholas
 #include <Windows.h>
 #include <conio.h>
 
 using namespace BdB;
 
-void moveCursor(int v, int h)
+void moveCursor(int v, int h)   //travail de Nicholas
 {
     cout << ESC + (to_string(v) + ";" + to_string(h) + "H");
 }
 
-string spaceString(int length)
+string spaceString(int length)  //travail de Nicholas
 {
     string spaces = "";
     for (int i = 0; i < length; ++i)
@@ -31,7 +31,7 @@ Ajoute du spacing
 @param int sizeX position X
 @param xOffset(optional) si n'est pas spécifier il reste a 1
 */
-void addSpacing(int lines, int sizeY, int sizeX, int vSize, int hSize, int xOffset = 1)
+void addSpacing(int lines, int sizeY, int sizeX, int vSize, int hSize, int xOffset = 1) //travail de Nicholas
 {
     string spaces = spaceString(sizeX);
 
@@ -41,15 +41,16 @@ void addSpacing(int lines, int sizeY, int sizeX, int vSize, int hSize, int xOffs
     }
 }
 
-void clearCin()
+void clearCin() //travail de Nicholas
 {
     cin.clear();
     cin.ignore(120, '\n');
 }
 
-void calibrateScreen(int& vSize, int& hSize)
+void calibrateScreen(int& vSize, int& hSize) //travail de Alexis
 {
-    cout << "Assurez-vous que votre écran de terminal soit maximisé.\n";
+    cout << "Assurez-vous que votre écran de terminal soit maximisé.\n"
+        << "Pour une meilleure expérience graphique, mettez votre échelle d'affichage à 100% (windows scale and layout)\n";
     Sleep(2000);
 
     string hundred = "____________________________________________________________________________________________________";
@@ -87,7 +88,7 @@ void calibrateScreen(int& vSize, int& hSize)
 }
 
 //tentative de générateur de carte aléatoire qui ne fait pas tout à fait l'effet souhaité, mais utilisable
-array<string, 200> buildRandomMap(int lineSize)
+array<string, 200> buildRandomMap(int lineSize) //codé par Alexis, testé par Nicholas
 {
     int threshold = 100; //modifiable
     array<string,200> newMap;
@@ -130,14 +131,14 @@ array<string, 200> buildRandomMap(int lineSize)
 }
 
 //fonction pour demander à l'usager si il veut commencer une nouvelle partie
-bool displayStartGame(int vSize, int hSize, int longestString)
+bool displayStartGame(int vSize, int hSize, int longestString)  //codé par Alexis, débogué par Nicholas
 {
     char userStart = -1;
-    int vPos = vSize / 2 + logo.size() / 2;
+    int vPos = vSize / 2 + int(logo.size()) / 2;
     int hPos = hSize / 2 - longestString / 2 + 1;
     while (userStart != 'o' && userStart != 'O' && userStart != 'n' && userStart != 'N')
     {
-        addSpacing(3, logo.size(), longestString, vSize, hSize);
+        addSpacing(3, int(logo.size()), longestString, vSize, hSize);
         if (userStart != -1)
         {
             moveCursor(vPos + 1, hPos);
@@ -149,20 +150,20 @@ bool displayStartGame(int vSize, int hSize, int longestString)
         cin >> userStart;
         clearCin();
     }
-    addSpacing(1, logo.size(), longestString, vSize, hSize);
+    addSpacing(1, int(logo.size()), longestString, vSize, hSize);
     bool startGame = userStart == 'o' || userStart == 'O' ? true : false;
     return startGame;
 }
 
 //fonction pour demander à l'usager d'entrer le nom de son Protazoid
-string enterName(int vSize, int hSize, int longestString)
+string enterName(int vSize, int hSize, int longestString)   //codé pas Alexis, débogué par Nicholas
 {
     string startName = "En tant que Protazoid, quel sera votre nom?";
 
-    int vPos = vSize / 2 + logo.size() / 2;
-    int hPos = hSize / 2 - startName.size() / 2 + 2;
+    int vPos = vSize / 2 + int(logo.size()) / 2;
+    int hPos = hSize / 2 - int(startName.size()) / 2 + 2;
 
-    addSpacing(3, logo.size(), longestString, vSize, hSize);
+    addSpacing(3, int(logo.size()), longestString, vSize, hSize);
 
     moveCursor(vPos + 2, hPos);
     cout << startName;
@@ -174,7 +175,8 @@ string enterName(int vSize, int hSize, int longestString)
 }
 
 //fonction pour que l'usager valide le nom de son Protazoid
-void startNameValidation(int vSize, int hSize, string& protName, int& longestString) {
+void startNameValidation(int vSize, int hSize, string& protName, int& longestString)    //codé par Alexis, testé par Nicholas
+{
     bool nameIsGood = false;
     while (!nameIsGood)
     {
@@ -199,7 +201,7 @@ void startNameValidation(int vSize, int hSize, string& protName, int& longestStr
 
 
 //fonction pour afficher le texte dans l'intro
-void displayIntroText(int vSize, int hSize, int textIndex)
+void displayIntroText(int vSize, int hSize, int textIndex)  //codé par Alexis
 {
     array<string, 6> introTexts = {
         "Au tout début des temps, avant la naissance des continents et des mammifères terrestres, il n'y avait qu'océan.",
@@ -223,7 +225,7 @@ void displayIntroText(int vSize, int hSize, int textIndex)
 }
 
 //fonction pour afficher le Logo dans l'écran d'affichage
-void displayLogo(int vSize, int hSize, int logoIndex, int logoVOffset = 0)
+void displayLogo(int vSize, int hSize, int logoIndex, int logoVOffset = 0)  //codé par Alexis et Nicholas
 {
     array<array<string, 16>, 6> logos = { logo6, logo5, logo4, logo3, logo2, logo };
     int longest = int(logo[0].size());
@@ -238,7 +240,7 @@ void displayLogo(int vSize, int hSize, int logoIndex, int logoVOffset = 0)
 }
 
 //fonction pour afficher l'intro
-void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
+void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)   //codé par Alexis
 {
     for (int i = 0; i < framesPlayed; ++i)
     {
@@ -272,7 +274,8 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)
 }
 
 //fonction pour afficher le texte du protazoid sur plus d'une trame
-void displayUI(array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions) {
+void displayUI(array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)    //codé par Alexis
+{
     for (int i = 0; i < 10; ++i)
     {
         string textDisplayed = UItexts[i];
@@ -296,7 +299,7 @@ void displayUI(array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 2
     }
 }
 
-//fonction pour ajouter un text a afficher dans le UI
+//fonction pour ajouter un text a afficher dans le UI       //codé par Alexis
 void addTextToUI(int vPos, int hPos, string uiString, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions, int vUIOffset = 1, int hUIOffset = 0)
 {
     moveCursor(vPos - vUIOffset, hPos - hUIOffset);
@@ -314,7 +317,7 @@ void addTextToUI(int vPos, int hPos, string uiString, array<string, 10>& UItexts
     }
 }
 
-void playProtazoidDeath(int vSize, int hSize, int protLife)
+void playProtazoidDeath(int vSize, int hSize, int protLife) //codé par Alexis et Nicholas
 {
     int spriteSize = 0;
     switch (protLife)
@@ -497,7 +500,7 @@ void positionMonsters(int lineSize, array<string, 200> currentMap, array<int, 20
     }
 }
 
-void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, array<int, 20>& monstersPosition, array<int, 10> monstersHealth)
+void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, array<int, 20>& monstersPosition, array<int, 10> monstersHealth) //codé par Alexis
 {
     int monstersNumber = 10;
     for (int i = 0; i < monstersNumber; ++i)
@@ -513,8 +516,8 @@ void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> cur
             int monsterHOffset = h - lineSize / 2;
             int moveV = monsterVOffset < vOffset ? 1 : -1;
             int moveH = monsterHOffset < hOffset ? 1 : -1;
-            monstersPosition[i * 2] = h + moveH * spdBoost;
-            monstersPosition[(i * 2) + 1] = v + moveV * spdBoost;
+            monstersPosition[i * 2] = h + ((moveH * 1.5) * spdBoost);
+            monstersPosition[(i * 2) + 1] = v + (moveV * spdBoost);
         }
         else
         {
@@ -789,8 +792,8 @@ void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> current
     int bossHOffset = h - lineSize / 2;
     int moveV = bossVOffset < vOffset ? 1 : -1;
     int moveH = bossHOffset < hOffset ? 1 : -1;
-    bossPosition[0] = v + moveV * spdBoost;
-    bossPosition[1] = h + moveH * spdBoost;
+    bossPosition[0] = v + (moveV * spdBoost);
+    bossPosition[1] = h + ((moveH*1.5) * spdBoost);
     ++bossSteps;
 }
 
@@ -1212,7 +1215,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
     {
         int firstLine = ((int(currentMap.size()) / 2) - int((vSize) / 2));
         vOffset += nextMove == 'w' ? -(protSpeed) : (nextMove == 's' ? protSpeed : 0);
-        hOffset += nextMove == 'a' ? -(protSpeed) : (nextMove == 'd' ? protSpeed : 0);
+        hOffset += nextMove == 'a' ? -(protSpeed*1.5) : (nextMove == 'd' ? protSpeed*1.5 : 0);
         moveCursor(1, 1);
         cout << "\x1b[48;5;234m" << "\x1b[38;5;76m";  //Ici pour mettre couleur carte et le reste du jeux.
 
