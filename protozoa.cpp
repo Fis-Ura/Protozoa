@@ -1,13 +1,16 @@
-#include "Code_Utilities.h"
-#include "asciiIntro.h" //travail de nicholas et alexis
-#include "asciiLogo.h" //travail de nicholas
-#include "asciiProtazoid.h" //travail de nicholas
-#include "asciiCollectables.h" //travail de nicholas
-#include "asciiMonsters.h" //travail de nicholas
-#include <Windows.h>
+#include "Code_Utilities.h" //travail de Khalil
+#include "asciiIntro.h" //travail de Nicholas et Alexis
+#include "asciiLogo.h" //travail de Nicholas
+#include "asciiProtazoid.h" //travail de Nicholas
+#include "asciiCollectables.h" //travail de Nicholas
+#include "asciiMonsters.h" //travail de Nicholas
+//#include <Windows.h>
+#include <chrono>
+#include <thread>
 #include <conio.h>
 
 using namespace BdB;
+using namespace this_thread;
 
 void moveCursor(int v, int h)   //travail de Nicholas
 {
@@ -51,7 +54,7 @@ void calibrateScreen(int& vSize, int& hSize) //travail de Alexis
 {
     cout << "Assurez-vous que votre écran de terminal soit maximisé.\n"
         << "Pour une meilleure expérience graphique, mettez votre échelle d'affichage à 100% (windows scale and layout)\n";
-    Sleep(2000);
+    sleep_for(2000ms);
 
     string hundred = "____________________________________________________________________________________________________";
     cout << hundred << hundred << endl;
@@ -266,7 +269,7 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)   //co
             if (i == framesPlayed - 2) displayLogo(vSize, hSize, 4);
             if (i == framesPlayed - 1) displayLogo(vSize, hSize, 5);
 
-            Sleep(200);
+            sleep_for(200ms);
             /*if (i != framesPlayed - 1)
                 system("cls");*/
         }
@@ -1686,7 +1689,7 @@ int main()
             else if(protLife <= 0 && protLife > -9 || bossHealth <= 0 && bossHealth > -9)
             {
                 nextMove = 'r';
-                Sleep(250);
+                sleep_for(250ms);
             }
             if (protLife <= -9)
             {
@@ -1696,13 +1699,13 @@ int main()
                 string gameOverLine3 = "Appuyez sur q pour quitter Protozoa ou r pour renaître suivi de Entrer.";
                 moveCursor(vSize / 2 - 2, hSize / 2 - int(gameOverLine1.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine1;
-                Sleep(1000);
+                sleep_for(1000ms);
                 moveCursor(vSize / 2 - 2 + 1, hSize / 2 - int(gameOverLine2.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine2;
-                Sleep(1000);
+                sleep_for(1000ms);
                 moveCursor(vSize / 2 - 2 + 2, hSize / 2 - int(gameOverLine3.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine3;
-                Sleep(1000);
+                sleep_for(1000ms);
                 cin >> restart;
                 if (restart == 'q' || restart == 'Q')
                 {
@@ -1723,13 +1726,13 @@ int main()
                 string gameOverLine3 = "Appuyez sur q pour quitter Protozoa ou r pour renaître suivi de Entrer.";
                 moveCursor(vSize / 2 - 2, hSize / 2 - int(gameOverLine1.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine1;
-                Sleep(1000);
+                sleep_for(1000ms);
                 moveCursor(vSize / 2 - 2 + 1, hSize / 2 - int(gameOverLine2.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine2;
-                Sleep(1000);
+                sleep_for(1000ms);
                 moveCursor(vSize / 2 - 2 + 2, hSize / 2 - int(gameOverLine3.size()) / 2);
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << gameOverLine3;
-                Sleep(1000);
+                sleep_for(1000ms);
                 cin >> restart;
                 if (restart == 'q' || restart == 'Q')
                 {
