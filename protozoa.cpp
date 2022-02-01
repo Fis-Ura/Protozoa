@@ -4,7 +4,6 @@
 #include "asciiProtazoid.h" //travail de Nicholas
 #include "asciiCollectables.h" //travail de Nicholas
 #include "asciiMonsters.h" //travail de Nicholas
-//#include <Windows.h>
 #include <chrono>
 #include <thread>
 #include <conio.h>
@@ -531,48 +530,56 @@ void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> cur
 }
 
 //fonction pour afficher l'animation de mort des monstres
-void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int monsterVOffset, int monsterHOffset, int vOffset, int hOffset)
+void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int monsterVOffset, int monsterHOffset, int vOffset, int hOffset, int& monsterHStart, int monsterVStart, int monsterVEnd, int monsterHEnd)
 {
     int spriteSize = 0;
-    switch (monsterHP)
-    {
-    case -1:
-        spriteSize = int(monsterAsmall.size());
-        break;
-    case -2:
-        spriteSize = int(monsterAdyingA.size());
-        break;
-    case -3:
-        spriteSize = int(monsterAdyingB.size());
-        break;
-    case -4:
-        spriteSize = int(monsterAdyingC.size());
-        break;
-    default:
-        break;
-    }
+    string line;
+    int lineLength;
     int vPos = vSize / 2 - spriteSize / 2;
     int hPos = hSize / 2 - spriteSize / 2;
-    for (int i = 0; i < spriteSize; ++i)
+    monsterHStart = monsterHStart > (spriteSize * 2) || monsterHStart < 0 ? 0 : monsterHStart;
+    for (int iLine = monsterVStart; iLine < monsterVEnd; ++iLine)
     {
-        moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
         switch (monsterHP)
         {
         case -1:
-            cout << monsterAsmall[i];
+            spriteSize = int(monsterAsmall.size());
+            line = monsterAsmall[iLine];
             break;
         case -2:
-            cout << monsterAdyingA[i];
+            spriteSize = int(monsterAdyingA.size());
+            line = monsterAdyingA[iLine];
             break;
         case -3:
-            cout << monsterAdyingB[i];
+            spriteSize = int(monsterAdyingB.size());
+            line = monsterAdyingB[iLine];
             break;
         case -4:
-            cout << monsterAdyingC[i];
+            spriteSize = int(monsterAdyingC.size());
+            line = monsterAdyingC[iLine];
             break;
         default:
             break;
         }
+        string newLine;
+        int notAnsiCounter = 0;
+        for (int iCol = 0; iCol < line.size(); ++iCol)
+        {
+            if (line[iCol] == ' ' || line[iCol] == '.')
+            {
+                if (notAnsiCounter < monsterHEnd)
+                {
+                    if (notAnsiCounter >= monsterHStart)
+                        newLine += line[iCol];
+                }
+                ++notAnsiCounter;
+            }
+            else if (notAnsiCounter < monsterHEnd)
+                newLine += line[iCol];
+        }
+        int hMove = h - hOffset < monsterHOffset ? 1 : h - monsterHOffset - hOffset;
+        moveCursor(v + iLine - monsterVOffset - vOffset, hMove);
+        cout << newLine;
     }
 }
 
@@ -585,8 +592,13 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
         int v = monstersPosition[(iMonster * 2) + 1];
         int monsterVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
         int monsterVMaxOffset = (int(currentMap.size()) / 2) + (vSize / 2);
+        int monsterVStart = int(monsterAbig.size()) - ((v + int(monsterAbig.size())) - ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset));
+        int monsterVEnd = int(monsterAbig.size()) - (v - ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset) + int(monsterAbig.size()) - 1);
         int monsterHOffset = (lineSize / 2) - (hSize / 2);
         int monsterHMaxOffset = (lineSize / 2) + (hSize / 2);
+        int monsterHStart = 16 - ((h + 16) - ((lineSize / 2) - (hSize / 2) + hOffset));
+        int hStartLimit = ((lineSize / 2) - (hSize / 2) + hOffset);
+        int monsterHEnd = hSize - (h - hStartLimit) > 16 ? 16 : hSize - (h - hStartLimit) + 1;
         int monsterStr = monstersStrength[iMonster];
         int monsterHP = monstersHealth[iMonster];
         int protTop = (vSize / 2) - (protHeight / 2);
@@ -595,9 +607,13 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
         int protRight = (hSize / 2) + (protWidth / 2);
 
         //determine if monster is in the display screen
-        if (v > (monsterVOffset + vOffset) && v < (monsterVMaxOffset + vOffset))
+        if(monsterVStart < int(monsterAbig.size()) && monsterVEnd > 0)
+        //if (v > (monsterVOffset + vOffset) && v < (monsterVMaxOffset + vOffset))
         {
-            if (h > (monsterHOffset + hOffset) && h < (monsterHMaxOffset + hOffset))
+            monsterVStart = monsterVStart > int(monsterAbig.size()) || monsterVStart < 0 ? 0 : monsterVStart;
+            monsterVEnd = int(monsterAbig.size()) > monsterVEnd ? monsterVEnd : int(monsterAbig.size());
+            if (monsterHStart < 16 && h < ((lineSize / 2) + (hSize / 2) + hOffset))
+            //if (h > (monsterHOffset + hOffset) && h < (monsterHMaxOffset + hOffset))
             {
                 //determine if monster has been attacked by the protazoid
                 if (monsterHP > 0 && protLife > 0) {
@@ -627,13 +643,32 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     }
                 }
 
-                //if monster is alive draw it on the screen
-                if(monsterHP > 0)
+
+                if (monsterHP > 0)
                 {
-                    for (int i = 0; i < monsterAbig.size(); ++i)
+                    monsterHStart = monsterHStart > 16 || monsterHStart < 0 ? 0 : monsterHStart;
+                    for (int iLine = monsterVStart; iLine < monsterVEnd; ++iLine)
                     {
-                        moveCursor(v + i - monsterVOffset - vOffset, h - monsterHOffset - hOffset);
-                        cout << monsterAbig[i];
+                        string newLine;
+                        int notAnsiCounter = 0;
+                        string line = monsterAbig[iLine];
+                        for (int iCol = 0; iCol < int(monsterAbig[iLine].size()); ++iCol)
+                        {
+                            if (line[iCol] == ' ' || line[iCol] == '.')
+                            {
+                                if (notAnsiCounter < monsterHEnd)
+                                {
+                                    if (notAnsiCounter >= monsterHStart)
+                                        newLine += line[iCol];
+                                }
+                                ++notAnsiCounter;
+                            }
+                            else if(notAnsiCounter < monsterHEnd)
+                                newLine += line[iCol];
+                        }
+                        int hMove = h - hOffset < monsterHOffset ? 1 : h - monsterHOffset - hOffset;
+                        moveCursor(v + iLine - monsterVOffset - vOffset, hMove);
+                        cout << newLine;
                     }
                 }
                 else
@@ -644,23 +679,23 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                         protInvQty[0] += 15;
                         moveCursor(protTop - 3, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!!! (" << protInvQty[0] << ")";
-                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
                     }
                     if (monstersHealth[iMonster] == -2)
                     {
                         moveCursor(protTop - 3, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!! (" << protInvQty[0] << ")";
-                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
                     }
                     if (monstersHealth[iMonster] == -3)
                     {
                         moveCursor(protTop - 3, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15! (" << protInvQty[0] << ")";
-                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
                     }
                     if (monstersHealth[iMonster] == -4)
                     {
-                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset);
+                        playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
                         //create new monster when one has finished dying
                         int newMonsterH = 1 + (rand() % lineSize);
                         int newMonsterV = 1 + (rand() % int(currentMap.size()));
@@ -717,7 +752,7 @@ void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blob
     }
 }
 
-void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset, int hOffset, int blobSize)
+void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset, int hOffset, int blobSize, int blobVStart, int blobVEnd, int blobHStart, int blobHEnd)
 {
     for (int i = 0; i < 2; ++i)
     {
@@ -727,14 +762,83 @@ void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset,
         case 0:
         case 1:
         case 2:
-            cout << BlobASmall[i];
+            for (int iLine = blobVStart; iLine < blobVEnd; ++iLine)
+            {
+                string newLine;
+                int notAnsiCounter = 0;
+                string line = BlobASmall[iLine];
+                for (int iCol = 0; iCol < int(BlobASmall[iLine].size()); ++iCol)
+                {
+                    if (line[iCol] == ' ' || line[iCol] == '.' || line[iCol] == '/' || line[iCol] == '¯' || line[iCol] == '_' || line[iCol] == '\\')
+                    {
+                        if (notAnsiCounter < blobHEnd)
+                        {
+                            if (notAnsiCounter >= blobHStart)
+                                newLine += line[iCol];
+                        }
+                        ++notAnsiCounter;
+                    }
+                    else if (notAnsiCounter < blobHEnd)
+                        newLine += line[iCol];
+                }
+                int hMove = h - hOffset < blobHOffset ? 1 : h - blobHOffset - hOffset;
+                moveCursor(v + iLine - blobVOffset - vOffset, hMove);
+                cout << newLine;
+            }
+            //cout << BlobASmall[i];
             break;
         case 3:
         case 4:
-            cout << BlobBSmall[i];
+            for (int iLine = blobVStart; iLine < blobVEnd; ++iLine)
+            {
+                string newLine;
+                int notAnsiCounter = 0;
+                string line = BlobBSmall[iLine];
+                for (int iCol = 0; iCol < int(BlobBSmall[iLine].size()); ++iCol)
+                {
+                    if (line[iCol] == ' ' || line[iCol] == '.' || line[iCol] == '/' || line[iCol] == '¯' || line[iCol] == '_' || line[iCol] == '|')
+                    {
+                        if (notAnsiCounter < blobHEnd)
+                        {
+                            if (notAnsiCounter >= blobHStart)
+                                newLine += line[iCol];
+                        }
+                        ++notAnsiCounter;
+                    }
+                    else if (notAnsiCounter < blobHEnd)
+                        newLine += line[iCol];
+                }
+                int hMove = h - hOffset < blobHOffset ? 1 : h - blobHOffset - hOffset;
+                moveCursor(v + iLine - blobVOffset - vOffset, hMove);
+                cout << newLine;
+            }
+            //cout << BlobBSmall[i];
             break;
         case 5:
-            cout << BlobAmedium[i];
+            for (int iLine = blobVStart; iLine < blobVEnd; ++iLine)
+            {
+                string newLine;
+                int notAnsiCounter = 0;
+                string line = BlobAmedium[iLine];
+                for (int iCol = 0; iCol < int(BlobAmedium[iLine].size()); ++iCol)
+                {
+                    if (line[iCol] == ' ' || line[iCol] == '.')
+                    {
+                        if (notAnsiCounter < blobHEnd)
+                        {
+                            if (notAnsiCounter >= blobHStart)
+                                newLine += line[iCol];
+                        }
+                        ++notAnsiCounter;
+                    }
+                    else if (notAnsiCounter < blobHEnd)
+                        newLine += line[iCol];
+                }
+                int hMove = h - hOffset < blobHOffset ? 1 : h - blobHOffset - hOffset;
+                moveCursor(v + iLine - blobVOffset - vOffset, hMove);
+                cout << newLine;
+            }
+            //cout << BlobAmedium[i];
             break;
         }
     }
@@ -744,17 +848,31 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
 {
     for (int i = 0; i < 50; ++i)
     {
-        int randomSize = rand() % 6;
         int h = blobsPosition[i * 2];
         int v = blobsPosition[(i * 2) + 1];
         if (h == 0 && v == 0) continue;
 
+        int blobVStart = int(BlobASmall.size()) - ((v + int(BlobASmall.size())) - ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset));
+        int blobVEnd = int(BlobASmall.size()) - (v - ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset) + int(BlobASmall.size()) - 1);
         int blobVOffset = (int(currentMap.size()) / 2) - (vSize / 2);
+        int blobLineSize = blobsSizes[i] <= 2 ? 3 : (blobsSizes[i] <= 4 ? 4 : 6);
+        int hStartLimit = ((lineSize / 2) - (hSize / 2) + hOffset);
+        int blobHStart = blobLineSize - ((h + blobLineSize) - ((lineSize / 2) - (hSize / 2) + hOffset));
+        int blobHEnd = hSize - (h - hStartLimit) > blobLineSize ? blobLineSize : hSize - (h - hStartLimit) + 1;
+
+
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(2 + i, 1);
-        if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
+
+        if (blobVStart < int(BlobASmall.size()) && blobVEnd > 0)
+        //if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
         {
-            if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
+            blobVStart = blobVStart > int(BlobASmall.size()) || blobVStart < 0 ? 0 : blobVStart;
+            blobVEnd = int(BlobASmall.size()) > blobVEnd ? blobVEnd : int(BlobASmall.size());
+        
+        
+            if (blobHStart < blobLineSize && h < ((lineSize / 2) + (hSize / 2) + hOffset))
+            //if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
                 //determine if blob has been eaten by the protazoid
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
@@ -772,12 +890,14 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
                     }
                     else
                     {
-                        drawSingleBlob(v, h, blobVOffset, blobHOffset, vOffset, hOffset, blobsSizes[i]);
+                        blobHStart = blobHStart > blobLineSize || blobHStart < 0 ? 0 : blobHStart;
+                        drawSingleBlob(v, h, blobVOffset, blobHOffset, vOffset, hOffset, blobsSizes[i], blobVStart, blobVEnd, blobHStart, blobHEnd);
                     }
                 }
                 else
                 {
-                    drawSingleBlob(v, h, blobVOffset, blobHOffset, vOffset, hOffset, blobsSizes[i]);
+                    blobHStart = blobHStart > blobLineSize || blobHStart < 0 ? 0 : blobHStart;
+                    drawSingleBlob(v, h, blobVOffset, blobHOffset, vOffset, hOffset, blobsSizes[i], blobVStart, blobVEnd, blobHStart, blobHEnd);
                 }
             }
         }
