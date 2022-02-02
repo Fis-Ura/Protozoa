@@ -73,7 +73,7 @@ void calibrateScreen(int& vSize, int& hSize) //travail de Alexis
     }
     system("cls");
     for (int i = 0; i < 60; ++i) cout << '|' << endl;
-    cout << "Est-ce que la ligne s'affiche au complet dans l'écran? o pour oui\n";
+    cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
     char vValidate;
     cin >> vValidate;
     if (vValidate == 'o' || vValidate == 'O')
@@ -82,7 +82,7 @@ void calibrateScreen(int& vSize, int& hSize) //travail de Alexis
     {
         system("cls");
         for (int i = 0; i < 30; ++i) cout << '|' << endl;
-        cout << "Est-ce que la ligne s'affiche au complet dans l'écran? o pour oui\n";
+        cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
         cin >> vValidate;
         if (vValidate == 'o' || vValidate == 'O')
             vSize = 30;
@@ -568,6 +568,22 @@ void playProtazoidDeath(int vSize, int hSize, int protLife) //codé par Alexis e
     }
 }
 
+//mode mort subite quand le Protazoid sort de la carte
+void suddenDeath(int vSize, int hSize, int& suddenDeathCtr, array<string,10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions, int protHeight, int protWidth) //codé par Alexis
+{
+    int hPos = hSize / 2 - protWidth / 2;
+    int vPos = vSize / 2 - protHeight / 2;
+    //affiche message d'avertissement et décrémente le compteur
+    string uiString = "Attention!! Retourner sur la carte, le médium n'est pas compatible avec votre métabolisme!";
+    addTextToUI(vPos, hPos, uiString, UItexts, UIsteps, UIpositions, 6, int(uiString.size()) / 2);
+    --suddenDeathCtr;
+    moveCursor(vPos + (protHeight / 2) + 2, hPos);
+    cout << spaceString(2);
+    moveCursor(vPos + protHeight + 2, hPos + (protWidth / 2));
+    cout << suddenDeathCtr;
+
+}
+
 //dessine le model de protazoid nécéssaire et vérifie plusieurs systèmes de vie du protazoid
 bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions) //codé par Alexis et par Nicholas vers la fin du projet
 {
@@ -872,7 +888,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                         cout << newLine;
                     }
                 }
-                //si le monstre est mort, affiché le model de mort associé
+                //si le monstre est mort, afficher le model de mort associé
                 else
                 {
                     monstersHealth[iMonster] = monsterHP - 1;
@@ -1078,7 +1094,7 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
             blobVEnd = int(BlobASmall.size()) > blobVEnd ? blobVEnd : int(BlobASmall.size());
         
         
-            if (blobHStart < blobLineSize && h < ((lineSize / 2) + (hSize / 2) + hOffset))
+            if (blobHStart < blobLineSize && h < ((lineSize / 2) + (hSize / 2) + hOffset + 1))
             //if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
                 //determiner si le blob a été mangé par le protazoid
@@ -1515,7 +1531,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
 }
 
 
-bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes, int& bossHealth, int& bossSteps, array<int, 2>& bossPosition, int bossStrength, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions) //codé par Alexis
+bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes, int& bossHealth, int& bossSteps, array<int, 2>& bossPosition, int bossStrength, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions, int& suddenDeathCtr) //codé par Alexis
 {
     //si l'usager appuis sur ESCAPE, confirmer qu'il veut quitter et exécuter le choix
     if (int(nextMove) == 27) {
@@ -1572,6 +1588,13 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
             cout << newLine << endl;
         }
     }
+
+    //si le Protazoid est hors de la carte, afficher un message d'avertissement et démarrer un compteur de mort subite
+    if ((vOffset < -(int(currentMap.size()) / 2) || vOffset >(int(currentMap.size()) / 2) || hOffset < -(lineSize / 4) || hOffset >(lineSize / 4)) && protLife > 0)
+        suddenDeath(vSize, hSize, suddenDeathCtr, UItexts, UIsteps, UIpositions, protHeight, protWidth);
+    else
+        suddenDeathCtr = 50;
+    if (suddenDeathCtr <= 0) protLife = 0;
 
     if(rand() % 5 == 4) addBlobs(lineSize, currentMap, blobsPosition, blobsSizes); //ajoute des blobs aléatoirement
     drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty, blobsPosition, blobsSizes, protSteps, UItexts, UIsteps, UIpositions);
@@ -1682,7 +1705,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
                 protInvQty[2] += 10*protStrength;
 
             char refreshMap = 'r';
-            drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions);
+            drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions, suddenDeathCtr);
         }
         else
             protInvOpen = false;
@@ -1694,7 +1717,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
     if (!protInvOpen && protInvWasOpen)
     {
         char refreshMap= 'r';
-        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions);
+        drawMap(refreshMap, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions, suddenDeathCtr);
     }
     return true;
 }
@@ -1716,6 +1739,7 @@ int main()
     int hOffset = 0;
     int lineSize = 800;
     array<string, 200> currentMap;
+    int suddenDeathCtr = 50;
 
     //calibration de l'écran d'affichage et variables d'affiache
     calibrateScreen(vSize, hSize);
@@ -1766,8 +1790,9 @@ int main()
     if (userSkip == 'S' || userSkip == 's')
         skipIntro = true;
 
-    //intro
-    displayIntro(50, skipIntro, vSize, hSize);
+    //jouer l'intro si la taille de l'écran est d'au moins 200 x 60
+    if(vSize >= 60 && hSize >= 200)
+        displayIntro(50, skipIntro, vSize, hSize);
 
     bool startGame = displayStartGame(vSize, hSize, longestString);
 
@@ -1779,6 +1804,7 @@ int main()
         userQuit = false;
         vOffset = 0;
         hOffset = 0;
+        suddenDeathCtr = 50;
         //variables utilisées pour le protazoid
         protSteps = 0;
         protWidth = 16;
@@ -1819,11 +1845,12 @@ int main()
         validateCaracteristics(protLife, protLifeMax, protSpeed, protStrength, protName, vSize, hSize);
 
         //démarrage de la partie
+        system("cls");
         bool inMap = true;
         while (inMap)
         {
             protRegen = true;
-            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions);
+            drawMap(nextMove, userQuit, vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protLifeMax, protSpeed, protStrength, protRegen, protInvQty, protInvOpen, monstersPosition, monstersHealth, monstersStrength, blobsPosition, blobsSizes, bossHealth, bossSteps, bossPosition, bossStrength, protSteps, UItexts, UIsteps, UIpositions, suddenDeathCtr);
             if (userQuit) break;
             inMap = drawProtazoid(vSize, hSize, protWidth, protHeight, protLife, protLifeMax, protRegen, protSpeed, protStrength, protSatiety, protInvQty, UItexts, UIsteps, UIpositions);
             if (protLife > 0 && bossHealth > 0)
