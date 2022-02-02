@@ -1146,6 +1146,103 @@ void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> current
     ++bossSteps;
 }
 
+//affichage de l'animation de mort du boss
+void playBossDeath(int vSize, int hSize, int hStartAt, int hEndAt, int vStartAt, int vEndAt, int vBoss, int hBoss, int bossVOffset, int bossHOffset, int vOffset, int hOffset, int protHeight, int protWidth, int frame)
+{
+    int bossALineSize = int(bossA.size());
+    int bossCurrentLineSize;
+    switch (frame)
+    {
+    case 1:
+        bossCurrentLineSize = int(bossAdyingA.size());
+        break;
+    case 2:
+        bossCurrentLineSize = int(bossAdyingB.size());
+        break;
+    case 3:
+        bossCurrentLineSize = int(bossAdyingC.size());
+        break;
+    case 4:
+        bossCurrentLineSize = int(bossAdyingD.size());
+        break;
+    case 5:
+        bossCurrentLineSize = int(bossAdyingE.size());
+        break;
+    case 6:
+        bossCurrentLineSize = int(bossAdyingF.size());
+        break;
+    case 7:
+        bossCurrentLineSize = int(bossAdyingG.size());
+        break;
+    case 8:
+        bossCurrentLineSize = int(bossAdyingH.size());
+        break;
+    }
+
+    moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
+    cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
+
+    //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
+    int hDeathStart = hStartAt - (bossALineSize * 2 - bossCurrentLineSize * 2) / 2;
+    hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
+    int hDeathEnd = hEndAt - (bossALineSize * 2 - bossCurrentLineSize * 2) / 2;
+    int vDeathStart = vStartAt - (bossALineSize - bossCurrentLineSize) / 2;
+    vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
+    int vDeathEnd = vEndAt - (bossALineSize - bossCurrentLineSize) / 2;
+    vDeathEnd = vDeathEnd > bossCurrentLineSize ? bossCurrentLineSize : vDeathEnd;
+    int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
+    for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
+    {
+        string newLine;
+        int notAnsiCounter = 0;
+        string line;
+        switch (frame)
+        {
+        case 1:
+            line = bossAdyingA[iLine];
+            break;
+        case 2:
+            line = bossAdyingB[iLine];
+            break;
+        case 3:
+            line = bossAdyingC[iLine];
+            break;
+        case 4:
+            line = bossAdyingD[iLine];
+            break;
+        case 5:
+            line = bossAdyingE[iLine];
+            break;
+        case 6:
+            line = bossAdyingF[iLine];
+            break;
+        case 7:
+            line = bossAdyingG[iLine];
+            break;
+        case 8:
+            line = bossAdyingH[iLine];
+            break;
+        }
+
+        for (int iCol = hDeathStart; iCol < int(line.size()); ++iCol)
+        {
+            if (line[iCol] == ' ' || line[iCol] == '.')
+            {
+                ++notAnsiCounter;
+                if (notAnsiCounter < hDeathEnd)
+                {
+                    if (notAnsiCounter >= hDeathStart)
+                        newLine += line[iCol];
+                }
+            }
+            else newLine += line[iCol];
+        }
+        moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossALineSize - bossCurrentLineSize) / 2), hMove + ((bossALineSize * 2 - bossCurrentLineSize * 2) / 2));
+        cout << newLine;
+    }
+    sleep_for(100ms);
+}
+
 //affiche le boss à l'écran
 void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 2> bossPosition, int& bossHealth, int bossStrength)  //codé par Alexis et Nicholas
 {
@@ -1226,304 +1323,10 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                     }
 
                     //si les pv du boss sont a 0 ou dessous, lancer l'animation de mort et le win screen
-                    if(bossHealth < 0)
+                    if (bossHealth < 0)
                     {
-                        if (bossHealth == -1)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingA.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingA.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingA.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingA.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingA.size()) ? int(bossAdyingA.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingA[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingA[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingA.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingA.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
-                        if (bossHealth == -2)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingB.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingB.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingB.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingB.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingB.size()) ? int(bossAdyingB.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingB[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingB[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingB.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingB.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
-                        if (bossHealth == -3)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingC.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingC.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingC.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingC.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingC.size()) ? int(bossAdyingC.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingC[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingC[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingC.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingC.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
-                        if (bossHealth == -4)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingD.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingD.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingD.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingD.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingD.size()) ? int(bossAdyingD.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingD[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingD[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingD.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingD.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
-                        if (bossHealth == -5)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingE.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingE.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingE.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingE.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingE.size()) ? int(bossAdyingE.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingE[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingE[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingE.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingE.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
-                        if (bossHealth == -6)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingF.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingF.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingF.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingF.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingF.size()) ? int(bossAdyingF.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingF[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingF[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingF.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingF.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
-                        if (bossHealth == -7)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingG.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingG.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingG.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingG.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingG.size()) ? int(bossAdyingG.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingG[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingG[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingG.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingG.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
-                        if (bossHealth == -8)
-                        {
-                            moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
-                            cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
-
-                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
-                            int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingH.size()) * 2) / 2;
-                            hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
-                            int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingH.size()) * 2) / 2;
-                            int vDeathStart = vStartAt - (int(bossA.size()) - int(bossAdyingH.size())) / 2;
-                            vDeathStart = vDeathStart < 0 ? 0 : vDeathStart;
-                            int vDeathEnd = vEndAt - (int(bossA.size()) - int(bossAdyingH.size())) / 2;
-                            vDeathEnd = vDeathEnd > int(bossAdyingH.size()) ? int(bossAdyingH.size()) : vDeathEnd;
-                            int hMove = hBoss - hOffset < bossHOffset ? 1 : hBoss - bossHOffset - hOffset;
-                            for (int iLine = vDeathStart; iLine < vDeathEnd; ++iLine)
-                            {
-                                string newLine;
-                                int notAnsiCounter = 0;
-                                string line = bossAdyingH[iLine];
-
-                                for (int iCol = hDeathStart; iCol < int(bossAdyingH[iLine].size()); ++iCol)
-                                {
-                                    if (line[iCol] == ' ' || line[iCol] == '.')
-                                    {
-                                        ++notAnsiCounter;
-                                        if (notAnsiCounter < hDeathEnd)
-                                        {
-                                            if (notAnsiCounter >= hDeathStart)
-                                                newLine += line[iCol];
-                                        }
-                                    }
-                                    else newLine += line[iCol];
-                                }
-                                moveCursor(vBoss + iLine - bossVOffset - vOffset + ((bossA.size() - int(bossAdyingH.size())) / 2), hMove + ((bossA.size() * 2 - int(bossAdyingH.size()) * 2) / 2));
-                                cout << newLine;
-                            }
-                        }
+                        if(bossHealth >= -8)
+                            playBossDeath(vSize, hSize, hStartAt, hEndAt, vStartAt, vEndAt, vBoss, hBoss, bossVOffset, bossHOffset, vOffset, hOffset, protHeight, protWidth, -(bossHealth));
                         --bossHealth; //utilisé comme compteur pour les frame de mort du boss
                     }
                     bossHealth = bossHealth == 0 ? -1 : bossHealth;
@@ -1608,7 +1411,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
 
     //changer la condition pour changer le spawn du boss
     //  if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
-    if (protSteps >= 500) //le boss apparait après 500 pas du Protazoid
+    if (protSteps >= 0) //le boss apparait après 500 pas du Protazoid
     {
         if (protSteps == 500)
         {
