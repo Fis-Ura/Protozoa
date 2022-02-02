@@ -1600,6 +1600,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
     if (suddenDeathCtr <= 0) protLife = 0;
 
     if(rand() % 5 == 4) addBlobs(lineSize, currentMap, blobsPosition, blobsSizes); //ajoute des blobs aléatoirement
+    //affichage des différents acteurs et ui, déplacements des monstres
     drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty, blobsPosition, blobsSizes, protSteps, UItexts, UIsteps, UIpositions);
     moveMonsters(vOffset, hOffset, lineSize, currentMap, monstersPosition, monstersHealth);
     drawMonsters(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, protInvQty, monstersPosition, monstersHealth, monstersStrength);
@@ -1617,7 +1618,8 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
             int hPos = hSize / 2 - int(uiString.size()) / 2;
             addTextToUI(vPos, hPos, uiString, UItexts, UIsteps, UIpositions, 9);
         }
-        if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap, bossSteps, bossPosition); //si le boss est encore vivant, le déplacer
+        //si le boss est encore vivant, le déplacer et l'Afficher
+        if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap, bossSteps, bossPosition);
         drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, bossPosition, bossHealth, bossStrength);
     }
 
@@ -1713,6 +1715,8 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
         else
             protInvOpen = false;
     }
+
+    //close Inventory if the user moves
     if ((nextMove == 'w' || nextMove == 'a' || nextMove == 's' || nextMove == 'd') && protInvOpen)
     {
         protInvOpen = false;
