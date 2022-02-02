@@ -276,7 +276,7 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)   //co
 }
 
 //fonction pour faire les choix des caractéristique à la création du personnage
-void validateCaracteristics(int& protLife, int& protLifeMax, int& protSpeed, int& protStrength, string protName, int vSize, int hSize)
+void validateCaracteristics(int& protLife, int& protLifeMax, int& protSpeed, int& protStrength, string protName, int vSize, int hSize) //codé par Alexis
 {
     bool pointsAreGood = false;
     int pointsLeft;
@@ -291,6 +291,7 @@ void validateCaracteristics(int& protLife, int& protLifeMax, int& protSpeed, int
         string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants  )";
         string spaces = spaceString(longestString.size());
 
+        //VIE
         addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
 
         moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
@@ -342,6 +343,7 @@ void validateCaracteristics(int& protLife, int& protLifeMax, int& protSpeed, int
         pointsLeft -= pointsUsed;
         protLife += pointsUsed;
 
+        //VITESSE
         addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
 
         moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
@@ -393,7 +395,7 @@ void validateCaracteristics(int& protLife, int& protLifeMax, int& protSpeed, int
         pointsLeft -= pointsUsed;
         protSpeed += pointsUsed;
 
-        //Strength
+        //FORCE
         addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
 
         moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
@@ -567,14 +569,14 @@ void playProtazoidDeath(int vSize, int hSize, int protLife) //codé par Alexis e
 }
 
 //dessine le model de protazoid nécéssaire et vérifie plusieurs systèmes de vie du protazoid
-bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
+bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions) //codé par Alexis et par Nicholas vers la fin du projet
 {
     int hPos = hSize / 2 - protWidth / 2;
     int vPos = vSize / 2 - protHeight / 2;
     if (protLife > 0)
     {
-        //draw an idle Protazoid in the center
-        if (protLifeMax >= 10) //large protazoid if maximum life is bigger or equal to 10
+        //affiche un Protazoid au centre de l'écran d'affichage
+        if (protLifeMax >= 10) //utilise le plus gros model si la vie est plus grande ou egal à 10
         {
             for (int i = 0; i < ProtagAlarge.size(); ++i)
             {
@@ -582,7 +584,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
                 cout << ProtagAlarge[i];
             }
         }
-        else if (protLifeMax > 6) //medium protazoid if maximum life is bigger than 6
+        else if (protLifeMax > 6) //utilise le model medium si la vie est plus grande ou egal à 6
         {
             for (int i = 0; i < ProtagAmedium.size(); ++i)
             {
@@ -590,7 +592,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
                 cout << ProtagAmedium[i];
             }
         }
-        else //small protazoid if maximum life is smaller or equal to 6
+        else //utilise le petit model si la vie est plus petite que 6
         {
             for (int i = 0; i < ProtagAsmall.size(); ++i)
             {
@@ -599,19 +601,19 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
             }
         }
     }
-    else  //if prot has 0 hp, play die animation and gameover screen
+    else  //si le Protazoid a 0 pv, jouer l'anim de mort et afficher l'écran de fin de jeu
     {
         --protLife;
 
-        //play prot dying animation
+        //joue l'animation de mort du Protazoid
         if (protLife <= -1 && protLife >= -5) playProtazoidDeath(vSize, hSize, protLife);
 
-        //play logo anim if prot is dying
+        //joue l'animation du logo vers la fin de l'animation du Protazoid
         int logoIndex = -protLife - 4;
         if (protLife <= -4 && protLife >= -9) displayLogo(vSize, hSize, logoIndex, -int(logo.size()));
     }
 
-    //satiety goes down, if it's below 50, uses up calories to eat upto 100 satiety (10 satiety points each calorie)
+    //la satiété baisse à chaque pas, en dessous de 50, utilise des calories pour remplir la satiété jusqu'à 100 points(10 points par calories)
     protSatiety -= 1;
     if (protSatiety < 50 && protInvQty[0] > 0)
     {
@@ -637,7 +639,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         protSatiety = 0;
     }
 
-    //if prot is evolving and has calories, he has to pay everything until evolution done or no calories left
+    //si le protazoid est en évolution et a des calories, il doit payer tout ce qu'il peut jusqu'à ce que l'évolution soit finie
     int evoluting = -1;
     int evolutionETA = 0;
     for (int i = 1; i <= 3; ++i)
@@ -673,7 +675,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         protInvQty[evoluting] -= calUsed;
     }
 
-    //if prot doesn't attack he can regenerate
+    //si le protazoid n'attaque pas, il peut regénérer
     if (protLife < protLifeMax && protInvQty[0] > 0 && protRegen && protLife > 0)
     {
         protLife += 1;
@@ -686,7 +688,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
 }
 
 //fonction pour mettre les positions des monstres dans la carte
-void positionMonsters(int lineSize, array<string, 200> currentMap, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10>& monstersStrength)
+void positionMonsters(int lineSize, array<string, 200> currentMap, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10>& monstersStrength) //codé par Alexis
 {
     int monstersNumber = 10;
     for (int i = 0; i < monstersNumber; ++i)
@@ -729,7 +731,7 @@ void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> cur
 }
 
 //fonction pour afficher l'animation de mort des monstres
-void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int monsterVOffset, int monsterHOffset, int vOffset, int hOffset, int& monsterHStart, int monsterVStart, int monsterVEnd, int monsterHEnd)
+void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int monsterVOffset, int monsterHOffset, int vOffset, int hOffset, int& monsterHStart, int monsterVStart, int monsterVEnd, int monsterHEnd) //codé par Alexis
 {
     int spriteSize = 0;
     string line;
@@ -783,7 +785,7 @@ void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int mon
 }
 
 //fonction pour afficher les monstres à l'écran d'affichage
-void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 4>& protInvQty, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength)
+void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 4>& protInvQty, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength) //codé par Alexis
 {
     for (int iMonster = 0; iMonster < 10; ++iMonster)
     {
@@ -911,7 +913,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
 }
 
 //fonction pour initialiser la position des blobs sur la carte
-void positionBlobs(int lineSize, array<string, 200> currentMap, int blobsNumber, array<int, 100>& blobsPosition)
+void positionBlobs(int lineSize, array<string, 200> currentMap, int blobsNumber, array<int, 100>& blobsPosition) //codé par Alexis
 {
     for (int i = 0; i < blobsNumber; ++i)
     {
@@ -923,7 +925,7 @@ void positionBlobs(int lineSize, array<string, 200> currentMap, int blobsNumber,
 }
 
 //fonction pour initialiser les tailles des blobs
-void sizeBlobs(int blobsNumber, array<int, 50>& blobsSizes)
+void sizeBlobs(int blobsNumber, array<int, 50>& blobsSizes) //codé par Alexis
 {
     for (int i = 0; i < blobsNumber; ++i)
     {
@@ -933,7 +935,7 @@ void sizeBlobs(int blobsNumber, array<int, 50>& blobsSizes)
 }
 
 //fonction pour ajouter des blobs aléatoirements jusqu'a un maximum
-void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes)
+void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes)  //codé par Alexis
 {
     int numberAdded = 5 + rand() % 6;
     for (int i = 0; i < 50; ++i)
@@ -955,7 +957,7 @@ void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blob
 }
 
 //fonction pour dessiner un blob associé à la taille
-void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset, int hOffset, int blobSize, int blobVStart, int blobVEnd, int blobHStart, int blobHEnd)
+void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset, int hOffset, int blobSize, int blobVStart, int blobVEnd, int blobHStart, int blobHEnd) //codé par Alexis et Nicholas
 {
     for (int i = 0; i < 2; ++i)
     {
@@ -1048,7 +1050,7 @@ void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset,
 }
 
 //fonction pour afficher les blobs sur l'écran d'affichage
-void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty, array<int, 100>& blobsPosition, array<int, 50> blobsSizes, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
+void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty, array<int, 100>& blobsPosition, array<int, 50> blobsSizes, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions) //codé par Alexis
 {
     for (int i = 0; i < 50; ++i)
     {
@@ -1110,7 +1112,7 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
 }
 
 //déplace le boss vers le prot et incrémente la vitesse à tous les 100 pas
-void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int& bossSteps, array<int, 2>& bossPosition)
+void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int& bossSteps, array<int, 2>& bossPosition) //codé par Alexis
 {
     int spdBoost = 1 + (bossSteps / 100);
     moveCursor(2, 2);
@@ -1126,7 +1128,7 @@ void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> current
 }
 
 //affiche le boss à l'écran
-void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 2> bossPosition, int& bossHealth, int bossStrength)
+void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 2> bossPosition, int& bossHealth, int bossStrength)  //codé par Alexis et Nicholas
 {
     int vBoss = bossPosition[0];
     int hBoss = bossPosition[1];
@@ -1513,7 +1515,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
 }
 
 
-bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes, int& bossHealth, int& bossSteps, array<int, 2>& bossPosition, int bossStrength, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
+bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset, int& hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, int protLifeMax, int protSpeed, int protStrength, bool& protRegen, array<int, 4>& protInvQty, bool& protInvOpen, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes, int& bossHealth, int& bossSteps, array<int, 2>& bossPosition, int bossStrength, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions) //codé par Alexis
 {
     //si l'usager appuis sur ESCAPE, confirmer qu'il veut quitter et exécuter le choix
     if (int(nextMove) == 27) {
@@ -1816,6 +1818,7 @@ int main()
         //boucle pour que l'usager valide les points de caractéristiques de son protazoid
         validateCaracteristics(protLife, protLifeMax, protSpeed, protStrength, protName, vSize, hSize);
 
+        //démarrage de la partie
         bool inMap = true;
         while (inMap)
         {
