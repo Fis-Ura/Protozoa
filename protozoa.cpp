@@ -702,7 +702,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
         protLife += 1;
         protInvQty[0] -= 1;
         string uiString = string("\x1b[48;5;11m\x1b[38;5;16m") + "calories(" + to_string(protInvQty[0]) + ") for life(" + to_string(protLife) + ")";
-        addTextToUI(vPos, hPos, uiString, UItexts, UIsteps, UIpositions, 2);
+        addTextToUI(vPos, hPos, uiString, UItexts, UIsteps, UIpositions, 3);
     }
 
     return true;
@@ -900,19 +900,19 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     if (monstersHealth[iMonster] == -1)
                     {
                         protInvQty[0] += 15;
-                        moveCursor(protTop - 3, protLeft + 2);
+                        moveCursor(protTop - 5, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!!! (" << protInvQty[0] << ")";
                         playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
                     }
                     if (monstersHealth[iMonster] == -2)
                     {
-                        moveCursor(protTop - 3, protLeft + 2);
+                        moveCursor(protTop - 5, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15!! (" << protInvQty[0] << ")";
                         playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
                     }
                     if (monstersHealth[iMonster] == -3)
                     {
-                        moveCursor(protTop - 3, protLeft + 2);
+                        moveCursor(protTop - 5, protLeft + 2);
                         cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Mmmmm!! +15! (" << protInvQty[0] << ")";
                         playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
                     }
