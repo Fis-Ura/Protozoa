@@ -468,26 +468,29 @@ void validateCaracteristics(int& protLife, int& protLifeMax, int& protSpeed, int
 }
 
 //fonction pour afficher le texte du protazoid sur plus d'une trame
-void displayUI(array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)    //codé par Alexis
+void displayUI(array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions, int protLife, int bossHealth)    //codé par Alexis
 {
-    for (int i = 0; i < 10; ++i)
+    if (protLife > 0 && bossHealth > 0)
     {
-        string textDisplayed = UItexts[i];
-        if (textDisplayed != "")
+        for (int i = 0; i < 10; ++i)
         {
-            int stepsleft = UIsteps[i];
-            int vUI = UIpositions[i * 2];
-            int hUI = UIpositions[(i * 2) + 1];
-            moveCursor(vUI, hUI);
-            cout << textDisplayed;
-            --stepsleft;
-            if (stepsleft <= 0)
+            string textDisplayed = UItexts[i];
+            if (textDisplayed != "")
             {
-                UItexts[i] = "";
-            }
-            else
-            {
-                UIsteps[i] = stepsleft;
+                int stepsleft = UIsteps[i];
+                int vUI = UIpositions[i * 2];
+                int hUI = UIpositions[(i * 2) + 1];
+                moveCursor(vUI, hUI);
+                cout << textDisplayed;
+                --stepsleft;
+                if (stepsleft <= 0)
+                {
+                    UItexts[i] = "";
+                }
+                else
+                {
+                    UIsteps[i] = stepsleft;
+                }
             }
         }
     }
@@ -1572,7 +1575,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
     drawBlobs(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protInvQty, blobsPosition, blobsSizes, protSteps, UItexts, UIsteps, UIpositions);
     moveMonsters(vOffset, hOffset, lineSize, currentMap, monstersPosition, monstersHealth);
     drawMonsters(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, protInvQty, monstersPosition, monstersHealth, monstersStrength);
-    displayUI(UItexts, UIsteps, UIpositions); //affichage des differents textes du Protazoid
+    displayUI(UItexts, UIsteps, UIpositions, protLife, bossHealth); //affichage des differents textes du Protazoid
 
     //changer la condition pour changer le spawn du boss
     //  if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
