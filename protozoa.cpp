@@ -161,12 +161,17 @@ bool displayStartGame(int vSize, int hSize, int longestString)  //codé par Alex
 string enterName(int vSize, int hSize, int longestString)   //codé pas Alexis, débogué par Nicholas
 {
     string startName = "En tant que Protazoid, quel sera votre nom?";
+    string startGod = "Vous pouvez mettre godmode pour commencer au plus fort.";
 
     int vPos = vSize / 2 + int(logo.size()) / 2;
     int hPos = hSize / 2 - int(startName.size()) / 2 + 2;
 
     addSpacing(3, int(logo.size()), longestString, vSize, hSize);
 
+    moveCursor(vPos + 1, hSize / 2 - int(startGod.size()) / 2 + 2);
+    cout << spaceString(int(startGod.size()));
+    moveCursor(vPos + 1, hSize / 2 - int(startGod.size()) / 2 + 2);
+    cout << startGod;
     moveCursor(vPos + 2, hPos);
     cout << startName;
     string testName = "";
@@ -185,11 +190,11 @@ void startNameValidation(int vSize, int hSize, string& protName, int& longestStr
         string testName = enterName(vSize, hSize, longestString);
         string startNameFinalValidate = "Votre Protazoid se nomme bien " + testName + "? Tappez o pour oui.";
         longestString = startNameFinalValidate.size() > longestString ? startNameFinalValidate.size() : longestString;
-        int vPos = vSize / 2 + logo.size() / 2;
+        int vPos = vSize / 2 + int(logo.size()) / 2;
         int hPos = hSize / 2 - longestString / 2;
         char validateName;
                 
-        addSpacing(3, logo.size(), longestString + 2, vSize, hSize, 2);
+        addSpacing(3, int(logo.size()), longestString + 2, vSize, hSize, 2);
         moveCursor(vPos + 2, hPos + 2);
         cout << startNameFinalValidate;
         moveCursor(vPos + 3, hPos + 2);
@@ -1840,7 +1845,15 @@ int main()
         startNameValidation(vSize, hSize, protName, longestString);
 
         //boucle pour que l'usager valide les points de caractéristiques de son protazoid
-        validateCaracteristics(protLife, protLifeMax, protSpeed, protStrength, protName, vSize, hSize);
+        if(protName != "godmode")
+            validateCaracteristics(protLife, protLifeMax, protSpeed, protStrength, protName, vSize, hSize);
+        else //si le nom du prot est godmode, mettre les caracs au maximum
+        {
+            protLife = 10;
+            protLifeMax = 10;
+            protSpeed = 10;
+            protStrength = 10;
+        }
 
         //démarrage de la partie
         system("cls");
