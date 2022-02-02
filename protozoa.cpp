@@ -49,44 +49,44 @@ void clearCin() //travail de Nicholas
     cin.ignore(120, '\n');
 }
 
-void calibrateScreen(int& vSize, int& hSize) //travail de Alexis
+void calibrateScreen(int& vSize, int& hSize) //travail de Alexis DÉSACTIVÉ
 {
     cout << "Assurez-vous que votre écran de terminal soit maximisé.\n"
         << "Pour une meilleure expérience graphique, mettez votre échelle d'affichage à 100% (windows scale and layout)\n";
     sleep_for(2000ms);
 
-    string hundred = "____________________________________________________________________________________________________";
-    cout << hundred << hundred << endl;
-    cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
-    char hValidate;
-    cin >> hValidate;
-    if (hValidate == 'o' || hValidate == 'O')
-        hSize = 200;
-    else
-    {
-        system("cls");
-        cout << hundred << endl;
-        cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
-        cin >> hValidate;
-        if (hValidate == 'o' || hValidate == 'O')
-            hSize = 100;
-    }
-    system("cls");
-    for (int i = 0; i < 60; ++i) cout << '|' << endl;
-    cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
-    char vValidate;
-    cin >> vValidate;
-    if (vValidate == 'o' || vValidate == 'O')
-        vSize = 60;
-    else
-    {
-        system("cls");
-        for (int i = 0; i < 30; ++i) cout << '|' << endl;
-        cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
-        cin >> vValidate;
-        if (vValidate == 'o' || vValidate == 'O')
-            vSize = 30;
-    }
+    //string hundred = "____________________________________________________________________________________________________";
+    //cout << hundred << hundred << endl;
+    //cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
+    //char hValidate;
+    //cin >> hValidate;
+    //if (hValidate == 'o' || hValidate == 'O')
+    //    hSize = 200;
+    //else
+    //{
+    //    system("cls");
+    //    cout << hundred << endl;
+    //    cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
+    //    cin >> hValidate;
+    //    if (hValidate == 'o' || hValidate == 'O')
+    //        hSize = 100;
+    //}
+    //system("cls");
+    //for (int i = 0; i < 60; ++i) cout << '|' << endl;
+    //cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
+    //char vValidate;
+    //cin >> vValidate;
+    //if (vValidate == 'o' || vValidate == 'O')
+    //    vSize = 60;
+    //else
+    //{
+    //    system("cls");
+    //    for (int i = 0; i < 30; ++i) cout << '|' << endl;
+    //    cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
+    //    cin >> vValidate;
+    //    if (vValidate == 'o' || vValidate == 'O')
+    //        vSize = 30;
+    //}
 }
 
 //tentative de générateur de carte aléatoire qui ne fait pas tout à fait l'effet souhaité, mais utilisable
@@ -1088,14 +1088,12 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
 
         //déterminer si le blob est dans l'écran d'affichage
         if (blobVStart < int(BlobASmall.size()) && blobVEnd > 0)
-        //if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
         {
             blobVStart = blobVStart > int(BlobASmall.size()) || blobVStart < 0 ? 0 : blobVStart;
             blobVEnd = int(BlobASmall.size()) > blobVEnd ? blobVEnd : int(BlobASmall.size());
         
         
-            if (blobHStart < blobLineSize && h < ((lineSize / 2) + (hSize / 2) + hOffset + 1))
-            //if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
+            if (blobHStart < blobLineSize && h < (lineSize / 2) + (hSize / 2) + hOffset - blobLineSize)
             {
                 //determiner si le blob a été mangé par le protazoid
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
@@ -1742,7 +1740,7 @@ int main()
     int suddenDeathCtr = 50;
 
     //calibration de l'écran d'affichage et variables d'affiache
-    calibrateScreen(vSize, hSize);
+    calibrateScreen(vSize, hSize); //encore trop de bug d'affichage pour utiliser, sert d'avertissement a mettre l'Écran en plein écran
     array<string, 10> UItexts = {};
     array<int, 10> UIsteps = {};
     array<int, 20> UIpositions = {};
