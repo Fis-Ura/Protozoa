@@ -49,44 +49,11 @@ void clearCin() //travail de Nicholas
     cin.ignore(120, '\n');
 }
 
-void calibrateScreen(int& vSize, int& hSize) //travail de Alexis DÉSACTIVÉ
+void calibrateScreen(int& vSize, int& hSize) //travail de Alexis
 {
     cout << "Assurez-vous que votre écran de terminal soit maximisé.\n"
         << "Pour une meilleure expérience graphique, mettez votre échelle d'affichage à 100% (windows scale and layout)\n";
     sleep_for(2000ms);
-
-    //string hundred = "____________________________________________________________________________________________________";
-    //cout << hundred << hundred << endl;
-    //cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
-    //char hValidate;
-    //cin >> hValidate;
-    //if (hValidate == 'o' || hValidate == 'O')
-    //    hSize = 200;
-    //else
-    //{
-    //    system("cls");
-    //    cout << hundred << endl;
-    //    cout << "Est-ce que les tirets s'affichent tous sur la même ligne? o pour oui\n";
-    //    cin >> hValidate;
-    //    if (hValidate == 'o' || hValidate == 'O')
-    //        hSize = 100;
-    //}
-    //system("cls");
-    //for (int i = 0; i < 60; ++i) cout << '|' << endl;
-    //cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
-    //char vValidate;
-    //cin >> vValidate;
-    //if (vValidate == 'o' || vValidate == 'O')
-    //    vSize = 60;
-    //else
-    //{
-    //    system("cls");
-    //    for (int i = 0; i < 30; ++i) cout << '|' << endl;
-    //    cout << "Est-ce que la ligne s'affiche au complet dans l'écran? Remontez l'écran, si cette phrase y est faite o pour oui\n";
-    //    cin >> vValidate;
-    //    if (vValidate == 'o' || vValidate == 'O')
-    //        vSize = 30;
-    //}
 }
 
 //tentative de générateur de carte aléatoire qui ne fait pas tout à fait l'effet souhaité, mais utilisable
@@ -274,8 +241,6 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)   //co
             if (i == framesPlayed - 1) displayLogo(vSize, hSize, 5);
 
             sleep_for(200ms);
-            /*if (i != framesPlayed - 1)
-                system("cls");*/
         }
     }
 }
@@ -1295,7 +1260,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
             {
                 if ((hBoss - hStartLimit) - hSize / 2 < protWidth / 2 && ((hBoss - hStartLimit) - (hSize / 2 - 64)) > -(protWidth / 2 - 1))
                 {
-                    if (bossHealth > 0)
+                    if (bossHealth > 0 && protLife > 0)
                     {
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                         int protAttack = (protStrength + 1) + rand() % 6;
@@ -1307,7 +1272,8 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             string hit = string("\x1b[48;5;11m\x1b[38;5;16m") + "Bang!! (" + to_string(bossHealth) + ")";
                             string win = string("\x1b[48;5;11m\x1b[38;5;16m") + "Miam!! (" + to_string(bossHealth) + ")";
                             string attackresult = bossHealth <= 0 ? win : hit;
-                            cout << spaceString(attackresult.size());
+                            moveCursor(vSize / 2 - protHeight / 2 - 4, hSize / 2 - protWidth / 2);
+                            cout << spaceString(7);
                             moveCursor(vSize / 2 - protHeight / 2 - 4, hSize / 2 - protWidth / 2);
                             cout << attackresult;
                         }
@@ -1315,7 +1281,8 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                         else
                         {
                             protLife -= 1;
-                            cout << spaceString(11);
+                            moveCursor(vSize / 2 - protHeight / 2 - 4, hSize / 2 - protWidth / 2);
+                            cout << spaceString(10);
                             moveCursor(vSize / 2 - protHeight / 2 - 4, hSize / 2 - protWidth / 2);
                             cout << "\x1b[48;5;160m\x1b[38;5;15m" << "Ouch!! (" << protLife << ")";
                         }
@@ -1411,7 +1378,7 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
 
     //changer la condition pour changer le spawn du boss
     //  if (protLifeMax + protSpeed + protStrength >= 18) //8 évolutions(+10 de le creation du protazoid) du prot sont nécéssaires pour faire apparaitre le boss
-    if (protSteps >= 0) //le boss apparait après 500 pas du Protazoid
+    if (protSteps >= 500) //le boss apparait après 500 pas du Protazoid
     {
         if (protSteps == 500)
         {
@@ -1422,7 +1389,8 @@ bool drawMap(char& nextMove, bool& userQuit, int vSize, int hSize, int& vOffset,
             addTextToUI(vPos, hPos, uiString, UItexts, UIsteps, UIpositions, 9);
         }
         //si le boss est encore vivant, le déplacer et l'Afficher
-        if(bossHealth > 0) moveBoss(vOffset, hOffset, lineSize, currentMap, bossSteps, bossPosition);
+        if(bossHealth > 0)
+            moveBoss(vOffset, hOffset, lineSize, currentMap, bossSteps, bossPosition);
         drawBoss(vSize, hSize, vOffset, hOffset, lineSize, currentMap, protWidth, protHeight, protLife, protRegen, protStrength, bossPosition, bossHealth, bossStrength);
     }
 
@@ -1552,7 +1520,7 @@ int main()
     int suddenDeathCtr = 50;
 
     //calibration de l'écran d'affichage et variables d'affiache
-    calibrateScreen(vSize, hSize); //encore trop de bug d'affichage pour utiliser, sert d'avertissement a mettre l'Écran en plein écran
+    calibrateScreen(vSize, hSize);
     array<string, 10> UItexts = {};
     array<int, 10> UIsteps = {};
     array<int, 20> UIpositions = {};
