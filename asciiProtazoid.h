@@ -1,4 +1,6 @@
-﻿#include "Code_Utilities.h"
+﻿#pragma once
+
+#include "Code_Utilities.h"
 
 using namespace std;
 

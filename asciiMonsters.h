@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Code_Utilities.h"
 
 using namespace std;

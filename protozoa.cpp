@@ -319,6 +319,7 @@ void addTextToUI(int vPos, int hPos, string uiString, array<string, 10>& UItexts
     }
 }
 
+//appelé lorsque la vie du Protazoid atteint 0, joue l'animation de mort du Protazoid
 void playProtazoidDeath(int vSize, int hSize, int protLife) //codé par Alexis et Nicholas
 {
     int spriteSize = 0;
@@ -370,6 +371,7 @@ void playProtazoidDeath(int vSize, int hSize, int protLife) //codé par Alexis e
     }
 }
 
+//dessine le model de protazoid nécéssaire et vérifie plusieurs systèmes de vie du protazoid
 bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& protLife, int& protLifeMax, bool protRegen, int& protSpeed, int& protStrength, int& protSatiety, array<int,4>& protInvQty, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
 {
     int hPos = hSize / 2 - protWidth / 2;
@@ -488,6 +490,7 @@ bool drawProtazoid(int vSize, int hSize, int protWidth, int protHeight, int& pro
     return true;
 }
 
+//fonction pour mettre les positions des monstres dans la carte
 void positionMonsters(int lineSize, array<string, 200> currentMap, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10>& monstersStrength)
 {
     int monstersNumber = 10;
@@ -502,6 +505,7 @@ void positionMonsters(int lineSize, array<string, 200> currentMap, array<int, 20
     }
 }
 
+//fonction pour faire bouger les monstres et changer leur position sur la carte
 void moveMonsters(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, array<int, 20>& monstersPosition, array<int, 10> monstersHealth) //codé par Alexis
 {
     int monstersNumber = 10;
@@ -583,7 +587,7 @@ void playMonsterDeath(int vSize, int hSize, int monsterHP, int v, int h, int mon
     }
 }
 
-
+//fonction pour afficher les monstres à l'écran d'affichage
 void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 4>& protInvQty, array<int, 20>& monstersPosition, array<int, 10>& monstersHealth, array<int, 10> monstersStrength)
 {
     for (int iMonster = 0; iMonster < 10; ++iMonster)
@@ -606,16 +610,14 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
         int protLeft = (hSize / 2) - (protWidth / 2);
         int protRight = (hSize / 2) + (protWidth / 2);
 
-        //determine if monster is in the display screen
+        //determiner si le monstre est dans l'écran d'affichage
         if(monsterVStart < int(monsterAbig.size()) && monsterVEnd > 0)
-        //if (v > (monsterVOffset + vOffset) && v < (monsterVMaxOffset + vOffset))
         {
             monsterVStart = monsterVStart > int(monsterAbig.size()) || monsterVStart < 0 ? 0 : monsterVStart;
             monsterVEnd = int(monsterAbig.size()) > monsterVEnd ? monsterVEnd : int(monsterAbig.size());
             if (monsterHStart < 16 && h < ((lineSize / 2) + (hSize / 2) + hOffset))
-            //if (h > (monsterHOffset + hOffset) && h < (monsterHMaxOffset + hOffset))
             {
-                //determine if monster has been attacked by the protazoid
+                //determiner si le monstre est en collision avec le Protazoid
                 if (monsterHP > 0 && protLife > 0) {
                     if ((v - monsterVOffset - vOffset) > protTop && (v - monsterVOffset - vOffset) < protBottom)
                     {
@@ -624,6 +626,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                             moveCursor(protTop - 4, protLeft);
                             int protAttack = (protStrength + 1) + rand() % 6;
                             int monsterAttack = (monsterStr + 1) + rand() % 6;
+                            //si l'attaque du prot réussi, afficher le message approprié et ajuster les pv du monstres
                             if (protAttack >= monsterAttack)
                             {
                                 monsterHP -= 1;
@@ -633,6 +636,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                                 string attackresult = monsterHP <= 0 ? win : hit;
                                 cout << attackresult;
                             }
+                            //si l'attaque du prot est ratée, ajuster les pv du prot et afficher un message
                             else
                             {
                                 protLife -= 1;
@@ -643,7 +647,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     }
                 }
 
-
+                //si le monstre est encore en vie, afficher le monstre caractere par caractere pour éviter les débordements d'affichage
                 if (monsterHP > 0)
                 {
                     monsterHStart = monsterHStart > 16 || monsterHStart < 0 ? 0 : monsterHStart;
@@ -671,6 +675,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                         cout << newLine;
                     }
                 }
+                //si le monstre est mort, affiché le model de mort associé
                 else
                 {
                     monstersHealth[iMonster] = monsterHP - 1;
@@ -696,7 +701,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
                     if (monstersHealth[iMonster] == -4)
                     {
                         playMonsterDeath(vSize, hSize, monstersHealth[iMonster], v, h, monsterVOffset, monsterHOffset, vOffset, hOffset, monsterHStart, monsterVStart, monsterVEnd, monsterHEnd);
-                        //create new monster when one has finished dying
+                        //quand un monstre est disparu, un nouveau est créé
                         int newMonsterH = 1 + (rand() % lineSize);
                         int newMonsterV = 1 + (rand() % int(currentMap.size()));
                         monstersPosition[iMonster * 2] = newMonsterH;
@@ -710,6 +715,7 @@ void drawMonsters(int vSize, int hSize, int vOffset, int hOffset, int lineSize, 
     }
 }
 
+//fonction pour initialiser la position des blobs sur la carte
 void positionBlobs(int lineSize, array<string, 200> currentMap, int blobsNumber, array<int, 100>& blobsPosition)
 {
     for (int i = 0; i < blobsNumber; ++i)
@@ -721,6 +727,7 @@ void positionBlobs(int lineSize, array<string, 200> currentMap, int blobsNumber,
     }
 }
 
+//fonction pour initialiser les tailles des blobs
 void sizeBlobs(int blobsNumber, array<int, 50>& blobsSizes)
 {
     for (int i = 0; i < blobsNumber; ++i)
@@ -730,7 +737,7 @@ void sizeBlobs(int blobsNumber, array<int, 50>& blobsSizes)
     }
 }
 
-//fonction to add blobs now and then
+//fonction pour ajouter des blobs aléatoirements jusqu'a un maximum
 void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blobsPosition, array<int, 50>& blobsSizes)
 {
     int numberAdded = 5 + rand() % 6;
@@ -752,6 +759,7 @@ void addBlobs(int lineSize, array<string, 200> currentMap, array<int, 100>& blob
     }
 }
 
+//fonction pour dessiner un blob associé à la taille
 void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset, int hOffset, int blobSize, int blobVStart, int blobVEnd, int blobHStart, int blobHEnd)
 {
     for (int i = 0; i < 2; ++i)
@@ -844,6 +852,7 @@ void drawSingleBlob(int v, int h, int blobVOffset, int blobHOffset, int vOffset,
     }
 }
 
+//fonction pour afficher les blobs sur l'écran d'affichage
 void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, array<int, 4>& protInvQty, array<int, 100>& blobsPosition, array<int, 50> blobsSizes, int protSteps, array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)
 {
     for (int i = 0; i < 50; ++i)
@@ -864,6 +873,7 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
         int blobHOffset = (lineSize / 2) - (hSize / 2);
         moveCursor(2 + i, 1);
 
+        //déterminer si le blob est dans l'écran d'affichage
         if (blobVStart < int(BlobASmall.size()) && blobVEnd > 0)
         //if (v > ((int(currentMap.size()) / 2) - (vSize / 2) + vOffset) && v < ((int(currentMap.size()) / 2) + (vSize / 2) + vOffset))
         {
@@ -874,7 +884,7 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
             if (blobHStart < blobLineSize && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             //if (h > ((lineSize / 2) - (hSize / 2) + hOffset) && h < ((lineSize / 2) + (hSize / 2) + hOffset))
             {
-                //determine if blob has been eaten by the protazoid
+                //determiner si le blob a été mangé par le protazoid
                 if ((v - blobVOffset - vOffset) > ((vSize / 2) - (protHeight / 2)) && (v - blobVOffset - vOffset) < ((vSize / 2) + (protHeight / 2)))
                 {
                     if ((h - blobHOffset - hOffset) > ((hSize / 2) - (protWidth / 2)) && (h - blobHOffset - hOffset) < ((hSize / 2) + (protWidth / 2)))
@@ -904,7 +914,7 @@ void drawBlobs(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arr
     }
 }
 
-//moves toward the prot with base speed and increment speed by 1 every 100 steps
+//déplace le boss vers le prot et incrémente la vitesse à tous les 100 pas
 void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int& bossSteps, array<int, 2>& bossPosition)
 {
     int spdBoost = 1 + (bossSteps / 100);
@@ -920,6 +930,7 @@ void moveBoss(int vOffset, int hOffset, int lineSize, array<string, 200> current
     ++bossSteps;
 }
 
+//affiche le boss à l'écran
 void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, array<string, 200> currentMap, int protWidth, int protHeight, int& protLife, bool& protRegen, int protStrength, array<int, 2> bossPosition, int& bossHealth, int bossStrength)
 {
     int vBoss = bossPosition[0];
@@ -931,13 +942,14 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
     int hStartLimit = ((lineSize / 2) - (hSize / 2) + hOffset);
     int hStartAt = 64 - ((hBoss + 64) - ((lineSize / 2) - (hSize / 2) + hOffset));
     int hEndAt = hSize - (hBoss - hStartLimit) > 64 ? 64 : hSize - (hBoss - hStartLimit) + 2;
+    //déterminer si le boss est dans l'écran d'affichage
     if(vStartAt < int(bossA.size()) && vEndAt > 0)
     {
         vStartAt = vStartAt > int(bossA.size()) || vStartAt < 0 ? 0 : vStartAt;
         vEndAt = int(bossA.size()) > vEndAt ? vEndAt : int(bossA.size());
         if (hStartAt < 64 && hBoss < ((lineSize / 2) + (hSize / 2) + hOffset))
         {
-            //draw boss on map if not dead
+            //afficher le boss si il n'est pas mort
             if (bossHealth > 0)
             {
                 hStartAt = hStartAt > 64 || hStartAt < 0 ? 0 : hStartAt;
@@ -965,7 +977,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                 }
             }
 
-            //determine if boss and prot has collisioned
+            //determiner si le boss est en collision avec le Protazoid
             if (vEndAt - vStartAt >= vSize / 2 - protHeight / 2 + 1)
             {
                 if ((hBoss - hStartLimit) - hSize / 2 < protWidth / 2 && ((hBoss - hStartLimit) - (hSize / 2 - 64)) > -(protWidth / 2 - 1))
@@ -975,6 +987,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                         moveCursor(vSize / 2 - protHeight / 2 - 2, hSize / 2 - protWidth / 2);
                         int protAttack = (protStrength + 1) + rand() % 6;
                         int bossAttack = (bossStrength + 1) + rand() % 6;
+                        //si l'attaque du Protazoid est réussie, ajuster la santé du boss et afficher un message
                         if (protAttack >= bossAttack)
                         {
                             bossHealth -= 1;
@@ -985,6 +998,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 4, hSize / 2 - protWidth / 2);
                             cout << attackresult;
                         }
+                        //si l'attaque du Protazoid est ratée, ajuster les pv du prot et afficher un message
                         else
                         {
                             protLife -= 1;
@@ -1003,7 +1017,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingA.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingA.size()) * 2) / 2;
@@ -1040,7 +1054,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingB.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingB.size()) * 2) / 2;
@@ -1077,7 +1091,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingC.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingC.size()) * 2) / 2;
@@ -1114,7 +1128,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingD.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingD.size()) * 2) / 2;
@@ -1151,7 +1165,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingE.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingE.size()) * 2) / 2;
@@ -1188,7 +1202,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingF.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingF.size()) * 2) / 2;
@@ -1225,7 +1239,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingG.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingG.size()) * 2) / 2;
@@ -1262,7 +1276,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                             moveCursor(vSize / 2 - protHeight / 2 - 3, hSize / 2 - protWidth / 2 + 2);
                             cout << "\x1b[48;5;11m\x1b[38;5;16m" << "Wouhou!! +1500!!!";
 
-                            //draw boss dying sprite 1 on map
+                            //affiche la frame associé de la mort du boss caractère par caractère pour éviter les débordements d'affichage
                             int hDeathStart = hStartAt - (int(bossA.size()) * 2 - int(bossAdyingH.size()) * 2) / 2;
                             hDeathStart = hDeathStart < 0 ? 0 : hDeathStart;
                             int hDeathEnd = hEndAt - (int(bossA.size()) * 2 - int(bossAdyingH.size()) * 2) / 2;
@@ -1294,7 +1308,7 @@ void drawBoss(int vSize, int hSize, int vOffset, int hOffset, int lineSize, arra
                                 cout << newLine;
                             }
                         }
-                        --bossHealth;
+                        --bossHealth; //utilisé comme compteur pour les frame de mort du boss
                     }
                     bossHealth = bossHealth == 0 ? -1 : bossHealth;
                 }
