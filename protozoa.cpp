@@ -275,6 +275,198 @@ void displayIntro(int framesPlayed, bool skipIntro, int vSize, int hSize)   //co
     }
 }
 
+//fonction pour faire les choix des caractéristique à la création du personnage
+void validateCaracteristics(int& protLife, int& protLifeMax, int& protSpeed, int& protStrength, string protName, int vSize, int hSize)
+{
+    bool pointsAreGood = false;
+    int pointsLeft;
+    while (!pointsAreGood)
+    {
+        pointsLeft = 4;
+        protLife = 2;
+        protLifeMax = 2;
+        protSpeed = 2;
+        protStrength = 2;
+
+        string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants  )";
+        string spaces = spaceString(longestString.size());
+
+        addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
+
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
+        cout << "Points de caractéristique de " << protName;
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 2);
+        cout << ">Vie: " << setw(3) << protLife;
+        moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
+        cout << "Vitesse: " << setw(3) << protSpeed;
+        moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
+        cout << "Force: " << setw(3) << protStrength;
+
+        char usePoints = '|';
+        while (int(usePoints) < int('0') || int(usePoints) > int('0' + pointsLeft))
+        {
+            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
+            cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Protazoid: (points restants " << pointsLeft << ")";
+            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+            if (int(usePoints) != char('|'))
+            {
+                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+                cout << spaces;
+                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+                cout << "Entrée invalide, utilisez vos points restants.";
+            }
+            cin >> usePoints;
+            clearCin();
+        }
+        int pointsUsed;
+        switch (int(usePoints))
+        {
+            case int('0') :
+                pointsUsed = 0;
+                break;
+            case int('1') :
+                pointsUsed = 1;
+                break;
+            case int('2') :
+                pointsUsed = 2;
+                break;
+            case int('3') :
+                pointsUsed = 3;
+                break;
+            case int('4') :
+                pointsUsed = 4;
+                break;
+        }
+        pointsLeft -= pointsUsed;
+        protLife += pointsUsed;
+
+        addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
+
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
+        cout << "Points de caractéristique de " << protName;
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
+        cout << "Vie: " << setw(3) << protLife;
+        moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 2);
+        cout << ">Vitesse: " << setw(3) << protSpeed;
+        moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
+        cout << "Force: " << setw(3) << protStrength;
+
+        usePoints = '|';
+        while (int(usePoints) < int('0') || int(usePoints) > int('0' + pointsLeft))
+        {
+            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
+            cout << "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants " << pointsLeft << ")";
+            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+            if (int(usePoints) != char('|'))
+            {
+                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+                cout << spaces;
+                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+                cout << "Entrée invalide, utilisez vos points restants.";
+            }
+            cin >> usePoints;
+            clearCin();
+        }
+        pointsUsed = NULL;
+        switch (int(usePoints))
+        {
+            case int('0') :
+                pointsUsed = 0;
+                break;
+            case int('1') :
+                pointsUsed = 1;
+                break;
+            case int('2') :
+                pointsUsed = 2;
+                break;
+            case int('3') :
+                pointsUsed = 3;
+                break;
+            case int('4') :
+                pointsUsed = 4;
+                break;
+        }
+        pointsLeft -= pointsUsed;
+        protSpeed += pointsUsed;
+
+        //Strength
+        addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
+
+        moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
+        cout << "Points de caractéristique de " << protName;
+        moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
+        cout << "Vie: " << setw(3) << protLife;
+        moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
+        cout << "Vitesse: " << setw(3) << protSpeed;
+        moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 2);
+        cout << ">Force: " << setw(3) << protStrength;
+
+        usePoints = '|';
+        while (int(usePoints) < int('0') || int(usePoints) > int('0' + pointsLeft))
+        {
+            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
+            cout << spaces;
+            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
+            cout << "Entrez le nombre de points que vous voulez ajouter à la Force de votre Protazoid: (points restants " << pointsLeft << ")";
+            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+            if (int(usePoints) != char('|'))
+            {
+                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+                cout << spaces;
+                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
+                cout << "Entrée invalide, utilisez vos points restants.";
+            }
+            cin >> usePoints;
+            clearCin();
+        }
+        pointsUsed = NULL;
+        switch (int(usePoints))
+        {
+            case int('0') :
+                pointsUsed = 0;
+                break;
+            case int('1') :
+                pointsUsed = 1;
+                break;
+            case int('2') :
+                pointsUsed = 2;
+                break;
+            case int('3') :
+                pointsUsed = 3;
+                break;
+            case int('4') :
+                pointsUsed = 4;
+                break;
+        }
+        pointsLeft -= pointsUsed;
+        protStrength += pointsUsed;
+
+        addSpacing(9, int(logo.size()), int(longestString.size()), vSize, hSize);
+
+        moveCursor(vSize / 2 + int(logo.size()) / 2 + 2, hSize / 2 - int(longestString.size()) / 2 + 2);
+        cout << "Points de caractéristique de " << protName;
+        moveCursor(vSize / 2 + int(logo.size()) / 2 + 3, hSize / 2 - int(longestString.size()) / 2 + 3);
+        cout << "Vie: " << setw(3) << protLife;
+        moveCursor(vSize / 2 + int(logo.size()) / 2 + 4, hSize / 2 - int(longestString.size()) / 2 + 3);
+        cout << "Vitesse: " << setw(3) << protSpeed;
+        moveCursor(vSize / 2 + int(logo.size()) / 2 + 5, hSize / 2 - int(longestString.size()) / 2 + 3);
+        cout << "Force: " << setw(3) << protStrength;
+
+        char validCarac;
+        moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
+        cout << "Est-ce que les caractéristique de votre Protazoid vous conviennent? o pour oui.";
+        moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
+        cin >> validCarac;
+        clearCin();
+        pointsAreGood = validCarac == 'o' || validCarac == 'O' ? true : false;
+    }
+    protLifeMax = protLife;
+}
+
 //fonction pour afficher le texte du protazoid sur plus d'une trame
 void displayUI(array<string, 10>& UItexts, array<int, 10>& UIsteps, array<int, 20>& UIpositions)    //codé par Alexis
 {
@@ -1615,196 +1807,11 @@ int main()
         //4 points a répartir comme on veut entre les 3 choix
         //minimum de 2 dans chacune des caractéristiques, 1 point équivaut à 1 de plus dans la caractéristique
 
+        //valide le nom du Protazoid
         startNameValidation(vSize, hSize, protName, longestString);
 
         //boucle pour que l'usager valide les points de caractéristiques de son protazoid
-        bool pointsAreGood = false;
-        int pointsLeft;
-        while (!pointsAreGood)
-        {
-            pointsLeft = 4;
-            protLife = 2;
-            protLifeMax = 2;
-            protSpeed = 2;
-            protStrength = 2;
-
-            string longestString = "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants  )";
-            string spaces = spaceString(longestString.size());
-
-            addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Points de caractéristique de " << protName;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 2);
-            cout << ">Vie: " << setw(3) << protLife;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Vitesse: " << setw(3) << protSpeed;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Force: " << setw(3) << protStrength;
-
-            char usePoints = '|';
-            while (int(usePoints) < int('0') || int(usePoints) > int('0'+pointsLeft))
-            {
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-                cout << spaces;
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Vie de votre Protazoid: (points restants " << pointsLeft << ")";
-                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                if (int(usePoints) != char('|'))
-                {
-                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                    cout << spaces;
-                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-                    cout << "Entrée invalide, utilisez vos points restants.";
-                }
-                cin >> usePoints;
-                clearCin();
-            }
-            int pointsUsed;
-            switch (int(usePoints))
-            {
-                case int('0') :
-                    pointsUsed = 0;
-                    break;
-                case int('1') :
-                    pointsUsed = 1;
-                    break;
-                case int('2') :
-                    pointsUsed = 2;
-                    break;
-                case int('3') :
-                    pointsUsed = 3;
-                    break;
-                case int('4') :
-                    pointsUsed = 4;
-                    break;
-            }
-            pointsLeft -= pointsUsed;
-            protLife += pointsUsed;
-
-            addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Points de caractéristique de " << protName;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Vie: " << setw(3) << protLife;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 2);
-            cout << ">Vitesse: " << setw(3) << protSpeed;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Force: " << setw(3) << protStrength;
-            
-            usePoints = '|';
-            while (int(usePoints) < int('0') || int(usePoints) > int('0'+pointsLeft))
-            {
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-                cout << spaces;
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Vitesse de votre Protazoid: (points restants " << pointsLeft << ")";
-                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                if (int(usePoints) != char('|'))
-                {
-                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                    cout << spaces;
-                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-                    cout << "Entrée invalide, utilisez vos points restants.";
-                }
-                cin >> usePoints;
-                clearCin();
-            }
-            pointsUsed = NULL;
-            switch (int(usePoints))
-            {
-                case int('0') :
-                    pointsUsed = 0;
-                    break;
-                case int('1') :
-                    pointsUsed = 1;
-                    break;
-                case int('2') :
-                    pointsUsed = 2;
-                    break;
-                case int('3') :
-                    pointsUsed = 3;
-                    break;
-                case int('4') :
-                    pointsUsed = 4;
-                    break;
-            }
-            pointsLeft -= pointsUsed;
-            protSpeed += pointsUsed;
-
-            //Strength
-            addSpacing(9, logo.size(), longestString.size(), vSize, hSize);
-
-            moveCursor(vSize / 2 + logo.size() / 2 + 2, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Points de caractéristique de " << protName;
-            moveCursor(vSize / 2 + logo.size() / 2 + 3, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Vie: " << setw(3) << protLife;
-            moveCursor(vSize / 2 + logo.size() / 2 + 4, hSize / 2 - longestString.size() / 2 + 3);
-            cout << "Vitesse: " << setw(3) << protSpeed;
-            moveCursor(vSize / 2 + logo.size() / 2 + 5, hSize / 2 - longestString.size() / 2 + 2);
-            cout << ">Force: " << setw(3) << protStrength;
-            
-            usePoints = '|';
-            while (int(usePoints) < int('0') || int(usePoints) > int('0'+pointsLeft))
-            {
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 1);
-                cout << spaces;
-                moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-                cout << "Entrez le nombre de points que vous voulez ajouter à la Force de votre Protazoid: (points restants " << pointsLeft << ")";
-                moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                if (int(usePoints) != char('|'))
-                {
-                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-                    cout << spaces;
-                    moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 1);
-                    cout << "Entrée invalide, utilisez vos points restants.";
-                }
-                cin >> usePoints;
-                clearCin();
-            }
-            pointsUsed = NULL;
-            switch (int(usePoints))
-            {
-                case int('0') :
-                    pointsUsed = 0;
-                    break;
-                case int('1') :
-                    pointsUsed = 1;
-                    break;
-                case int('2') :
-                    pointsUsed = 2;
-                    break;
-                case int('3') :
-                    pointsUsed = 3;
-                    break;
-                case int('4') :
-                    pointsUsed = 4;
-                    break;
-            }
-            pointsLeft -= pointsUsed;
-            protStrength += pointsUsed;
-            
-            addSpacing(9, int(logo.size()), int(longestString.size()), vSize, hSize);
-
-            moveCursor(vSize / 2 + int(logo.size()) / 2 + 2, hSize / 2 - int(longestString.size()) / 2 + 2);
-            cout << "Points de caractéristique de " << protName;
-            moveCursor(vSize / 2 + int(logo.size()) / 2 + 3, hSize / 2 - int(longestString.size()) / 2 + 3);
-            cout << "Vie: " << setw(3) << protLife;
-            moveCursor(vSize / 2 + int(logo.size()) / 2 + 4, hSize / 2 - int(longestString.size()) / 2 + 3);
-            cout << "Vitesse: " << setw(3) << protSpeed;
-            moveCursor(vSize / 2 + int(logo.size()) / 2 + 5, hSize / 2 - int(longestString.size()) / 2 + 3);
-            cout << "Force: " << setw(3) << protStrength;
-
-            char validCarac;
-            moveCursor(vSize / 2 + logo.size() / 2 + 7, hSize / 2 - longestString.size() / 2 + 2);
-            cout << "Est-ce que les caractéristique de votre Protazoid vous conviennent? o pour oui.";
-            moveCursor(vSize / 2 + logo.size() / 2 + 8, hSize / 2 - longestString.size() / 2 + 2);
-            cin >> validCarac;
-            clearCin();
-            pointsAreGood = validCarac == 'o' || validCarac == 'O' ? true : false;
-        }
-        protLifeMax = protLife;
+        validateCaracteristics(protLife, protLifeMax, protSpeed, protStrength, protName, vSize, hSize);
 
         bool inMap = true;
         while (inMap)
@@ -1825,6 +1832,7 @@ int main()
                 nextMove = 'r';
                 sleep_for(250ms);
             }
+            //si l'animation de mort du Protazoid est terminée, afficher l'écran de fin de jeu
             if (protLife <= -9)
             {
                 char restart;
@@ -1852,6 +1860,7 @@ int main()
                 }
 
             }
+            //si l'animation de mort du boss est terminé, afficher l'écran de victoire et de fin du jeu
             if (bossHealth <= -12)
             {
                 char restart;
