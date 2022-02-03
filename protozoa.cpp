@@ -6,7 +6,6 @@
 #include "asciiMonsters.h" //travail de Nicholas
 #include <chrono>
 #include <thread>
-#include <conio.h>
 
 using namespace BdB;
 using namespace this_thread;
