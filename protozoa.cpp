@@ -1643,7 +1643,7 @@ int main()
             {
                 cout << ESC + (to_string(vSize + 1) + ";1H");
                 cout << "\x1b[48;5;234m\x1b[38;5;11m" << "w,a,s,d pour faire vous déplacer, i pour ouvrir l'inventaire. Pour quitter, appuyez sur la touche ESCAPE." << "\x1b[0m\x1b[48;5;234m";
-                nextMove = _getch();
+                nextMove = waitKeyToPress();
                 ++protSteps;
             }
             else if(protLife <= 0 && protLife > -9 || bossHealth <= 0 && bossHealth > -9)

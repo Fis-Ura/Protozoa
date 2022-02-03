@@ -6,6 +6,14 @@
 #include <random>
 #include <iomanip> 
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <Windows.h>
+#include "conio.h"
+#else
+#include <unistd.h>
+#include <ncurses.h>
+#endif
+
 using namespace std;
 
 namespace BdB
@@ -90,18 +98,131 @@ namespace BdB
     // SHORCUT
     string CLS = ESC + ERASE_ALL + ESC + HOME;
 
+    // SPECIAL KEY NAME
+    const char NB_SPECIAL_KEY = 32;
+    const array<string, NB_SPECIAL_KEY> specialKeyName = {
+        "NUL",  // null character
+        "SOH",  // start of heading
+        "STX",  // start of text
+        "ETX",  // end of text
+        "EOT",  // end of transmission
+        "ENQ",  // enquiry
+        "ACK",  // acknowledgment
+        "BEL",  // audible bell
+        "BS",   // back space
+        "HT",   // horizontal tab
+        "LF",   // line feed
+        "VT",   // vertical tab
+        "FF",   // form feed
+        "CR",   // carriage return
+        "SO",   // shift out
+        "SI",   // shift in
+        "DLE",  // data link escape
+        "DC1",  // device control 1
+        "DC2",  // device control 2
+        "DC3",  // device control 3
+        "DC4",  // device control 4
+        "NAK",  // negative acknowledge
+        "SYN",  // synchronous idle
+        "ETB",  // end of transmit block
+        "CAN",  // cancel
+        "EM",   // end of medium
+        "SUB",  // substitution
+        "ESC",  // escape
+        "FS",   // file separator
+        "GS",   // group separator
+        "RS",   // record separator
+        "US"    // unit separator
+    };
+
+#if !(defined(_WIN32) || defined(_WIN64))
+    // Unix equivalent to conio _kbhit() function
+    // Reference: https://invisible-island.net/ncurses/NCURSES-Programming-HOWTO.html
+    inline int kbhit()
+    {
+        int ch;
+        wtimeout(stdscr, 0);
+        ch = wgetch(stdscr);
+        nodelay(stdscr, FALSE);
+        if (ch == ERR)
+            return 0;
+        ungetch(ch);
+        return 1;
+    }
+
+    inline void initializeNCurses()
+    {
+        initscr(); // initialiser le programme en utilisant ncurses
+        cbreak(); // rend disponible le caractère saisi immédiatement.
+        noecho(); // désactive l'affichage sur l'écran d'une touche frappée au clavier
+        nodelay(stdscr, TRUE); //empêche getch() d'être bloquant
+        keypad(stdscr, TRUE); // active les touche étendu du clavier (au delà de 256)
+    }
+
+    inline void releaseNCurses()
+    {
+        keypad(stdscr, FALSE); // active les touche étendu du clavier (au delà de 256)
+        nodelay(stdscr, FALSE); //empêche getch() d'être bloquant
+        echo(); // rétablit l'affichage du caractère saisi
+        nocbreak(); // rétablit le mode par défaut.
+        endwin(); // doit être appelée avant de quitter le programme en mode curses. Elle permet de rétablir l'ancien mode du terminal.
+    }
+#endif
+
+    // INPUT SECTION
+    inline char getSpecialKeyCode(const string& keyCodeName)
+    {
+        for (int i = 0; i < NB_SPECIAL_KEY; ++i)
+            if (specialKeyName[i] == keyCodeName)
+                return (char)i;
+
+        return 0;
+    }
+
+    inline string getSpecialKeyCodeName(char keyCode)
+    {
+        if (keyCode >= 0 && keyCode < NB_SPECIAL_KEY)
+            return specialKeyName[keyCode];
+        return "";
+    }
+
+    inline int waitKeyToPress(char keyToPress = {})
+    {
+        int keyPressed = {};
+
+#if _WIN32 || _WIN64
+        for (;;)
+        {
+            if (_kbhit())
+            {
+                keyPressed = _getch();
+                if (keyPressed && keyPressed == keyToPress || !keyToPress)
+                    break;
+            }
+        }
+#else
+        initializeNCurses();
+        for (;;)
+        {
+            if (kbhit())
+            {
+                keyPressed = getch();
+                if (keyPressed && keyPressed == keyToPress || !keyToPress)
+                    break;
+            }
+        }
+        releaseNCurses();
+#endif
+
+        return keyPressed;
+    }
+
     inline void pressToContinue(string s = "")
     {
         if (s == "")
-            s = "Appuis sur une touche pour continuer ... ";
-
-#if _WIN32 || _WIN64
+            s = "Appuis sur une touche pour continuer ... \n";
         cout << s;
-        system("pause >0");
-#else
-        string cmd = "read -p '" + s + "'";
-        system(cmd.c_str());
-#endif
+        waitKeyToPress();
     }
 
     inline default_random_engine& getRand()
@@ -110,7 +231,46 @@ namespace BdB
         return ran;
     };
 
+    // RANDOM SECTION
     inline void srandInt(int s) { getRand().seed(s); }
     inline int randInt(int min, int max) { return uniform_int_distribution<>{min, max}(getRand()); }
     inline int randInt(int max) { return randInt(0, max); }
+
+    // WINDOW SECTION
+    inline void showCursor(bool visible)
+    {
+#if defined(_WIN32) || defined(_WIN64)
+        CONSOLE_CURSOR_INFO ci;
+        GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ci);
+        ci.bVisible = visible? TRUE: FALSE;
+        SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ci);
+#else
+        // TODO
+#endif
+    }
+
+    void setConsoleFontSize(const string& fontName, int size = 24)
+    {
+#if defined(_WIN32) || defined(_WIN64)
+        if (size > 0 && size < 72)
+        {
+            CONSOLE_FONT_INFOEX cfi = { sizeof(cfi) };
+            HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (!GetCurrentConsoleFontEx(hStdout, FALSE, &cfi))
+            {
+                cout << "Got font error :" << GetLastError() << endl;
+                return;
+            }
+
+            cfi.dwFontSize.Y = size;
+            std::wstring wsFontName(fontName.begin(), fontName.end());
+            wcscpy_s(cfi.FaceName, wsFontName.c_str());
+
+            if (!SetCurrentConsoleFontEx(hStdout, FALSE, &cfi))
+                cout << "Set font Error :" << GetLastError() << endl;
+        }
+#else
+        // TODO
+#endif
+    }
 }
