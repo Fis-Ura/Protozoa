@@ -25,7 +25,7 @@ string spaceString(int length)  //travail de Nicholas
     return spaces;
 }
 
-/**
+/**e
 Ajoute du spacing
 @param int lines Nombre de fois que move cursor sera appele
 @param int sizeY position Y
